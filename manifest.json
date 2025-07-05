@@ -1,16 +1,29 @@
 {
-  "short_name": "Pot Bot",
   "name": "Pot Bot - Rank Your Dank",
-  "icons": [
-    {
-      "src": "/icons/icon-512x512.png",
-      "type": "image/png",
-      "sizes": "512x512"
-    }
-  ],
+  "short_name": "Pot Bot",
+  "description": "AI-powered cannabis scanner. Rank your bud quality, check grow stages, and get expert tips with Bud Bot and Grower Mode.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#1e1e1e",
+  "background_color": "#121212",
   "theme_color": "#4caf50",
-  "orientation": "portrait"
+  "orientation": "portrait",
+  "scope": "/",
+  "icons": [
+    {
+      "src": "/icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "/icons/maskable_icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
 }
