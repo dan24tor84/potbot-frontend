@@ -1,1 +1,39 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#00c977" />
+  <title>Pot Bot – Rank Your Dank</title>
+
+  <!-- PWA Manifest -->
+  <link rel="manifest" href="./manifest.json" />
+  <link rel="icon" href="./icons/icon-192x192.png" type="image/png" />
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+  <h1>🌿 Pot Bot</h1>
+  <p>Upload a cannabis bud photo to get your Dank Score.</p>
+
+  <input type="file" id="upload" accept="image/*" />
+  <button id="scanButton">Scan Bud</button>
+
+  <img id="previewImage" class="preview" alt="Preview" />
+  <div id="result"></div>
+
+  <!-- JS Script -->
+  <script src="./script.js"></script>
+
+  <!-- Optional: PWA install prompt -->
+  <script>
+    let deferredPrompt;
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+    });
+  </script>
+</body>
+</html>
