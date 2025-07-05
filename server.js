@@ -1,14 +1,14 @@
-// server.js – serves Pot Bot static site from the public folder via Express
+// server.js – Pot Bot live server config for Railway
 
 const express = require('express');
 const path = require('path');
 const app = express();
 const port = process.env.PORT || 3000;
 
-// Serve static files from the /public directory
+// Serve static files from /public
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Fallback route for single-page apps and PWA support
+// Fallback: serve index.html for all unmatched routes (SPA/PWA)
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
