@@ -1,5 +1,5 @@
-// app.js – Pot Bot basic scanner logic
-
+const fileInput = document.getElementById('upload');
+const scanBtn = document.getElementById('scanButton');
 document.addEventListener('DOMContentLoaded', () => {
   const fileInput = document.getElementById('imageUpload');
   const scanBtn = document.getElementById('scanBtn');
