@@ -1,0 +1,16 @@
+{
+  "short_name": "Pot Bot",
+  "name": "Pot Bot - Rank Your Dank",
+  "icons": [
+    {
+      "src": "/icons/icon-512x512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#1e1e1e",
+  "theme_color": "#4caf50",
+  "orientation": "portrait"
+}
