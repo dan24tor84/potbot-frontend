@@ -1,0 +1,60 @@
+/* style.css - Pot Bot UI Styling */
+
+body {
+  margin: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #121212;
+  color: #f0f0f0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  min-height: 100vh;
+  padding: 2rem;
+}
+
+header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+h1 {
+  font-size: 2.2rem;
+  color: #a1ffaf;
+  text-shadow: 0 0 5px #00ff88;
+}
+
+button, input[type="file"] {
+  background-color: #1e1e1e;
+  border: 1px solid #00ff88;
+  color: #f0f0f0;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  margin-top: 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+button:hover {
+  background-color: #00ff88;
+  color: #121212;
+}
+
+#result {
+  margin-top: 2rem;
+  padding: 1rem;
+  background-color: #202020;
+  border-left: 5px solid #00ff88;
+  border-radius: 5px;
+  max-width: 600px;
+  width: 100%;
+  word-wrap: break-word;
+}
+
+img.preview {
+  max-width: 300px;
+  margin-top: 1rem;
+  border-radius: 10px;
+  border: 2px solid #00ff88;
+}
