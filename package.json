@@ -1,0 +1,12 @@
+{
+  "name": "potbot",
+  "version": "1.0.0",
+  "description": "Pot Bot app served with Express",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}
