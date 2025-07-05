@@ -1,2 +1,62 @@
-<link rel="manifest" href="/manifest.json" />
-<meta name="theme-color" content="#4caf50" />
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#4caf50" />
+  <meta name="description" content="Pot Bot - Rank Your Dank. Scan cannabis buds & plants to get AI-powered quality scores and growing tips." />
+  <link rel="manifest" href="/manifest.json" />
+  <link rel="icon" href="/icons/icon-512x512.png" />
+  <title>Pot Bot - Rank Your Dank</title>
+  
+  <!-- Optional: Open Graph for social sharing -->
+  <meta property="og:title" content="Pot Bot - Rank Your Dank" />
+  <meta property="og:description" content="Get your cannabis buds and plants scanned by AI. Find out how dank your stash really is." />
+  <meta property="og:image" content="/icons/icon-512x512.png" />
+  <meta property="og:url" content="https://rankyourdank.com" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <!-- Optional: CSS reset or your main stylesheet -->
+  <style>
+    body {
+      margin: 0;
+      background: #121212;
+      color: #fff;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .coming-soon {
+      text-align: center;
+    }
+    .coming-soon img {
+      max-width: 120px;
+      margin-bottom: 20px;
+    }
+    .coming-soon h1 {
+      font-size: 2rem;
+      color: #4caf50;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="coming-soon">
+    <img src="/icons/icon-512x512.png" alt="Pot Bot Logo" />
+    <h1>Pot Bot Coming Soon</h1>
+    <p>We're getting ready to rank your dank. Stay tuned!</p>
+  </div>
+
+  <script>
+    // Optional PWA install prompt logic
+    let deferredPrompt;
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      // You can use this deferredPrompt later to show install prompt manually
+    });
+  </script>
+</body>
+</html>
