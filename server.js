@@ -5,12 +5,12 @@ const path = require('path');
 const app = express();
 const port = process.env.PORT || 3000;
 
-// Serve static files from the "public" directory
-app.use(express.static(path.join(__dirname, 'public')));
+// Serve static files from the root directory
+app.use(express.static(__dirname));
 
-// Fallback route for PWA single-page app support
+// Fallback route for PWA support
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+  res.sendFile(path.join(__dirname, 'index.html'));
 });
 
 app.listen(port, () => {
