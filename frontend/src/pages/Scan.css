@@ -1,0 +1,46 @@
+.scan-container {
+  max-width: 500px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background-color: #1e1e1e;
+  border-radius: 12px;
+  box-shadow: 0 0 20px rgba(0, 201, 119, 0.4);
+  color: #f5f5f5;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.scan-container h2 {
+  text-align: center;
+  margin-bottom: 0.5rem;
+  color: #00c977;
+}
+
+.scan-container p {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+input[type="file"] {
+  display: block;
+  margin: 0 auto 1rem auto;
+  color: #fff;
+}
+
+.bud-preview {
+  display: block;
+  width: 100%;
+  max-height: 250px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin: 1rem auto;
+  border: 1px solid #444;
+}
+
+button {
+  display: block;
+  width: 100%;
+  padding: 0.75rem;
+  font-size: 1rem;
+  background-color: #00c977;
+  color: #121212;
+  border: none
