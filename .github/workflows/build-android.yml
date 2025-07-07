@@ -1,4 +1,4 @@
-name: Build Android App Bundle
+name: Build Android App Bundle with Capacitor
 
 on:
   push:
@@ -10,22 +10,20 @@ on:
 
 jobs:
   build:
-    name: Build Android App Bundle with Capacitor
+    name: Build Android AAB with Yarn + Capacitor
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-        with:
-          persist-credentials: false
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 18
 
-      - name: Install frontend dependencies
-        run: yarn install
+      - name: Install frontend dependencies with Yarn
+        run: yarn install --frozen-lockfile
         working-directory: ./frontend
 
       - name: Build frontend
@@ -42,10 +40,10 @@ jobs:
 
       - name: Build Android AAB
         run: ./gradlew bundleRelease
-        working-directory: android
+        working-directory: ./android
 
       - name: Upload AAB artifact
         uses: actions/upload-artifact@v4
         with:
           name: app-release.aab
-          path: android/app/build/outputs/bundle/release/app-release.aab
+          path: ./android/app/build/outputs/bundle/release/app-release.aab
