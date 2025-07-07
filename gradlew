@@ -6,30 +6,34 @@
 ##
 ##############################################################################
 
-# Attempt to locate java
-if [ -n "$JAVA_HOME" ] ; then
-    JAVA="$JAVA_HOME/bin/java"
-else
-    JAVA=java
-fi
+# Add default JVM options here. You can also use JAVA_OPTS and GRADLE_OPTS to pass JVM options to this script.
+DEFAULT_JVM_OPTS=""
 
-# Determine script location
+APP_NAME="Gradle"
+APP_BASE_NAME=`basename "$0"`
+
+# Resolve symlinks
 PRG="$0"
 while [ -h "$PRG" ]; do
-    ls=$(ls -ld "$PRG")
-    link=$(expr "$ls" : '.*-> \(.*\)$')
-    if expr "$link" : '/.*' > /dev/null; then
-        PRG="$link"
-    else
-        PRG=$(dirname "$PRG")/"$link"
-    fi
+  ls=`ls -ld "$PRG"`
+  link=`expr "$ls" : '.*-> \(.*\)$'`
+  if expr "$link" : '/.*' > /dev/null; then
+    PRG="$link"
+  else
+    PRG=`dirname "$PRG"`/"$link"
+  fi
 done
 
-SAVED="$(pwd)"
-cd "$(dirname "$PRG")/.." >/dev/null
-APP_HOME="$(pwd -P)"
+SAVED="`pwd`"
+cd "`dirname \"$PRG\"`/" >/dev/null
+APP_HOME="`pwd -P`"
 cd "$SAVED" >/dev/null
 
 CLASSPATH=$APP_HOME/gradle/wrapper/gradle-wrapper.jar
 
-exec "$JAVA" $JAVA_OPTS -classpath "$CLASSPATH" org.gradle.wrapper.GradleWrapperMain "$@"
+JAVA_EXEC="$JAVA_HOME/bin/java"
+if [ ! -x "$JAVA_EXEC" ]; then
+  JAVA_EXEC=`which java`
+fi
+
+exec "$JAVA_EXEC" $DEFAULT_JVM_OPTS -classpath "$CLASSPATH" org.gradle.wrapper.GradleWrapperMain "$@"
