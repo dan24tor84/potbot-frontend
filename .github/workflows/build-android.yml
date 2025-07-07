@@ -1,49 +1,47 @@
 name: Build Android App Bundle
 
-on: push: branches: - main workflow_dispatch:
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
 
-jobs: build: name: Build Android AAB with Capacitor runs-on: ubuntu-latest
+jobs:
+  build:
+    name: Build Android AAB with Capacitor
+    runs-on: ubuntu-latest
 
-steps:
-  - name: Checkout repository
-    uses: actions/checkout@v3
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-  - name: Set up Node.js
-    uses: actions/setup-node@v3
-    with:
-      node-version: 18
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
 
-  - name: Install dependencies
-    run: npm install --legacy-peer-deps
-    working-directory: ./frontend
+      - name: Install dependencies
+        run: npm install --legacy-peer-deps
+        working-directory: ./frontend
 
-  - name: Build frontend
-    run: npm run build
-    working-directory: ./frontend
+      - name: Build frontend
+        run: npm run build
+        working-directory: ./frontend
 
-  - name: Install Capacitor and Android SDK tools
-    run: |
-      npm install -g @capacitor/cli
-      sudo apt-get update
-      sudo apt-get install -y openjdk-11-jdk unzip wget
-      wget https://dl.google.com/android/repository/commandlinetools-linux-10406996_latest.zip -O cmdline-tools.zip
-      unzip cmdline-tools.zip -d android-sdk
-      yes | android-sdk/cmdline-tools/bin/sdkmanager --sdk_root=${{ github.workspace }}/android-sdk "platform-tools" "platforms;android-33" "build-tools;33.0.2"
-      echo "export ANDROID_HOME=${{ github.workspace }}/android-sdk" >> $GITHUB_ENV
-      echo "export PATH=\$ANDROID_HOME/platform-tools:\$PATH" >> $GITHUB_ENV
-      echo "export PATH=\$ANDROID_HOME/cmdline-tools/bin:\$PATH" >> $GITHUB_ENV
+      - name: Sync Capacitor
+        run: npx cap sync android
+        working-directory: ./frontend
 
-  - name: Sync Capacitor and copy assets
-    run: |
-      npx cap sync android
-      npx cap copy android
-    working-directory: ./frontend
+      - name: Copy web assets to Android
+        run: npx cap copy android
+        working-directory: ./frontend
 
-  - name: Build Android AAB
-    run: ./gradlew bundleRelease
-    working-directory: ./frontend/android
+      - name: Build Android AAB
+        run: ./gradlew bundleRelease
+        working-directory: android
 
-  - name: Upload AAB artifact
-    uses: actions/upload-artifact@v3
-    with:
-      name: potbot-aab
+      - name: Upload AAB artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: app-release.aab
+          path: android/app/build/outputs/bundle/release/app-release.aab
