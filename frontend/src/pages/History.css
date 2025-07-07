@@ -1,0 +1,42 @@
+.history-container {
+  padding: 2rem;
+  max-width: 800px;
+  margin: auto;
+  background-color: #1e1e1e;
+  color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 0 20px rgba(0, 255, 128, 0.1);
+}
+
+h2 {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.scan-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.scan-item {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background-color: #2c2c2c;
+  border-radius: 8px;
+  border: 1px solid #333;
+  transition: transform 0.2s ease;
+}
+
+.scan-item:hover {
+  transform: scale(1.01);
+}
+
+.scan-thumb {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 8px;
+}
