@@ -1,0 +1,39 @@
+.home-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 80vh;
+  text-align: center;
+  padding: 2rem;
+  background-color: #121212;
+  color: #e0ffe0;
+}
+
+.home-container h1 {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  color: #00c977;
+}
+
+.home-container p {
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+  max-width: 600px;
+}
+
+.cta-button {
+  margin-top: 1rem;
+  padding: 0.8rem 1.5rem;
+  font-size: 1rem;
+  color: #121212;
+  background-color: #00c977;
+  border: none;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: background-color 0.3s ease;
+}
+
+.cta-button:hover {
+  background-color: #00a963;
+}
