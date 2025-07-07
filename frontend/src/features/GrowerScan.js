@@ -43,3 +43,36 @@ const GrowerScan = () => {
       const updated = await updatePlantScan(latest.id, result);
       setScanResult(updated);
     } catch (err) {
+      console.error(err);
+      alert('Failed to complete scan');
+    }
+
+    setLoading(false);
+  };
+
+  return (
+    <div className="scanner-container">
+      <h2>Grower Mode - Plant Scan</h2>
+      <input type="file" onChange={handleImageUpload} accept="image/*" />
+      {preview && <img src={preview} alt="Preview" style={{ maxWidth: '300px', margin: '1rem 0' }} />}
+      <button onClick={handleScan} disabled={loading}>
+        {loading ? 'Scanning...' : 'Analyze Plant'}
+      </button>
+      {scanResult && (
+        <div className="scan-result">
+          <h3>Scan Results</h3>
+          <p><strong>Stage:</strong> {scanResult.growth_stage}</p>
+          <p><strong>Health Score:</strong> {scanResult.health_score}</p>
+          <p><strong>Watering Needed:</strong> {scanResult.needs_watering ? 'Yes' : 'No'}</p>
+          <p><strong>Nutrient Issues:</strong> {scanResult.nutrient_deficiencies}</p>
+          <p><strong>Pests:</strong> {scanResult.pest_issues}</p>
+          <p><strong>Diseases:</strong> {scanResult.diseases}</p>
+          <p><strong>Harvest Estimate:</strong> {scanResult.harvest_estimate}</p>
+          <p><strong>Recommendations:</strong> {scanResult.recommendations}</p>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default GrowerScan;
