@@ -1,33 +1,36 @@
-// File: /backend/utils/aiAnalyzer.js
+// utils/aiAnalyzer.js
+// Placeholder for real AI logic or API call for image analysis
 
-const sharp = require('sharp');
-
-async function analyzeImage(buffer) {
-  try {
-    // Example analysis: image dimensions + random quality metrics
-    const image = sharp(buffer);
-    const metadata = await image.metadata();
-
-    // You could replace this with actual ML or API logic
-    const fakeAnalysis = {
-      width: metadata.width,
-      height: metadata.height,
-      format: metadata.format,
-      dankScore: Math.floor(Math.random() * 41) + 60,
-      trichomeDensity: 'Moderate',
-      trimQuality: 'Clean',
-      moldDetection: 'None',
-      structureQuality: 'Tight',
-      strainEstimate: 'Hybrid (estimate)',
-      harvestReadiness: 'Near Peak',
-      recommendations: 'Continue flowering, optimal humidity ~50%',
-    };
-
-    return fakeAnalysis;
-  } catch (error) {
-    console.error('AI Analyzer error:', error);
-    throw new Error('Image analysis failed');
-  }
+function analyzeBudImage(filePath) {
+  // Simulated analysis logic
+  return {
+    dankScore: Math.floor(Math.random() * 41) + 60, // Score between 60–100
+    trichomeDensity: "High",
+    trimQuality: "Good",
+    moldDetected: false,
+    structure: "Tight",
+    strainEstimate: "Hybrid",
+    suggestions: [
+      "Looks like premium bud.",
+      "Well-trimmed, frosty nugs.",
+      "Keep an eye on humidity for storage."
+    ]
+  };
 }
 
-module.exports = { analyzeImage };
+function analyzeGrowImage(filePath) {
+  return {
+    growthStage: "Flowering",
+    healthScore: 92,
+    needsWatering: false,
+    nutrientDeficiencies: [],
+    pestIssues: [],
+    diseases: [],
+    recommendations: ["Harvest in 1–2 weeks", "Flush nutrients soon"]
+  };
+}
+
+module.exports = {
+  analyzeBudImage,
+  analyzeGrowImage
+};
