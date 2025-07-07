@@ -20,7 +20,7 @@ jobs:
         with:
           node-version: 18
 
-      - name: Install dependencies
+      - name: Install frontend dependencies
         run: npm install --legacy-peer-deps
         working-directory: ./frontend
 
@@ -32,16 +32,10 @@ jobs:
         run: npx cap sync android
         working-directory: ./frontend
 
-      - name: Copy web assets to Android
+      - name: Copy web assets
         run: npx cap copy android
         working-directory: ./frontend
 
       - name: Build Android AAB
         run: ./gradlew bundleRelease
         working-directory: android
-
-      - name: Upload AAB artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: app-release.aab
-          path: android/app/build/outputs/bundle/release/app-release.aab
