@@ -1,5 +1,28 @@
-// File: /frontend/src/App.js import React from 'react'; import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'; import Home from './pages/Home'; import Scan from './pages/Scan'; import History from './pages/History'; import NotFound from './pages/NotFound'; import Navbar from './components/Navbar';
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
-const App = () => { return ( <Router> <Navbar /> <Routes> <Route path="/" element={<Home />} /> <Route path="/scan" element={<Scan />} /> <Route path="/history" element={<History />} /> <Route path="*" element={<NotFound />} /> </Routes> </Router> ); };
+import Home from './pages/Home';
+import BudBot from './pages/BudBot';
+import GrowerMode from './pages/GrowerMode';
+import ProMode from './pages/ProMode';
+import Navbar from './components/Navbar';
+
+import './App.css';
+
+const App = () => {
+  return (
+    <Router>
+      <div className="app-container">
+        <Navbar />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/budbot" element={<BudBot />} />
+          <Route path="/grower" element={<GrowerMode />} />
+          <Route path="/pro" element={<ProMode />} />
+        </Routes>
+      </div>
+    </Router>
+  );
+};
 
 export default App;
