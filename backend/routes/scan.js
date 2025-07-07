@@ -1,43 +1,27 @@
-// routes/scan.js
-const express = require('express');
-const multer = require('multer');
-const path = require('path');
-const fs = require('fs');
-const { analyzeBudImage, analyzeGrowImage } = require('../utils/aiAnalyzer');
+// File: /backend/routes/scan.js
 
-const router = express.Router();
+const express = require('express'); const router = express.Router(); const multer = require('multer'); const path = require('path'); const fs = require('fs');
 
-// Configure multer storage
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    const uploadPath = path.join(__dirname, '..', 'uploads');
-    if (!fs.existsSync(uploadPath)) {
-      fs.mkdirSync(uploadPath);
-    }
-    cb(null, uploadPath);
-  },
-  filename: (req, file, cb) => {
-    const ext = path.extname(file.originalname);
-    const name = Date.now() + ext;
-    cb(null, name);
-  }
-});
-const upload = multer({ storage });
+// Temporary image storage const upload = multer({ dest: 'uploads/' });
 
-// Route: POST /scan/bud
-router.post('/bud', upload.single('image'), (req, res) => {
-  if (!req.file) return res.status(400).json({ error: 'No image uploaded' });
+// POST /api/scan - Handle bud image upload and analysis router.post('/', upload.single('image'), async (req, res) => { try { if (!req.file) { return res.status(400).json({ error: 'No file uploaded' }); }
 
-  const result = analyzeBudImage(req.file.path);
-  res.json({ success: true, result });
-});
+// Placeholder: integrate with real AI model here
+// Example: send to Roboflow/Replicate/Custom ML backend
+const fakeAnalysis = {
+  dankScore: Math.floor(Math.random() * 41) + 60,
+  trichomeDensity: 'High',
+  trimQuality: 'Good',
+  moldDetected: false,
+  strainEstimate: 'Unknown',
+  message: 'Scan complete. This bud looks solid.'
+};
 
-// Route: POST /scan/grow
-router.post('/grow', upload.single('image'), (req, res) => {
-  if (!req.file) return res.status(400).json({ error: 'No image uploaded' });
+// Optionally delete the uploaded image after processing
+fs.unlinkSync(req.file.path);
 
-  const result = analyzeGrowImage(req.file.path);
-  res.json({ success: true, result });
-});
+res.json({ success: true, analysis: fakeAnalysis });
+
+} catch (err) { console.error('Error processing scan:', err); res.status(500).json({ error: 'Internal server error' }); } });
 
 module.exports = router;
