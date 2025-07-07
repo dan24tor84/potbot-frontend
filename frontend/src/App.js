@@ -1,28 +1,31 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+// /frontend/src/App.js
 
-import Home from './pages/Home';
-import BudBot from './pages/BudBot';
-import GrowerMode from './pages/GrowerMode';
-import ProMode from './pages/ProMode';
-import Navbar from './components/Navbar';
+import React, { useState } from 'react';
+import BudScanner from './features/BudScanner';
+import GrowerScan from './features/GrowerScan';
 
-import './App.css';
+function App() {
+  const [mode, setMode] = useState('bud'); // 'bud' or 'grower'
 
-const App = () => {
   return (
-    <Router>
-      <div className="app-container">
-        <Navbar />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/budbot" element={<BudBot />} />
-          <Route path="/grower" element={<GrowerMode />} />
-          <Route path="/pro" element={<ProMode />} />
-        </Routes>
-      </div>
-    </Router>
+    <div className="app-container">
+      <header>
+        <h1>Pot Bot – Rank Your Dank</h1>
+        <nav>
+          <button onClick={() => setMode('bud')} className={mode === 'bud' ? 'active' : ''}>
+            Bud Bot
+          </button>
+          <button onClick={() => setMode('grower')} className={mode === 'grower' ? 'active' : ''}>
+            Grower Mode
+          </button>
+        </nav>
+      </header>
+
+      <main>
+        {mode === 'bud' ? <BudScanner /> : <GrowerScan />}
+      </main>
+    </div>
   );
-};
+}
 
 export default App;
