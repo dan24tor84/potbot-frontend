@@ -1,27 +1,37 @@
-.history-container {
-  padding: 2rem;
-  color: #fff;
-  max-width: 700px;
-  margin: auto;
-}
+import React, { useEffect, useState } from 'react';
+import './History.css';
 
-.history-list {
-  list-style: none;
-  padding: 0;
-}
+const History = () => {
+  const [history, setHistory] = useState([]);
 
-.history-item {
-  display: flex;
-  background: #2c2c2c;
-  border-radius: 1rem;
-  margin-bottom: 1rem;
-  padding: 1rem;
-  align-items: center;
-}
+  useEffect(() => {
+    const saved = localStorage.getItem('budScanHistory');
+    if (saved) {
+      setHistory(JSON.parse(saved));
+    }
+  }, []);
 
-.history-item img {
-  width: 80px;
-  height: 80px;
-  border-radius: 0.5rem;
-  object-fit: cover;
-  margin-right: 1rem
+  return (
+    <div className="history-container">
+      <h2>Scan History</h2>
+      {history.length === 0 ? (
+        <p>No previous scans found.</p>
+      ) : (
+        <ul className="scan-list">
+          {history.map((entry, idx) => (
+            <li key={idx} className="scan-item">
+              <img src={entry.imageUrl} alt={`Scan ${idx}`} className="scan-thumb" />
+              <div>
+                <p><strong>Dank Score:</strong> {entry.dankScore}/100</p>
+                <p><strong>Trichome:</strong> {entry.trichome}</p>
+                <p><strong>Trim:</strong> {entry.trim}</p>
+              </div>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+};
+
+export default History;
