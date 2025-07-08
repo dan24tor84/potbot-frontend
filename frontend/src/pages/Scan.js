@@ -5,6 +5,7 @@ const Scan = () => {
   const [image, setImage] = useState(null);
   const [scanResult, setScanResult] = useState(null);
   const [isScanning, setIsScanning] = useState(false);
+  const [error, setError] = useState(null);
 
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
@@ -14,38 +15,60 @@ const Scan = () => {
     reader.onloadend = () => {
       setImage(reader.result);
       setScanResult(null);
+      setError(null);
     };
     reader.readAsDataURL(file);
   };
 
-  const simulateScan = () => {
+  const runAIAnalysis = async () => {
     if (!image) return;
     setIsScanning(true);
+    setScanResult(null);
+    setError(null);
 
-    setTimeout(() => {
-      const fakeScore = Math.floor(Math.random() * 41) + 60;
-      setScanResult({
-        dankScore: fakeScore,
-        trichome: 'High',
-        trim: 'Good',
-        impression: 'This bud has solid quality',
+    try {
+      const response = await fetch('https://api.rankyourdank.com/analyze', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': process.env.REACT_APP_API_KEY || '' // Optional if required
+        },
+        body: JSON.stringify({ image: image })
       });
+
+      if (!response.ok) {
+        throw new Error(`Server error: ${response.status}`);
+      }
+
+      const data = await response.json();
+      setScanResult({
+        dankScore: data.dankScore,
+        trichome: data.trichomeDensity,
+        trim: data.trimQuality,
+        impression: data.impression
+      });
+    } catch (err) {
+      console.error('Scan failed:', err);
+      setError('Scan failed. Please try again later.');
+    } finally {
       setIsScanning(false);
-    }, 1500);
+    }
   };
 
   return (
     <div className="scan-container">
       <h2>Bud Bot Scanner</h2>
-      <p>Upload a photo of your cannabis bud to get a Dank Score.</p>
+      <p>Upload a photo of your cannabis bud to get a real Dank Score powered by AI.</p>
 
       <input type="file" accept="image/*" onChange={handleImageUpload} />
 
       {image && <img src={image} alt="Preview" className="bud-preview" />}
 
-      <button onClick={simulateScan} disabled={isScanning || !image}>
+      <button onClick={runAIAnalysis} disabled={isScanning || !image}>
         {isScanning ? 'Scanning...' : 'Scan Bud'}
       </button>
+
+      {error && <div className="error-message">{error}</div>}
 
       {scanResult && (
         <div className="result-box">
