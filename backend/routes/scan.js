@@ -1,27 +1,28 @@
-// File: /backend/routes/scan.js
+// File: backend/routes/scan.js
+const express = require('express');
+const router = express.Router();
 
-const express = require('express'); const router = express.Router(); const multer = require('multer'); const path = require('path'); const fs = require('fs');
+// Simulated AI bud scanner
+router.post('/', async (req, res) => {
+  try {
+    const { image } = req.body;
 
-// Temporary image storage const upload = multer({ dest: 'uploads/' });
+    if (!image) {
+      return res.status(400).json({ error: 'Image is required' });
+    }
 
-// POST /api/scan - Handle bud image upload and analysis router.post('/', upload.single('image'), async (req, res) => { try { if (!req.file) { return res.status(400).json({ error: 'No file uploaded' }); }
+    // Fake AI scoring logic (replace with real model later)
+    const fakeScore = Math.floor(Math.random() * 30) + 70;
 
-// Placeholder: integrate with real AI model here
-// Example: send to Roboflow/Replicate/Custom ML backend
-const fakeAnalysis = {
-  dankScore: Math.floor(Math.random() * 41) + 60,
-  trichomeDensity: 'High',
-  trimQuality: 'Good',
-  moldDetected: false,
-  strainEstimate: 'Unknown',
-  message: 'Scan complete. This bud looks solid.'
-};
-
-// Optionally delete the uploaded image after processing
-fs.unlinkSync(req.file.path);
-
-res.json({ success: true, analysis: fakeAnalysis });
-
-} catch (err) { console.error('Error processing scan:', err); res.status(500).json({ error: 'Internal server error' }); } });
+    res.json({
+      dankScore: fakeScore,
+      trichomeDensity: fakeScore > 85 ? 'High' : 'Moderate',
+      trimQuality: fakeScore > 80 ? 'Excellent' : 'Fair',
+      impression: fakeScore > 90 ? 'Top-shelf. Sticky & frosty.' : 'Mid-tier but smokeable.'
+    });
+  } catch (err) {
+    res.status(500).json({ error: 'Scan failed. Try again.' });
+  }
+});
 
 module.exports = router;
