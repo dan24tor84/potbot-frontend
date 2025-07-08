@@ -1,43 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="theme-color" content="#00c977" />
-  <title>Pot Bot – Rank Your Dank</title>
-
-  <!-- Favicon & Manifest -->
-  <link rel="manifest" href="./manifest.json" />
-  <link rel="icon" href="./icons/icon-192x192.png" type="image/png" />
-
-  <!-- Styles -->
-  <link rel="stylesheet" href="./style.css" />
-</head>
-<body>
-  <!-- Pot Bot Logo -->
-  <img src="./PotBot_Logo (1).png" alt="Pot Bot Logo" width="192" height="192" />
-
-  <h1>🌿 Pot Bot</h1>
-  <p>Upload a cannabis bud photo to get your Dank Score.</p>
-
-  <!-- Upload Input & Scan Button -->
-  <input type="file" id="upload" accept="image/*" />
-  <button id="scanButton">Scan Bud</button>
-
-  <!-- Preview Image & Result -->
-  <img id="previewImage" class="preview" alt="Preview" />
-  <div id="result"></div>
-
-  <!-- App Script -->
-  <script src="./script.js"></script>
-
-  <!-- PWA Install Prompt Handler -->
-  <script>
-    let deferredPrompt;
-    window.addEventListener('beforeinstallprompt', (e) => {
-      e.preventDefault();
-      deferredPrompt = e;
-    });
-  </script>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" href="%PUBLIC_URL%/icons/icon-192x192.png" />
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#00c977" />
+    <meta name="description" content="Pot Bot – Rank Your Dank with AI" />
+    <title>Pot Bot – Rank Your Dank</title>
+  </head>
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root"></div>
+  </body>
 </html>
