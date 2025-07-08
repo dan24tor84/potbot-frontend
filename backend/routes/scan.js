@@ -1,27 +1,21 @@
-// File: backend/routes/scan.js
+// backend/routes/scan.js
 const express = require('express');
 const router = express.Router();
+const { analyzeImage } = require('../utils/aiAnalyzer');
 
-// Simulated AI bud scanner
-router.post('/', async (req, res) => {
+router.post('/', (req, res) => {
   try {
     const { image } = req.body;
 
     if (!image) {
-      return res.status(400).json({ error: 'Image is required' });
+      return res.status(400).json({ error: 'No image provided' });
     }
 
-    // Fake AI scoring logic (replace with real model later)
-    const fakeScore = Math.floor(Math.random() * 30) + 70;
-
-    res.json({
-      dankScore: fakeScore,
-      trichomeDensity: fakeScore > 85 ? 'High' : 'Moderate',
-      trimQuality: fakeScore > 80 ? 'Excellent' : 'Fair',
-      impression: fakeScore > 90 ? 'Top-shelf. Sticky & frosty.' : 'Mid-tier but smokeable.'
-    });
-  } catch (err) {
-    res.status(500).json({ error: 'Scan failed. Try again.' });
+    const result = analyzeImage(image);
+    res.json(result);
+  } catch (error) {
+    console.error('Error during scan:', error);
+    res.status(500).json({ error: 'Failed to analyze image' });
   }
 });
 
