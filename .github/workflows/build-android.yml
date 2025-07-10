@@ -24,7 +24,7 @@ jobs:
       - name: Clean install dependencies
         run: |
           rm -rf node_modules
-          yarn install --ignore-engines || true
+          yarn install --legacy-peer-deps || true
         working-directory: ./frontend
 
       - name: Build frontend
