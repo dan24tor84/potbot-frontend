@@ -2,7 +2,7 @@
   "name": "potbot-frontend",
   "version": "1.0.0",
   "private": true,
-  "description": "Frontend for PotBot: AI Cannabis Bud Analyzer and Grower Assistant",
+  "description": "Frontend for PotBot",
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
@@ -19,7 +19,8 @@
     "web-vitals": "^2.1.4"
   },
   "devDependencies": {
-    "dotenv": "^16.3.1"
+    "dotenv": "^16.3.1",
+    "typescript": "^5.3.8"
   },
   "browserslist": {
     "production": [
