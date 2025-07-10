@@ -1,13 +1,14 @@
-# .github/workflows/android-build.yml
 name: Android APK Build with Capacitor
 
 on:
   push:
     branches:
       - main
+  workflow_dispatch:
 
 jobs:
   build:
+    name: Build Android APK
     runs-on: ubuntu-latest
 
     steps:
@@ -22,7 +23,7 @@ jobs:
       - name: Install Yarn
         run: npm install -g yarn
 
-      - name: Install dependencies
+      - name: Install frontend dependencies
         run: yarn install
         working-directory: ./frontend
 
@@ -30,12 +31,16 @@ jobs:
         run: yarn build
         working-directory: ./frontend
 
-      - name: Capacitor Sync
+      - name: Sync Capacitor
         run: npx cap sync android
         working-directory: ./frontend
 
       - name: Copy assets to Android
         run: npx cap copy android
+        working-directory: ./frontend
+
+      - name: Grant permissions to gradlew
+        run: chmod +x ./android/gradlew
         working-directory: ./frontend
 
       - name: Build Android APK
