@@ -1,55 +1,49 @@
-name: Build Android App Bundle with Capacitor
+# .github/workflows/android-build.yml
+name: Android APK Build with Capacitor
 
 on:
   push:
     branches:
       - main
-  pull_request:
-    branches:
-      - main
 
 jobs:
   build:
-    name: Build Android AAB with Capacitor
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-        with:
-          persist-credentials: false
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 18
 
-      - name: Install frontend dependencies
-        run: yarn install --frozen-lockfile
+      - name: Install Yarn
+        run: npm install -g yarn
+
+      - name: Install dependencies
+        run: yarn install
         working-directory: ./frontend
 
       - name: Build frontend
         run: yarn build
         working-directory: ./frontend
 
-      - name: Sync Capacitor
+      - name: Capacitor Sync
         run: npx cap sync android
         working-directory: ./frontend
 
-      - name: Copy web assets to Android
+      - name: Copy assets to Android
         run: npx cap copy android
         working-directory: ./frontend
 
-      - name: Make Gradlew executable
-        run: chmod +x android/gradlew
-        working-directory: ./frontend
-
-      - name: Build Android App Bundle (AAB)
-        run: ./gradlew bundleRelease
+      - name: Build Android APK
+        run: ./gradlew assembleRelease
         working-directory: ./frontend/android
 
-      - name: Upload AAB artifact
-        uses: actions/upload-artifact@v4
+      - name: Upload APK
+        uses: actions/upload-artifact@v3
         with:
-          name: potbot-release-aab
-          path: ./frontend/android/app/build/outputs/bundle/release/app-release.aab
+          name: PotBot-APK
+          path: ./frontend/android/app/build/outputs/apk/release/app-release.apk
