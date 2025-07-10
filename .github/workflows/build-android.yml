@@ -1,4 +1,4 @@
-# .github/workflows/android-build.yml
+# .github/workflows/build-android.yml
 name: Android APK Build with Capacitor
 
 on:
@@ -19,12 +19,15 @@ jobs:
         with:
           node-version: 18
 
+      - name: Install Yarn
+        run: npm install -g yarn
+
       - name: Install frontend dependencies
-        run: npm ci
+        run: yarn install --frozen-lockfile
         working-directory: ./frontend
 
       - name: Build frontend
-        run: npm run build
+        run: yarn build
         working-directory: ./frontend
 
       - name: Sync Capacitor
