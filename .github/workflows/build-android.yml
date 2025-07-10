@@ -1,4 +1,4 @@
-name: Build Android AAB with Yarn + Capacitor
+name: Build Android App Bundle
 
 on:
   push:
@@ -10,34 +10,37 @@ on:
 
 jobs:
   build:
-    name: Build Android AAB
+    name: Build Android AAB with Capacitor
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+        with:
+          persist-credentials: false
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 18
 
+      - name: Install global dependencies
+        run: |
+          npm install -g @capacitor/cli typescript
+
       - name: Install frontend dependencies
         run: yarn install
         working-directory: ./frontend
-
-      - name: Install Capacitor CLI
-        run: npm install -g @capacitor/cli
 
       - name: Build frontend
         run: yarn build
         working-directory: ./frontend
 
-      - name: Sync Capacitor
+      - name: Capacitor sync
         run: npx cap sync android
         working-directory: ./frontend
 
-      - name: Copy Capacitor assets
+      - name: Capacitor copy
         run: npx cap copy android
         working-directory: ./frontend
 
@@ -46,7 +49,7 @@ jobs:
         working-directory: android
 
       - name: Upload AAB Artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v3
         with:
           name: app-release.aab
           path: android/app/build/outputs/bundle/release/app-release.aab
