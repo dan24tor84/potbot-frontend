@@ -21,11 +21,12 @@ jobs:
       - name: Install Yarn
         run: npm install -g yarn
 
-      - name: Clean install dependencies
+      - name: Clean and install dependencies
         run: |
-          rm -rf node_modules
-          yarn install --legacy-peer-deps || true
-        working-directory: ./frontend
+          cd frontend
+          rm -rf node_modules yarn.lock
+          yarn install --legacy-peer-deps
+        shell: bash
 
       - name: Build frontend
         run: yarn build
