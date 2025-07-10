@@ -4,23 +4,31 @@ on:
   push:
     branches:
       - main
-  workflow_dispatch:
+  pull_request:
+    branches:
+      - main
 
 jobs:
   build:
+    name: Build Android App Bundle with Capacitor
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+        with:
+          persist-credentials: false
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 18
 
-      - name: Install dependencies
-        run: yarn install
+      - name: Install Capacitor CLI
+        run: npm install --global @capacitor/cli
+
+      - name: Install frontend dependencies
+        run: yarn install --frozen-lockfile
         working-directory: ./frontend
 
       - name: Build frontend
@@ -36,12 +44,11 @@ jobs:
         working-directory: ./frontend
 
       - name: Build Android AAB
-        run: |
-          cd android
-          ./gradlew bundleRelease
+        run: ./gradlew bundleRelease
+        working-directory: android
 
       - name: Upload AAB Artifact
         uses: actions/upload-artifact@v4
         with:
           name: app-release.aab
-          path: frontend/android/app/build/outputs/bundle/release/app-release.aab
+          path: android/app/build/outputs/bundle/release/app-release.aab
