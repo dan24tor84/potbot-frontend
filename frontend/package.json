@@ -2,7 +2,6 @@
   "name": "potbot-frontend",
   "version": "1.0.0",
   "private": true,
-  "description": "Frontend for PotBot mobile app",
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
@@ -10,32 +9,20 @@
     "eject": "react-scripts eject"
   },
   "dependencies": {
-    "@capacitor/android": "^5.0.0",
-    "@capacitor/app": "^5.0.0",
-    "@capacitor/core": "^5.0.0",
-    "@capacitor/haptics": "^5.0.0",
-    "@capacitor/keyboard": "^5.0.0",
-    "@capacitor/status-bar": "^5.0.0",
-    "@capacitor-community/http": "^5.0.0",
+    "@capacitor/android": "^5.0.6",
+    "@capacitor/app": "^5.0.6",
+    "@capacitor-community/http": "^4.1.1",
+    "@capacitor/core": "^5.0.6",
+    "@capacitor/haptics": "^5.0.6",
+    "@capacitor/keyboard": "^5.0.6",
+    "@capacitor/status-bar": "^5.0.6",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-scripts": "5.0.1",
-    "typescript": "^5.3.3"
+    "react-router-dom": "^6.4.0",
+    "react-scripts": "5.0.1"
   },
   "devDependencies": {
-    "@types/react": "^18.0.28",
-    "@types/react-dom": "^18.0.11"
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
+    "@capacitor/cli": "^5.0.6",
+    "typescript": "^5.2.2"
   }
 }
