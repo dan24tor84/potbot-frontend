@@ -10,36 +10,34 @@ on:
 
 jobs:
   build:
-    name: Build Android App Bundle with Capacitor
+    name: Build Android AAB
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-        with:
-          persist-credentials: false
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 18
 
-      - name: Install Capacitor CLI
-        run: npm install --global @capacitor/cli
-
       - name: Install frontend dependencies
-        run: yarn install --frozen-lockfile
+        run: yarn install
         working-directory: ./frontend
+
+      - name: Install Capacitor CLI
+        run: npm install -g @capacitor/cli
 
       - name: Build frontend
         run: yarn build
         working-directory: ./frontend
 
-      - name: Capacitor sync
+      - name: Sync Capacitor
         run: npx cap sync android
         working-directory: ./frontend
 
-      - name: Capacitor copy
+      - name: Copy Capacitor assets
         run: npx cap copy android
         working-directory: ./frontend
 
