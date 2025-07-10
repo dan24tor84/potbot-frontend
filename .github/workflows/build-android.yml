@@ -24,12 +24,10 @@ jobs:
         with:
           node-version: 18
 
-      - name: Install global dependencies
+      - name: Install frontend dependencies (including TypeScript)
         run: |
-          npm install -g @capacitor/cli typescript
-
-      - name: Install frontend dependencies
-        run: yarn install
+          yarn install
+          yarn add typescript --dev
         working-directory: ./frontend
 
       - name: Build frontend
