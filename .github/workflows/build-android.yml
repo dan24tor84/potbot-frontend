@@ -1,4 +1,4 @@
-name: Build Android APK
+name: Build Android APK with Capacitor
 
 on:
   push:
@@ -10,25 +10,23 @@ on:
 
 jobs:
   build:
-    name: Build Android APK with Capacitor
+    name: Build Android APK
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
-        with:
-          persist-credentials: false
+        uses: actions/checkout@v4
 
       - name: Set up Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: 18
 
       - name: Install Yarn
-        run: corepack enable && yarn set version stable
+        run: npm install -g yarn
 
       - name: Clean and install dependencies
-        run: yarn install --immutable
+        run: yarn install
         working-directory: ./frontend
 
       - name: Build frontend
@@ -45,13 +43,14 @@ jobs:
 
       - name: Grant permissions to gradlew
         run: chmod +x android/gradlew
+        working-directory: ./frontend
 
       - name: Build Android APK
         run: ./gradlew assembleRelease
-        working-directory: ./android
+        working-directory: ./frontend/android
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: potbot-apk
-          path: ./android/app/build/outputs/apk/release/app-release.apk
+          path: ./frontend/android/app/build/outputs/apk/release/app-release.apk
