@@ -19,8 +19,10 @@
     "web-vitals": "^2.1.4"
   },
   "devDependencies": {
+HEAD
     "dotenv": "^16.3.1",
-    "typescript": "^5.3.8"
+    "typescript": "^5.3.8",
+    "@capacitor/cli": "^7.4.1"
   },
   "browserslist": {
     "production": [
