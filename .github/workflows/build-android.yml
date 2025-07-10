@@ -1,4 +1,4 @@
-name: Build Android App Bundle
+name: Build Android App Bundle with Capacitor
 
 on:
   push:
@@ -24,30 +24,32 @@ jobs:
         with:
           node-version: 18
 
-      - name: Install frontend dependencies (including TypeScript)
-        run: |
-          yarn install
-          yarn add typescript --dev
+      - name: Install frontend dependencies
+        run: yarn install --frozen-lockfile
         working-directory: ./frontend
 
       - name: Build frontend
         run: yarn build
         working-directory: ./frontend
 
-      - name: Capacitor sync
+      - name: Sync Capacitor
         run: npx cap sync android
         working-directory: ./frontend
 
-      - name: Capacitor copy
+      - name: Copy web assets to Android
         run: npx cap copy android
         working-directory: ./frontend
 
-      - name: Build Android AAB
-        run: ./gradlew bundleRelease
-        working-directory: android
+      - name: Make Gradlew executable
+        run: chmod +x android/gradlew
+        working-directory: ./frontend
 
-      - name: Upload AAB Artifact
-        uses: actions/upload-artifact@v3
+      - name: Build Android App Bundle (AAB)
+        run: ./gradlew bundleRelease
+        working-directory: ./frontend/android
+
+      - name: Upload AAB artifact
+        uses: actions/upload-artifact@v4
         with:
-          name: app-release.aab
-          path: android/app/build/outputs/bundle/release/app-release.aab
+          name: potbot-release-aab
+          path: ./frontend/android/app/build/outputs/bundle/release/app-release.aab
