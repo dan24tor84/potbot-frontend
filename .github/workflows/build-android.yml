@@ -1,14 +1,13 @@
+# .github/workflows/android-build.yml
 name: Android APK Build with Capacitor
 
 on:
   push:
     branches:
       - main
-  workflow_dispatch:
 
 jobs:
   build:
-    name: Build Android APK
     runs-on: ubuntu-latest
 
     steps:
@@ -20,15 +19,12 @@ jobs:
         with:
           node-version: 18
 
-      - name: Install Yarn
-        run: npm install -g yarn
-
-      - name: Clean install dependencies
-        run: yarn install --check-files
+      - name: Install frontend dependencies
+        run: npm ci
         working-directory: ./frontend
 
       - name: Build frontend
-        run: yarn build
+        run: npm run build
         working-directory: ./frontend
 
       - name: Sync Capacitor
