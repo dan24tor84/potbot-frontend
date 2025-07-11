@@ -20,17 +20,11 @@ jobs:
         with:
           node-version: 18
 
-      - name: Set up Java (required for Android SDK)
+      - name: Set up Java
         uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
           java-version: 17
-
-      - name: Set up Android SDK
-        uses: reactivecircus/android-emulator-runner@v2
-        with:
-          api-level: 33
-          script: echo "Android SDK ready"
 
       - name: Install dependencies
         run: yarn install
