@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace 'com.potbot.app' // Replace with your actual app namespace
+    namespace 'com.potbot.app'
     compileSdk 33
 
     defaultConfig {
