@@ -1,49 +1,26 @@
+// frontend/android/app/build.gradle
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
 
 android {
-    compileSdkVersion 34
-
+    compileSdkVersion 33
     defaultConfig {
         applicationId "com.potbot.app"
-        minSdkVersion 21
-        targetSdkVersion 34
+        minSdkVersion 22
+        targetSdkVersion 33
         versionCode 1
         versionName "1.0"
     }
-
-    signingConfigs {
-        release {
-            if (project.hasProperty('MYAPP_UPLOAD_STORE_FILE')) {
-                storeFile file(MYAPP_UPLOAD_STORE_FILE)
-                storePassword MYAPP_UPLOAD_STORE_PASSWORD
-                keyAlias MYAPP_UPLOAD_KEY_ALIAS
-                keyPassword MYAPP_UPLOAD_KEY_PASSWORD
-            }
-        }
-    }
-
     buildTypes {
         release {
-            signingConfig signingConfigs.release
             minifyEnabled false
-            shrinkResources false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
-        debug {
-            signingConfig signingConfigs.release
-        }
-    }
-
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_11
-        targetCompatibility JavaVersion.VERSION_11
     }
 }
 
 dependencies {
-    implementation fileTree(dir: "libs", include: ["*.jar"])
-    implementation "androidx.appcompat:appcompat:1.6.1"
-    implementation "com.google.android.material:material:1.9.0"
-    implementation "androidx.constraintlayout:constraintlayout:2.1.4"
-    implementation "androidx.core:core-splashscreen:1.0.1"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'com.getcapacitor:capacitor-android:5.0.6'
 }
