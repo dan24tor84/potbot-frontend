@@ -5,7 +5,7 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:8.0.2'
-        classpath 'com.getcapacitor:capacitordependency:5.0.6'
+        classpath 'com.getcapacitor:capacitor-android:5.0.6'
     }
 }
 
