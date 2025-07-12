@@ -1,6 +1,4 @@
-plugins {
-    id 'com.android.application'
-}
+apply plugin: 'com.android.application'
 
 android {
     namespace 'com.yourcompany.potbot'
@@ -42,5 +40,7 @@ dependencies {
     implementation 'androidx.viewpager2:viewpager2:1.0.0'
     implementation 'androidx.localbroadcastmanager:localbroadcastmanager:1.1.0'
     implementation 'androidx.print:print:1.0.0'
+
+    // Required for Capacitor
     implementation 'com.getcapacitor:capacitor-android:5.0.6'
 }
