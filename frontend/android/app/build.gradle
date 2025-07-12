@@ -1,22 +1,19 @@
 plugins {
     id 'com.android.application'
-    id 'com.getcapacitor.capacitor-android'
 }
 
 android {
-    compileSdk 33
+    namespace 'com.yourcompany.potbot'
+    compileSdk 34
 
     defaultConfig {
-        applicationId "com.potbot.app"
-        minSdk 21
-        targetSdk 33
+        applicationId "com.yourcompany.potbot"
+        minSdk 24
+        targetSdk 34
         versionCode 1
         versionName "1.0"
 
-        // Required by Capacitor
-        manifestPlaceholders = [
-            'android:usesCleartextTraffic': "true"
-        ]
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
@@ -27,8 +24,12 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_11
-        targetCompatibility JavaVersion.VERSION_11
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    kotlinOptions {
+        jvmTarget = "17"
     }
 }
 
@@ -41,7 +42,5 @@ dependencies {
     implementation 'androidx.viewpager2:viewpager2:1.0.0'
     implementation 'androidx.localbroadcastmanager:localbroadcastmanager:1.1.0'
     implementation 'androidx.print:print:1.0.0'
-
-    // Required for Capacitor
     implementation 'com.getcapacitor:capacitor-android:5.0.6'
 }
