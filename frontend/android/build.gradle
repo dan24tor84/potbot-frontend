@@ -1,20 +1,32 @@
-buildscript {
-    ext.kotlin_version = '1.9.10'
-
-    repositories {
-        google()
-        mavenCentral()
+android {
+    compileSdkVersion 33
+    defaultConfig {
+        applicationId "com.yourcompany.potbot"
+        minSdkVersion 21
+        targetSdkVersion 33
+        versionCode 1
+        versionName "1.0"
     }
 
-    dependencies {
-        classpath "com.android.tools.build:gradle:8.3.0"
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    signingConfigs {
+        release {
+            storeFile file('../frontend/my-release-key.keystore')
+            storePassword 'Dlt846adt!'
+            keyAlias 'potbotkey'
+            keyPassword 'Dlt846adt!'
+        }
     }
-}
 
-allprojects {
-    repositories {
-        google()
-        mavenCentral()
+    buildTypes {
+        release {
+            signingConfig signingConfigs.release
+            shrinkResources false
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            // Optional: keep this for debugging
+            signingConfig signingConfigs.release
+        }
     }
 }
