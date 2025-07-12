@@ -1,5 +1,12 @@
+// App-level build.gradle
+
+plugins {
+    id 'com.android.application'
+}
+
 android {
     compileSdkVersion 33
+
     defaultConfig {
         applicationId "com.yourcompany.potbot"
         minSdkVersion 21
@@ -10,7 +17,7 @@ android {
 
     signingConfigs {
         release {
-            storeFile file('../frontend/my-release-key.keystore')
+            storeFile file('../my-release-key.keystore')
             storePassword 'Dlt846adt!'
             keyAlias 'potbotkey'
             keyPassword 'Dlt846adt!'
@@ -25,8 +32,18 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
         debug {
-            // Optional: keep this for debugging
             signingConfig signingConfigs.release
         }
     }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+dependencies {
+    implementation 'androidx.core:core-ktx:1.12.0'
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'com.google.android.material:material:1.10.0'
 }
