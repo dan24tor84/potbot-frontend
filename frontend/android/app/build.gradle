@@ -1,8 +1,27 @@
 plugins {
-    id 'com.android.application' version '8.1.1' apply false
-    id 'com.capacitor.android' version '5.0.6' apply false
+    id 'com.android.application'
+    id 'com.capacitor.android'
 }
 
-task clean(type: Delete) {
-    delete rootProject.buildDir
+android {
+    compileSdkVersion 33
+
+    defaultConfig {
+        applicationId "com.rankyourdank.potbot"
+        minSdkVersion 21
+        targetSdkVersion 33
+        versionCode 1
+        versionName "1.0"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    implementation project(':capacitor-android')
 }
