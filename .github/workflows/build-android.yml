@@ -41,7 +41,7 @@ jobs:
         working-directory: ./frontend/android
 
       - name: Upload AAB artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: potbot-release.aab
           path: ./frontend/android/app/build/outputs/bundle/release/app-release.aab
