@@ -1,0 +1,2 @@
+include ':frontend:android:app'
+rootProject.name = 'potbot'
