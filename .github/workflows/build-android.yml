@@ -1,4 +1,4 @@
-name: Build Android AAB with Capacitor
+name: Build Android App Bundle
 
 on:
   push:
@@ -13,10 +13,10 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: 18
 
@@ -38,10 +38,10 @@ jobs:
 
       - name: Build Android AAB
         run: ./gradlew bundleRelease
-        working-directory: ./frontend/android
+        working-directory: android
 
       - name: Upload AAB artifact
         uses: actions/upload-artifact@v4
         with:
-          name: potbot-release.aab
-          path: ./frontend/android/app/build/outputs/bundle/release/app-release.aab
+          name: app-release
+          path: android/app/build/outputs/bundle/release/app-release.aab
