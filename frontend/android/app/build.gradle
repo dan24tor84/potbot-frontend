@@ -4,12 +4,13 @@ plugins {
 }
 
 android {
-    compileSdkVersion 33
+    namespace 'com.rankyourdank.potbot'
+    compileSdk 34
 
     defaultConfig {
         applicationId "com.rankyourdank.potbot"
-        minSdkVersion 21
-        targetSdkVersion 33
+        minSdk 22
+        targetSdk 34
         versionCode 1
         versionName "1.0"
     }
