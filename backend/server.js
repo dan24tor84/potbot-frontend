@@ -1,21 +1,18 @@
-// backend/server.js
-
 const express = require('express');
 const cors = require('cors');
-require('dotenv').config();
-
 const app = express();
-const port = process.env.PORT || 3000;
+const PORT = process.env.PORT || 5000;
 
+// Middleware
 app.use(cors());
 app.use(express.json());
 
+// Routes
 app.get('/', (req, res) => {
-  res.send('Pot Bot backend is live!');
+  res.send('Pot Bot backend is running 🌿');
 });
 
-// Add your other API routes here
-
-app.listen(port, () => {
-  console.log(`Server running on port ${port}`);
+// Start server
+app.listen(PORT, () => {
+  console.log(`Server is listening on port ${PORT}`);
 });
