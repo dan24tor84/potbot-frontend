@@ -1,20 +1,21 @@
-{
-  "name": "potbot-backend",
-  "version": "1.0.0",
-  "description": "Backend for Pot Bot",
-  "main": "server.js",
-  "scripts": {
-    "start": "node server.js",
-    "dev": "nodemon server.js"
-  },
-  "keywords": ["potbot", "ai", "cannabis", "express"],
-  "author": "Pot Bot",
-  "license": "MIT",
-  "dependencies": {
-    "cors": "^2.8.5",
-    "express": "^4.18.2"
-  },
-  "devDependencies": {
-    "nodemon": "^2.0.22"
-  }
-}
+// backend/server.js
+
+const express = require('express');
+const cors = require('cors');
+require('dotenv').config();
+
+const app = express();
+const port = process.env.PORT || 3000;
+
+app.use(cors());
+app.use(express.json());
+
+app.get('/', (req, res) => {
+  res.send('Pot Bot backend is live!');
+});
+
+// Add your other API routes here
+
+app.listen(port, () => {
+  console.log(`Server running on port ${port}`);
+});
