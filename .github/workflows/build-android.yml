@@ -1,0 +1,47 @@
+name: Build Android App Bundle
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build Android App Bundle
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Install frontend dependencies
+        run: yarn install
+        working-directory: ./frontend
+
+      - name: Build frontend
+        run: yarn build
+        working-directory: ./frontend
+
+      - name: Sync Capacitor
+        run: npx cap sync android
+        working-directory: ./frontend
+
+      - name: Copy Capacitor assets
+        run: npx cap copy android
+        working-directory: ./frontend
+
+      - name: Build Android AAB
+        run: ./gradlew bundleRelease
+        working-directory: android
+
+      - name: Upload AAB artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-release
+          path: android/app/build/outputs/bundle/release/app-release.aab
