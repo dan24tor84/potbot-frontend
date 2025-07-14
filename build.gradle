@@ -1,3 +1,17 @@
+buildscript {
+    ext {
+        compileSdkVersion = 33
+        minSdkVersion = 24
+        targetSdkVersion = 33
+    }
+    repositories {
+        google()
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:8.1.1'
+    }
+}
 // Root-level build.gradle
 buildscript {
     repositories {
