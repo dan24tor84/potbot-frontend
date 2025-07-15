@@ -13,6 +13,6 @@ allprojects {
         google()
         mavenCentral()
         maven { url 'https://jitpack.io' }
-        maven { url 'https://capacitor.github.io/android/maven' } // ✅ Required for Capacitor libs
+        maven { url 'https://capacitor.github.io/android/maven' } // Required for Capacitor libraries
     }
 }
