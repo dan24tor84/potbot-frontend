@@ -1,24 +1,38 @@
-// frontend/android/build.gradle (project-level)
+plugins {
+    id 'com.android.application'
+}
 
-buildscript {
-    repositories {
-        google()
-        mavenCentral()
-    maven { url 'https://registry.npmjs.org/' }
+android {
+    namespace 'com.yourapp.namespace'
+    compileSdk 34
+
+    defaultConfig {
+        applicationId "com.yourapp.namespace"
+        minSdk 22
+        targetSdk 34
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
-    dependencies {
-        classpath 'com.android.tools.build:gradle:8.1.0'
-        classpath 'com.google.gms:google-services:4.3.15'
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
     }
 }
 
-allprojects {
-    repositories {
-        google()
-        mavenCentral()
-    }
-}
+dependencies {
+    implementation fileTree(include: ["*.jar"], dir: "libs")
+    implementation "androidx.appcompat:appcompat:1.6.1"
+    implementation "androidx.coordinatorlayout:coordinatorlayout:1.2.0"
+    implementation "androidx.core:core-splashscreen:1.0.1"
+    implementation "com.capacitorjs:capacitor-android:5.0.6"
 
-task clean(type: Delete) {
-    delete rootProject.buildDir
+    testImplementation "junit:junit:4.13.2"
+    androidTestImplementation "androidx.test.ext:junit:1.1.5"
+    androidTestImplementation "androidx.test.espresso:espresso-core:3.5.1"
+    androidTestImplementation "androidx.test.uiautomator:uiautomator:2.3.0"
 }
