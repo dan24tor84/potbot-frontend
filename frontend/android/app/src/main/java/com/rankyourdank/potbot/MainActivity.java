@@ -1,4 +1,6 @@
-package com.rankyourdank.potbot;
+// MainActivity.java or MainActivity.kt
+
+package com.rankyourdank.app;
 
 import com.getcapacitor.BridgeActivity;
 
