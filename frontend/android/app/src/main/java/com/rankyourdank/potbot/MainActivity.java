@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.rankyourdank.app.MainActivity"
+    tools:context="com.rankyourdank.potbot.MainActivity"
     android:orientation="vertical">
 
     <WebView
