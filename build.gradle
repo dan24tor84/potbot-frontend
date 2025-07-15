@@ -3,6 +3,7 @@ buildscript {
         compileSdkVersion = 33
         minSdkVersion = 24
         targetSdkVersion = 33
+        agp_version = '8.4.0'
     }
     repositories {
         google()
