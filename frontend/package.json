@@ -1,32 +1,32 @@
 {
-  "name": "potbot-frontend",
+  "name": "potbot",
   "version": "1.0.0",
   "private": true,
-  "description": "Frontend for PotBot app",
-  "main": "src/index.js",
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "android": "npx cap sync android && npx cap open android",
+    "ios": "npx cap sync ios && npx cap open ios",
+    "sync": "npx cap sync",
+    "copy": "npx cap copy",
+    "serve": "npx cap serve"
   },
   "dependencies": {
-    "@capacitor-community/http": "^1.4.1",
-    "@capacitor/android": "^5.0.5",
-    "@capacitor/app": "^5.0.5",
-    "@capacitor/core": "^7.4.2",
-    "@capacitor/haptics": "^5.0.5",
-    "@capacitor/keyboard": "^5.0.5",
-    "@capacitor/status-bar": "^5.0.5",
+    "@capacitor/android": "^5.0.0",
+    "@capacitor/app": "^5.0.0",
+    "@capacitor/core": "^5.0.0",
+    "@capacitor/haptics": "^5.0.0",
+    "@capacitor/keyboard": "^5.0.0",
+    "@capacitor/status-bar": "^5.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-router-dom": "^6.22.2",
-    "react-scripts": "5.0.1",
-    "web-vitals": "^3.3.1"
+    "react-scripts": "^5.0.1",
+    "typescript": "^4.9.5",
+    "web-vitals": "^2.1.4"
   },
   "devDependencies": {
-    "@capacitor/cli": "^7.4.2",
-    "typescript": "^5.4.5"
+    "@types/react": "^18.0.28",
+    "@types/react-dom": "^18.0.11"
   },
   "browserslist": {
     "production": [
