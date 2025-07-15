@@ -1,5 +1,13 @@
-package com.rankyourdank.potbot;
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.rankyourdank.potbot.MainActivity"
+    android:orientation="vertical">
 
-import com.getcapacitor.BridgeActivity;
+    <WebView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
-public class MainActivity extends BridgeActivity {}
+</LinearLayout>
