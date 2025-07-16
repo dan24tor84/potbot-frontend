@@ -1,6 +1,5 @@
 {
   "appId": "com.potbot.app",
   "appName": "Pot Bot",
-  "webDir": "../build",
-  "bundledWebRuntime": false
+  "webDir": "../build"
 }
