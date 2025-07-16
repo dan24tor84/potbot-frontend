@@ -1,15 +1,12 @@
-<application
-    android:label="PotBot"
-    android:theme="@style/AppTheme">
+<resources>
+    <!-- Base application theme -->
+    <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/purple_500</item>
+        <item name="colorPrimaryVariant">@color/purple_700</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="android:windowBackground">@color/white</item>
+    </style>
 
-    <activity
-        android:name="com.rankyourdank.potbot.MainActivity"
-        android:exported="true"
-        android:theme="@style/AppTheme">
-        <intent-filter>
-            <action android:name="android.intent.action.MAIN" />
-            <category android:name="android.intent.category.LAUNCHER" />
-        </intent-filter>
-    </activity>
-
-</application>
+    <!-- Optional launch theme (if used in AndroidManifest) -->
+    <style name="AppTheme.NoActionBarLaunch" parent="Theme.MaterialComponents.DayNight.NoActionBar" />
+</resources>

@@ -3,5 +3,5 @@
     <string name="title_activity_main">PotBot</string>
     <string name="package_name">com.rankyourdank.potbot</string>
     <string name="custom_url_scheme">com.rankyourdank.potbot</string>
-    <string name="welcome_message">welcome to Pot Bot</string>
+    <string name="welcome_message">Welcome to Pot Bot!</string>
 </resources>
