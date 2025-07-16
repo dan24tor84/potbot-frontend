@@ -1,4 +1,4 @@
-          path: android/app/build/outputs/bundle/release/app-release.aabname: Build Android App Bundle
+path: android/app/build/outputs/bundle/release/app-release.aabname: Build Android App Bundle
 
 on:
   push:
