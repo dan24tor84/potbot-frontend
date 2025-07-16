@@ -2,9 +2,11 @@ buildscript {
     repositories {
         google()
         mavenCentral()
+        maven { url 'https://jitpack.io' }
+        maven { url 'https://capacitor.github.io/android' }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:8.11.1'
+        classpath 'com.android.tools.build:gradle:8.1.1'
     }
 }
 
@@ -13,6 +15,6 @@ allprojects {
         google()
         mavenCentral()
         maven { url 'https://jitpack.io' }
-        maven { url 'https://capacitor.github.io/android/maven' } // Required for Capacitor libraries
+        maven { url 'https://capacitor.github.io/android' }
     }
 }

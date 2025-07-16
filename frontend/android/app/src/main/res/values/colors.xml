@@ -1,6 +1,29 @@
-<?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Primary Theme Colors -->
     <color name="purple_500">#6200EE</color>
     <color name="purple_700">#3700B3</color>
+    <color name="teal_200">#03DAC5</color>
+    <color name="teal_700">#018786</color>
+
+    <!-- Material Theme Basics -->
+    <color name="colorPrimary">#6200EE</color>
+    <color name="colorPrimaryVariant">#3700B3</color>
+    <color name="colorOnPrimary">#FFFFFF</color>
+    <color name="colorSecondary">#03DAC5</color>
+    <color name="colorSecondaryVariant">#018786</color>
+    <color name="colorOnSecondary">#000000</color>
+
+    <!-- Optional: Background + Text + Error Colors -->
+    <color name="background">#FFFFFF</color>
+    <color name="surface">#FFFFFF</color>
+    <color name="error">#B00020</color>
+    <color name="onBackground">#000000</color>
+    <color name="onSurface">#000000</color>
+    <color name="onError">#FFFFFF</color>
+
+    <!-- Neutrals -->
     <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="gray_light">#F5F5F5</color>
+    <color name="gray_dark">#212121</color>
 </resources>
