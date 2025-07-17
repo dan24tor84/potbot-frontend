@@ -1,54 +1,46 @@
-path: android/app/build/outputs/bundle/release/app-release.aabname: Build Android App Bundle
+name: Build Android APK
 
 on:
   push:
     branches:
       - main
-  pull_request:
-    branches:
-      - main
+    paths:
+      - 'frontend/**'
 
 jobs:
   build:
-    name: Build Android App Bundle with Capacitor
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-        with:
-          persist-credentials: false
+      - name: Checkout Repository
+        uses: actions/checkout@v4
 
       - name: Set up Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: '20.x'
 
-      - name: Install Yarn
-        run: npm install -g yarn
-
-      - name: Install frontend dependencies
-        run: yarn install --frozen-lockfile
+      - name: Install Dependencies
         working-directory: ./frontend
+        run: yarn install
 
-      - name: Build frontend
+      - name: Build React App
+        working-directory: ./frontend
         run: yarn build
-        working-directory: ./frontend
 
       - name: Sync Capacitor
-        run: npx cap sync android
         working-directory: ./frontend
+        run: npx cap sync
 
-      - name: Copy Capacitor assets
-        run: npx cap copy android
-        working-directory: ./frontend
+      - name: Make Gradle executable
+        run: chmod +x ./frontend/android/gradlew
 
-      - name: Build Android AAB
-        run: ./gradlew bundleRelease
-        working-directory: android
+      - name: Build APK with Gradle
+        working-directory: ./frontend/android
+        run: ./gradlew assembleRelease
 
-      - name: Upload AAB artifact
-        uses: actions/upload-artifact@v3
+      - name: Upload APK Artifact
+        uses: actions/upload-artifact@v4
         with:
-          name: app-release.aab
-          path: android/app/build/outputs/bundle/release/app-release.aab
+          name: PotBot-Release-APK
+          path: frontend/android/app/build/outputs/apk/release/app-release.apk
