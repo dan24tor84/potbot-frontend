@@ -14,36 +14,33 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
-      
-      - name: Setup Node
+
+      - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20.x'
 
       - name: Install Dependencies
-        run: |
-          cd frontend
-          yarn install
+        working-directory: ./frontend
+        run: yarn install
 
       - name: Build React App
-        run: |
-          cd frontend
-          yarn build
+        working-directory: ./frontend
+        run: yarn build
 
       - name: Sync Capacitor
-        run: |
-          cd frontend
-          npx cap sync
+        working-directory: ./frontend
+        run: npx cap sync
 
-      - name: Build APK
-        uses: sparkfabrik/android-build-action@v1.5.0
-        with:
-          project-path: frontend/android
-          gradle-task: assembleRelease
-          output-path: frontend/android/app/build/outputs/apk/release/app-release.apk
+      - name: Make Gradle executable
+        run: chmod +x ./frontend/android/gradlew
 
-      - name: Upload APK
+      - name: Build APK with Gradle
+        working-directory: ./frontend/android
+        run: ./gradlew assembleRelease
+
+      - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: PotBot-APK
+          name: PotBot-Release-APK
           path: frontend/android/app/build/outputs/apk/release/app-release.apk
