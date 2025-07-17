@@ -43,5 +43,5 @@ dependencies {
     implementation 'com.google.android.material:material:1.11.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
 
-    implementation 'com.capacitorjs:capacitor-android:5.0.5'
+    implementation 'com.capacitor:capacitor-android:5.0.5'
 }
