@@ -1,54 +1,49 @@
-path: android/app/build/outputs/bundle/release/app-release.aabname: Build Android App Bundle
+name: Build Android APK
 
 on:
   push:
     branches:
       - main
-  pull_request:
-    branches:
-      - main
+    paths:
+      - 'frontend/**'
 
 jobs:
   build:
-    name: Build Android App Bundle with Capacitor
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+      
+      - name: Setup Node
+        uses: actions/setup-node@v4
         with:
-          persist-credentials: false
+          node-version: '20.x'
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 20
+      - name: Install Dependencies
+        run: |
+          cd frontend
+          yarn install
 
-      - name: Install Yarn
-        run: npm install -g yarn
-
-      - name: Install frontend dependencies
-        run: yarn install --frozen-lockfile
-        working-directory: ./frontend
-
-      - name: Build frontend
-        run: yarn build
-        working-directory: ./frontend
+      - name: Build React App
+        run: |
+          cd frontend
+          yarn build
 
       - name: Sync Capacitor
-        run: npx cap sync android
-        working-directory: ./frontend
+        run: |
+          cd frontend
+          npx cap sync
 
-      - name: Copy Capacitor assets
-        run: npx cap copy android
-        working-directory: ./frontend
-
-      - name: Build Android AAB
-        run: ./gradlew bundleRelease
-        working-directory: android
-
-      - name: Upload AAB artifact
-        uses: actions/upload-artifact@v3
+      - name: Build APK
+        uses: sparkfabrik/android-build-action@v1.5.0
         with:
-          name: app-release.aab
-          path: android/app/build/outputs/bundle/release/app-release.aab
+          project-path: frontend/android
+          gradle-task: assembleRelease
+          output-path: frontend/android/app/build/outputs/apk/release/app-release.apk
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: PotBot-APK
+          path: frontend/android/app/build/outputs/apk/release/app-release.apk
