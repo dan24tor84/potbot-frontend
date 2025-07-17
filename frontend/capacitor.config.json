@@ -1,5 +1,6 @@
 {
-  "appId": "com.pot bot.app",
+  "appId": "com.rankyourdank.potbot",
   "appName": "Pot Bot",
-  "webDir": "../build"
+  "webDir": "build",
+  "bundledWebRuntime": false
 }
