@@ -89,3 +89,18 @@ dependencies {
     // (Optional) Extra annotation libs
     implementation "androidx.annotation:annotation:1.5.1"
 }
+spotless {
+  kotlin {
+    target 'src/**/*.kt'
+    ktlint('0.48.2')           // choose the ktlint version you like
+      .setEditorConfigPath('../.editorconfig') // optional
+  }
+  kotlinGradle {
+    target '*.gradle.kts'
+    ktlint()
+  }
+  format 'xml', {
+    target 'src/**/*.xml'
+    eclipseWtp('xml')          // a decent XML formatter
+  }
+}
