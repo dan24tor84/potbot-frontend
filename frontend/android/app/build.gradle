@@ -1,17 +1,15 @@
 // File: potbot-main/frontend/android/app/build.gradle
 
-// ─── 0) Ensure CI & Android Studio can find your artifacts ─────────────────
+// 0) Expose your repositories to the app module
 repositories {
     google()
     mavenCentral()
 }
 
-// ─── 1) Apply plugins ───────────────────────────────────────────────────────
 apply plugin: 'com.android.application'
 apply plugin: 'org.jetbrains.kotlin.android'
 
 android {
-    // ─── 2) SDK & ID settings ────────────────────────────────────────────────
     namespace  "com.rankyourdank.potbot"
     compileSdk 34
 
@@ -24,7 +22,6 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
-    // ─── 3) Load keystore props if present ────────────────────────────────────
     def keystorePropsFile = rootProject.file("keystore.properties")
     def keystoreProps = new Properties()
     if (keystorePropsFile.exists()) {
@@ -43,9 +40,7 @@ android {
     }
 
     buildTypes {
-        debug {
-            // uses default debug keystore
-        }
+        debug { }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
@@ -65,17 +60,10 @@ android {
 }
 
 dependencies {
-    // ─── 4) Capacitor runtime ─────────────────────────────────────────────────
     implementation 'com.getcapacitor:capacitor-android:5.0.5'
     implementation project(':capacitor-cordova-android-plugins')
-
-    // ─── 5) Kotlin stdlib ─────────────────────────────────────────────────────
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-
-    // ─── 6) AndroidX & Material ──────────────────────────────────────────────
     implementation 'androidx.core:core-ktx:1.10.1'
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'com.google.android.material:material:1.9.0'
-
-    // ─── 7) (Add any additional libs here) ────────────────────────────────────
 }
