@@ -1,4 +1,4 @@
-// File: settings.gradle
+// File: potbot-main/frontend/android/settings.gradle
 
 pluginManagement {
   repositories {
@@ -9,8 +9,8 @@ pluginManagement {
 }
 
 dependencyResolutionManagement {
-  // allow projects to declare their own repos if needed
-  repositoriesMode.set(RepositoriesMode.PREFER_SETTINGS)
+  // ← Switch to PREFER_PROJECT so module repos aren’t ignored
+  repositoriesMode.set(RepositoriesMode.PREFER_PROJECT)
 
   repositories {
     google()
