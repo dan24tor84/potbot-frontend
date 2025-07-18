@@ -1,78 +1,32 @@
-// File: potbot-main/frontend/android/app/build.gradle
+// File: potbot-main/frontend/android/build.gradle
 
-// 0) Expose your repositories to the app module
-repositories {
-    google()
-    mavenCentral()
-}
+buildscript {
+    // Kotlin version used by the build
+    ext.kotlin_version = '1.9.10'
 
-apply plugin: 'com.android.application'
-apply plugin: 'org.jetbrains.kotlin.android'
-
-android {
-    namespace  "com.rankyourdank.potbot"
-    compileSdk 34
-
-    defaultConfig {
-        applicationId             "com.rankyourdank.potbot"
-        minSdk                    24
-        targetSdk                 34
-        versionCode               1
-        versionName               "1.0"
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    // Where to find the Gradle plugins
+    repositories {
+        google()
+        mavenCentral()
     }
 
-    // Load signing config if you provided keystore.properties
-    def keystorePropsFile = rootProject.file("keystore.properties")
-    def keystoreProps     = new Properties()
-    if (keystorePropsFile.exists()) {
-        keystoreProps.load(new FileInputStream(keystorePropsFile))
-    }
-
-    signingConfigs {
-        release {
-            if (keystorePropsFile.exists()) {
-                storeFile     file(keystoreProps['storeFile'])
-                storePassword keystoreProps['storePassword']
-                keyAlias      keystoreProps['keyAlias']
-                keyPassword   keystoreProps['keyPassword']
-            }
-        }
-    }
-
-    buildTypes {
-        debug {
-            // Uses default debug keystore
-        }
-        release {
-            minifyEnabled                 false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            if (keystorePropsFile.exists()) {
-                signingConfig signingConfigs.release
-            }
-        }
-    }
-
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_11
-        targetCompatibility JavaVersion.VERSION_11
-    }
-    kotlinOptions {
-        jvmTarget = '11'
-    }
-}
-
-dependencies {
-    implementation project(':capacitor-android')
-    implementation project(':capacitor-cordova-android-plugins')
-
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    implementation 'androidx.core:core-ktx:1.10.1'
-    implementation 'androidx.appcompat:appcompat:1.6.1'
-    implementation 'com.google.android.material:material:1.9.0'
+    // Plugin classpaths
     dependencies {
-    implementation "androidx.annotation:annotation:1.9.1"
-    // To use the Java-compatible @androidx.annotation.OptIn API annotation
-    implementation "androidx.annotation:annotation-experimental:1.5.1"
+        // Android Gradle plugin
+        classpath 'com.android.tools.build:gradle:8.1.1'
+
+        // Kotlin Gradle plugin
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+
+        // (Optional) Google services plugin
+        classpath 'com.google.gms:google-services:4.4.1'
+    }
+}
+
+allprojects {
+    // These repos apply to every module (app, capacitor plugins, etc.)
+    repositories {
+        google()
+        mavenCentral()
     }
 }
