@@ -1,37 +1,36 @@
 // File: potbot-main/frontend/android/build.gradle
 
 buildscript {
-  ext.kotlin_version = '1.9.10'
+    // Kotlin version used by the build
+    ext.kotlin_version = '1.9.10'
 
-  repositories {
-    google()
-    mavenCentral()
-  }
+    // Where to find the Gradle plugins
+    repositories {
+        gradlePluginPortal()    // for Detekt
+        google()                // for Android Gradle plugin
+        mavenCentral()          // for Kotlin, Google Services, etc.
+    }
 
-  dependencies {
-    classpath 'com.android.tools.build:gradle:8.1.1'
-    classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    // Plugin classpaths
+    dependencies {
+        // Android Gradle plugin
+        classpath 'com.android.tools.build:gradle:8.1.1'
 
-    // ↓ Use the 1.x Detekt plugin, not 2.x ↓
-    classpath "io.gitlab.arturbosch.detekt:detekt-gradle-plugin:1.23.1"
+        // Kotlin Gradle plugin
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
 
-    // Spotless (optional)
-    classpath "com.diffplug.spotless:spotless-plugin-gradle:6.20.6"
-  }
+        // (Optional) Google services plugin
+        classpath 'com.google.gms:google-services:4.4.1'
+
+        // Detekt static-analysis plugin
+        classpath "io.gitlab.arturbosch.detekt:detekt-gradle-plugin:2.5.0"
+    }
 }
 
 allprojects {
-  repositories {
-    google()
-    mavenCentral()
-  }
-}
-
-// Configure Detekt at the root level if you like,
-// or in your app module – either path works.
-detekt {
-  toolVersion          = "1.23.1"
-  buildUponDefaultConfig = true
-  config               = files("$rootDir/config/detekt/detekt.yml")
-  autoCorrect          = true
+    // These repos apply to every module: app, capacitor plugins, etc.
+    repositories {
+        google()
+        mavenCentral()
+    }
 }
