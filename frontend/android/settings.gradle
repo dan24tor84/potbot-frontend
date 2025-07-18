@@ -9,9 +9,7 @@ pluginManagement {
 }
 
 dependencyResolutionManagement {
-    // Allow project modules to declare their own repositories
-    repositoriesMode.set(RepositoriesMode.PREFER_PROJECT)
-
+    repositoriesMode.set(RepositoriesMode.PREFER_SETTINGS)
     repositories {
         google()
         mavenCentral()
@@ -22,9 +20,4 @@ rootProject.name = 'PotBot'
 include ':app'
 include ':capacitor-cordova-android-plugins'
 project(':capacitor-cordova-android-plugins').projectDir = new File('capacitor-cordova-android-plugins')
-
-// If you’re using the local-engine approach instead of Maven Central, also include:
-// include ':capacitor-android'
-// project(':capacitor-android').projectDir = file('../node_modules/@capacitor/android/android')
-
 apply from: 'capacitor.settings.gradle'
