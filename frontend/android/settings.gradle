@@ -1,25 +1,15 @@
-// File: potbot-main/frontend/android/settings.gradle
-
-pluginManagement {
-  repositories {
-    gradlePluginPortal()
-    google()
-    mavenCentral()
-  }
-}
-
-dependencyResolutionManagement {
-  // ← Switch to PREFER_PROJECT so module repos aren’t ignored
-  repositoriesMode.set(RepositoriesMode.PREFER_PROJECT)
-
-  repositories {
-    google()
-    mavenCentral()
-  }
-}
-
 rootProject.name = 'PotBot'
+
+// Include the app
 include ':app'
+
+// Include the local Capacitor engine instead of pulling from Maven
+include ':capacitor-android'
+project(':capacitor-android').projectDir = file('../node_modules/@capacitor/android/android')
+
+// Include any Cordova plugins
 include ':capacitor-cordova-android-plugins'
 project(':capacitor-cordova-android-plugins').projectDir = new File('capacitor-cordova-android-plugins')
+
+// Keep your pluginManagement/ dependencyResolutionManagement blocks above unchanged
 apply from: 'capacitor.settings.gradle'
