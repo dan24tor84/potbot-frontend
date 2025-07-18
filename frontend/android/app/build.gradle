@@ -1,57 +1,70 @@
-plugins {
-    id 'com.android.application'
-    id 'org.jetbrains.kotlin.android'
-    id 'com.google.gms.google-services'
-}
+// File: potbot-main/frontend/android/app/build.gradle
+
+// 1) Apply the Android & Kotlin plugins
+apply plugin: 'com.android.application'
+apply plugin: 'org.jetbrains.kotlin.android'
 
 android {
-    namespace 'com.rankyourdank.potbot'
-    compileSdk 34
+    // 2) Your app’s unique ID & compile/target SDKs
+    namespace       "com.rankyourdank.potbot"
+    compileSdk      33
 
     defaultConfig {
-        applicationId "com.rankyourdank.potbot"
-        minSdk 23
-        targetSdk 34
-        versionCode 1
-        versionName "1.0"
+        applicationId  "com.rankyourdank.potbot"
+        minSdk         24
+        targetSdk      33
+        versionCode    1
+        versionName    "1.0"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    // 3) Load your keystore props (from keystore.properties at project root)
+    def keystorePropsFile = rootProject.file("keystore.properties")
+    def keystoreProps = new Properties()
+    if (keystorePropsFile.exists()) {
+        keystoreProps.load(new FileInputStream(keystorePropsFile))
     }
 
     signingConfigs {
         release {
-            storeFile file(System.getenv("HOME") + "/keystore.jks")
-            storePassword System.getenv("KEYSTORE_PASSWORD")
-            keyAlias System.getenv("KEY_ALIAS")
-            keyPassword System.getenv("KEY_PASSWORD")
+            storeFile     file(keystoreProps['storeFile'])
+            storePassword keystoreProps['storePassword']
+            keyAlias      keystoreProps['keyAlias']
+            keyPassword   keystoreProps['keyPassword']
         }
     }
 
     buildTypes {
-        release {
-            signingConfig signingConfigs.release
-            minifyEnabled false
-            shrinkResources false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-        }
         debug {
+            // optional: sign debug with the same key so you can install-debug on device
+            signingConfig signingConfigs.release
+        }
+        release {
+            // disable code shrinking for now
             minifyEnabled false
-            shrinkResources false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_17
-        targetCompatibility JavaVersion.VERSION_17
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
     }
-
     kotlinOptions {
-        jvmTarget = '17'
+        jvmTarget = '11'
     }
 }
 
 dependencies {
-    implementation 'androidx.core:core-ktx:1.12.0'
-    implementation 'androidx.appcompat:appcompat:1.6.1'
-    implementation 'com.google.android.material:material:1.11.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-    implementation 'com.capacitorjs:capacitor-android:5.0.5'
+    // 4) Capacitor core + Cordova plugin bridge
+    implementation 'com.getcapacitor:capacitor-android:5.0.5'
+    implementation project(':capacitor-cordova-android-plugins')
+
+    // 5) Your usual AndroidX/Kotlin deps
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    implementation 'androidx.core:core-ktx:1.9.0'
+    implementation 'androidx.appcompat:appcompat:1.5.1'
+    implementation 'com.google.android.material:material:1.7.0'
+    // …add any other libraries you need here…
 }
