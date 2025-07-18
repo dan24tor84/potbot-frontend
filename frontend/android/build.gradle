@@ -1,21 +1,74 @@
-// File: potbot-main/frontend/android/build.gradle
+// File: potbot-main/frontend/android/app/build.gradle
 
-buildscript {
-    ext.kotlin_version = '1.9.10'         // or bump to '2.1.20' if you like
-    repositories {
-        google()
-        mavenCentral()
+// 0) Expose your repositories to the app module
+repositories {
+    google()
+    mavenCentral()
+}
+
+apply plugin: 'com.android.application'
+apply plugin: 'org.jetbrains.kotlin.android'
+
+android {
+    namespace  "com.rankyourdank.potbot"
+    compileSdk 34
+
+    defaultConfig {
+        applicationId             "com.rankyourdank.potbot"
+        minSdk                    24
+        targetSdk                 34
+        versionCode               1
+        versionName               "1.0"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
-    dependencies {
-        classpath 'com.android.tools.build:gradle:8.1.1'
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        classpath 'com.google.gms:google-services:4.4.1' // if you need Firebase/Play services
+
+    // Load signing config if you provided keystore.properties
+    def keystorePropsFile = rootProject.file("keystore.properties")
+    def keystoreProps     = new Properties()
+    if (keystorePropsFile.exists()) {
+        keystoreProps.load(new FileInputStream(keystorePropsFile))
+    }
+
+    signingConfigs {
+        release {
+            if (keystorePropsFile.exists()) {
+                storeFile     file(keystoreProps['storeFile'])
+                storePassword keystoreProps['storePassword']
+                keyAlias      keystoreProps['keyAlias']
+                keyPassword   keystoreProps['keyPassword']
+            }
+        }
+    }
+
+    buildTypes {
+        debug {
+            // Uses default debug keystore
+        }
+        release {
+            minifyEnabled                 false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            if (keystorePropsFile.exists()) {
+                signingConfig signingConfigs.release
+            }
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
+    }
+    kotlinOptions {
+        jvmTarget = '11'
     }
 }
 
-allprojects {
-    repositories {
-        google()
-        mavenCentral()
-    }
+dependencies {
+    implementation project(':capacitor-android')
+    implementation project(':capacitor-cordova-android-plugins')
+
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    implementation 'androidx.core:core-ktx:1.10.1'
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'com.google.android.material:material:1.9.0'
+    // Add additional dependencies here as needed
 }
