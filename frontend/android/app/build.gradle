@@ -1,24 +1,24 @@
 // File: potbot-main/frontend/android/app/build.gradle
 
-// 1) Apply the Android & Kotlin plugins
+// ─── 1) Apply plugins ─────────────────────────────────────────────────────────
 apply plugin: 'com.android.application'
 apply plugin: 'org.jetbrains.kotlin.android'
 
 android {
-    // 2) Your app’s unique ID & compile/target SDKs
-    namespace       "com.rankyourdank.potbot"
-    compileSdk      33
+    // ─── 2) SDK & ID settings ────────────────────────────────────────────────
+    namespace  "com.rankyourdank.potbot"
+    compileSdk 34
 
     defaultConfig {
         applicationId  "com.rankyourdank.potbot"
         minSdk         24
-        targetSdk      33
+        targetSdk      34
         versionCode    1
         versionName    "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
-    // 3) Load your keystore props (from keystore.properties at project root)
+    // ─── 3) Load keystore properties ─────────────────────────────────────────
     def keystorePropsFile = rootProject.file("keystore.properties")
     def keystoreProps = new Properties()
     if (keystorePropsFile.exists()) {
@@ -32,15 +32,16 @@ android {
             keyAlias      keystoreProps['keyAlias']
             keyPassword   keystoreProps['keyPassword']
         }
+        debug {
+            signingConfig signingConfigs.release
+        }
     }
 
     buildTypes {
         debug {
-            // optional: sign debug with the same key so you can install-debug on device
             signingConfig signingConfigs.release
         }
         release {
-            // disable code shrinking for now
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
@@ -57,14 +58,17 @@ android {
 }
 
 dependencies {
-    // 4) Capacitor core + Cordova plugin bridge
+    // ─── 4) Correct Capacitor artifact ───────────────────────────────────────
     implementation 'com.getcapacitor:capacitor-android:5.0.5'
     implementation project(':capacitor-cordova-android-plugins')
 
-    // 5) Your usual AndroidX/Kotlin deps
+    // ─── 5) Kotlin stdlib (ensure double-quotes for $kotlin_version) ────────
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    implementation 'androidx.core:core-ktx:1.9.0'
-    implementation 'androidx.appcompat:appcompat:1.5.1'
-    implementation 'com.google.android.material:material:1.7.0'
-    // …add any other libraries you need here…
+
+    // ─── 6) AndroidX & Material ─────────────────────────────────────────────
+    implementation 'androidx.core:core-ktx:1.10.1'
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'com.google.android.material:material:1.9.0'
+
+    // ─── 7) Your other dependencies here ───────────────────────────────────
 }
