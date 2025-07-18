@@ -1,9 +1,8 @@
 buildscript {
-    ext.kotlin_version = '1.9.10' // or the latest compatible Kotlin version
+    ext.kotlin_version = '1.9.10'
     repositories {
         google()
         mavenCentral()
-        maven { url 'https://registry.npmjs.org/@capacitor/android/maven' }
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:8.1.1'
@@ -16,6 +15,5 @@ allprojects {
     repositories {
         google()
         mavenCentral()
-        maven { url 'https://registry.npmjs.org/@capacitor/android/maven' }
     }
 }
