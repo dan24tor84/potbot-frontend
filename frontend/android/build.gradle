@@ -70,5 +70,9 @@ dependencies {
     implementation 'androidx.core:core-ktx:1.10.1'
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'com.google.android.material:material:1.9.0'
-    // Add additional dependencies here as needed
+    dependencies {
+    implementation "androidx.annotation:annotation:1.9.1"
+    // To use the Java-compatible @androidx.annotation.OptIn API annotation
+    implementation "androidx.annotation:annotation-experimental:1.5.1"
+    }
 }
