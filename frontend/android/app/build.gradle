@@ -1,11 +1,11 @@
 // File: potbot-main/frontend/android/app/build.gradle
 
-// ─── 1) Apply plugins ─────────────────────────────────────────────────────────
+// ─── 1) Plugins ────────────────────────────────────────────────────────────────
 apply plugin: 'com.android.application'
 apply plugin: 'org.jetbrains.kotlin.android'
 
 android {
-    // ─── 2) SDK & ID settings ────────────────────────────────────────────────
+    // ─── 2) SDK & ID settings ──────────────────────────────────────────────────
     namespace  "com.rankyourdank.potbot"
     compileSdk 34
 
@@ -18,7 +18,7 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
-    // ─── 3) Load keystore properties ─────────────────────────────────────────
+    // ─── 3) Load keystore props if present ──────────────────────────────────────
     def keystorePropsFile = rootProject.file("keystore.properties")
     def keystoreProps = new Properties()
     if (keystorePropsFile.exists()) {
@@ -27,24 +27,27 @@ android {
 
     signingConfigs {
         release {
-            storeFile     file(keystoreProps['storeFile'])
-            storePassword keystoreProps['storePassword']
-            keyAlias      keystoreProps['keyAlias']
-            keyPassword   keystoreProps['keyPassword']
-        }
-        debug {
-            signingConfig signingConfigs.release
+            // only configure release signing when the file actually exists
+            if (keystorePropsFile.exists()) {
+                storeFile     file(keystoreProps['storeFile'])
+                storePassword keystoreProps['storePassword']
+                keyAlias      keystoreProps['keyAlias']
+                keyPassword   keystoreProps['keyPassword']
+            }
         }
     }
 
     buildTypes {
         debug {
-            signingConfig signingConfigs.release
+            // leave debug signing untouched (uses default debug keystore)
         }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.release
+            // only attach release signing if we loaded it above
+            if (keystorePropsFile.exists()) {
+                signingConfig signingConfigs.release
+            }
         }
     }
 
@@ -58,17 +61,17 @@ android {
 }
 
 dependencies {
-    // ─── 4) Correct Capacitor artifact ───────────────────────────────────────
+    // ─── 4) Correct Capacitor AAR ───────────────────────────────────────────────
     implementation 'com.getcapacitor:capacitor-android:5.0.5'
     implementation project(':capacitor-cordova-android-plugins')
 
-    // ─── 5) Kotlin stdlib (ensure double-quotes for $kotlin_version) ────────
+    // ─── 5) Kotlin stdlib (double-quoted for $kotlin_version) ───────────────────
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 
-    // ─── 6) AndroidX & Material ─────────────────────────────────────────────
+    // ─── 6) AndroidX & Material ────────────────────────────────────────────────
     implementation 'androidx.core:core-ktx:1.10.1'
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'com.google.android.material:material:1.9.0'
 
-    // ─── 7) Your other dependencies here ───────────────────────────────────
+    // ─── 7) Your other dependencies below ───────────────────────────────────────
 }
