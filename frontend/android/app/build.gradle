@@ -1,15 +1,15 @@
 apply plugin: 'com.android.application'
+apply plugin: 'org.jetbrains.kotlin.android'
 apply plugin: 'com.google.gms.google-services'
-apply plugin: 'kotlin-android'
 
 android {
-    namespace "com.rankyourdank.potbot"
-    compileSdkVersion 34
+    namespace 'com.rankyourdank.potbot'
+    compileSdk 34
 
     defaultConfig {
         applicationId "com.rankyourdank.potbot"
-        minSdkVersion 24
-        targetSdkVersion 34
+        minSdk 23
+        targetSdk 34
         versionCode 1
         versionName "1.0"
     }
@@ -17,7 +17,6 @@ android {
     buildTypes {
         release {
             minifyEnabled false
-            shrinkResources false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
@@ -30,18 +29,12 @@ android {
     kotlinOptions {
         jvmTarget = '17'
     }
-
-    buildFeatures {
-        viewBinding true
-    }
 }
 
 dependencies {
-    implementation project(':capacitor-android')
     implementation 'androidx.core:core-ktx:1.12.0'
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'com.google.android.material:material:1.11.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-
-    implementation 'com.capacitor:capacitor-android:5.0.5'
+    implementation 'com.capacitorjs:capacitor-android:5.0.5'
 }
