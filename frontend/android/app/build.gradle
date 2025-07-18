@@ -1,6 +1,6 @@
 // File: potbot-main/frontend/android/app/build.gradle
 
-// 0) Expose your repositories to the app module
+// 0) Expose your repositories
 repositories {
     google()
     mavenCentral()
@@ -10,20 +10,36 @@ apply plugin: 'com.android.application'
 apply plugin: 'org.jetbrains.kotlin.android'
 
 android {
-    namespace  "com.rankyourdank.potbot"
-    compileSdk 34
+    namespace   "com.rankyourdank.potbot"
+    compileSdk  34
 
     defaultConfig {
-        applicationId  "com.rankyourdank.potbot"
-        minSdk         24
-        targetSdk      34
-        versionCode    1
-        versionName    "1.0"
+        applicationId             "com.rankyourdank.potbot"
+        minSdk                    24
+        targetSdk                 34
+        versionCode               1
+        versionName               "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    // ─────────────────────────────────────────────────
+    //  Add AndroidLint auto-correction:
+    lint {
+        // Don’t abort the build on lint errors
+        abortOnError false
+        // Skip lint checks on release builds
+        checkReleaseBuilds false
+        // Turn on automatic fixes where safe
+        autoFix true
+        // Output reports (optional)
+        htmlOutput file("$buildDir/reports/lint/lint-report.html")
+        xmlOutput  file("$buildDir/reports/lint/lint-report.xml")
+    }
+    // ─────────────────────────────────────────────────
+
+    // Load your signing info if present
     def keystorePropsFile = rootProject.file("keystore.properties")
-    def keystoreProps = new Properties()
+    def keystoreProps     = new Properties()
     if (keystorePropsFile.exists()) {
         keystoreProps.load(new FileInputStream(keystorePropsFile))
     }
@@ -40,7 +56,7 @@ android {
     }
 
     buildTypes {
-        debug { }
+        debug { /* default debug keystore */ }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
@@ -60,10 +76,16 @@ android {
 }
 
 dependencies {
--    implementation 'com.getcapacitor:capacitor-android:5.0.5'
-+    implementation project(':capacitor-android')
-     implementation project(':capacitor-cordova-android-plugins')
+    // Capacitor local-engine modules
+    implementation project(':capacitor-android')
+    implementation project(':capacitor-cordova-android-plugins')
 
-     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-     …  
+    // Kotlin & AndroidX
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    implementation 'androidx.core:core-ktx:1.10.1'
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'com.google.android.material:material:1.9.0'
+
+    // (Optional) Extra annotation libs
+    implementation "androidx.annotation:annotation:1.5.1"
 }
