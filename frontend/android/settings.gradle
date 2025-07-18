@@ -1,3 +1,22 @@
+// ─── Tell Gradle where to find plugins ───────────────────────────────────────
+pluginManagement {
+  repositories {
+    gradlePluginPortal()
+    google()
+    mavenCentral()
+  }
+}
+
+// ─── Tell Gradle where to find all dependencies ─────────────────────────────
+dependencyResolutionManagement {
+  repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+  repositories {
+    google()
+    mavenCentral()
+  }
+}
+
+// ─── Your existing project includes ─────────────────────────────────────────
 rootProject.name = 'PotBot'
 include ':app'
 include ':capacitor-cordova-android-plugins'
