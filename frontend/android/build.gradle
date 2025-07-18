@@ -1,15 +1,12 @@
 buildscript {
-    ext.kotlin_version = '1.9.0'
-
     repositories {
         google()
         mavenCentral()
+        maven { url 'https://registry.npmjs.org/@capacitor/android/maven' }
     }
-
     dependencies {
         classpath 'com.android.tools.build:gradle:8.1.1'
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        classpath 'com.google.gms:google-services:4.4.0'
+        classpath 'com.google.gms:google-services:4.4.1'
     }
 }
 
@@ -17,12 +14,6 @@ allprojects {
     repositories {
         google()
         mavenCentral()
-        maven {
-            url "https://jitpack.io"
-        }
+        maven { url 'https://registry.npmjs.org/@capacitor/android/maven' }
     }
-}
-
-task clean(type: Delete) {
-    delete rootProject.buildDir
 }
