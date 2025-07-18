@@ -1,14 +1,17 @@
 // File: potbot-main/frontend/android/app/build.gradle
 
-// 0) Expose your repositories
+// ─── 0) Repositories ─────────────────────────────────────────────────────────
 repositories {
     google()
     mavenCentral()
 }
 
+// ─── 1) Plugins ─────────────────────────────────────────────────────────────
 apply plugin: 'com.android.application'
 apply plugin: 'org.jetbrains.kotlin.android'
+apply plugin: 'io.gitlab.arturbosch.detekt'   // Detekt static-analysis plugin
 
+// ─── 2) Android Configuration ────────────────────────────────────────────────
 android {
     namespace   "com.rankyourdank.potbot"
     compileSdk  34
@@ -22,22 +25,16 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
-    // ─────────────────────────────────────────────────
-    //  Add AndroidLint auto-correction:
+    // ─── Lint auto-fix configuration ────────────────────────────────────────
     lint {
-        // Don’t abort the build on lint errors
-        abortOnError false
-        // Skip lint checks on release builds
+        abortOnError      false
         checkReleaseBuilds false
-        // Turn on automatic fixes where safe
-        autoFix true
-        // Output reports (optional)
-        htmlOutput file("$buildDir/reports/lint/lint-report.html")
-        xmlOutput  file("$buildDir/reports/lint/lint-report.xml")
+        autoFix           true
+        htmlOutput        file("$buildDir/reports/lint/lint-report.html")
+        xmlOutput         file("$buildDir/reports/lint/lint-report.xml")
     }
-    // ─────────────────────────────────────────────────
 
-    // Load your signing info if present
+    // ─── Signing configuration ─────────────────────────────────────────────
     def keystorePropsFile = rootProject.file("keystore.properties")
     def keystoreProps     = new Properties()
     if (keystorePropsFile.exists()) {
@@ -55,17 +52,20 @@ android {
         }
     }
 
+    // ─── Build types ─────────────────────────────────────────────────────────
     buildTypes {
-        debug { /* default debug keystore */ }
+        debug { }
         release {
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'),
+                           'proguard-rules.pro'
             if (keystorePropsFile.exists()) {
                 signingConfig signingConfigs.release
             }
         }
     }
 
+    // ─── Java & Kotlin options ───────────────────────────────────────────────
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_11
         targetCompatibility JavaVersion.VERSION_11
@@ -75,8 +75,9 @@ android {
     }
 }
 
+// ─── 3) Dependencies ─────────────────────────────────────────────────────────
 dependencies {
-    // Capacitor local-engine modules
+    // Capacitor modules
     implementation project(':capacitor-android')
     implementation project(':capacitor-cordova-android-plugins')
 
@@ -86,21 +87,15 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'com.google.android.material:material:1.9.0'
 
-    // (Optional) Extra annotation libs
+    // Optional annotations
     implementation "androidx.annotation:annotation:1.5.1"
 }
-spotless {
-  kotlin {
-    target 'src/**/*.kt'
-    ktlint('0.48.2')           // choose the ktlint version you like
-      .setEditorConfigPath('../.editorconfig') // optional
-  }
-  kotlinGradle {
-    target '*.gradle.kts'
-    ktlint()
-  }
-  format 'xml', {
-    target 'src/**/*.xml'
-    eclipseWtp('xml')          // a decent XML formatter
-  }
+
+// ─── 4) Detekt auto-format configuration ────────────────────────────────────
+detekt {
+    // Path to your detekt rules file
+    config              = files("$rootDir/config/detekt/detekt.yml")
+    buildUponDefaultConfig = true
+    autoCorrect         = true
+    // you can also configure reports here if desired
 }
