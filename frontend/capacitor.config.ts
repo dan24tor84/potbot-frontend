@@ -1,5 +1,3 @@
-// frontend/capacitor.config.ts
-
 import { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
@@ -7,8 +5,16 @@ const config: CapacitorConfig = {
   appName: 'PotBot',
   webDir: 'build',
   bundledWebRuntime: false,
+  plugins: {
+    Keyboard: {
+      resize: 'body'
+    }
+  },
   android: {
-    allowMixedContent: true
+    path: 'android'
+  },
+  server: {
+    cleartext: true
   }
 };
 
