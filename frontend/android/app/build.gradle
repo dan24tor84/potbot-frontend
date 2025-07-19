@@ -1,32 +1,42 @@
 plugins {
-    // The Android application plugin
     id 'com.android.application'
-    // The Kotlin Android plugin
-    id 'org.jetbrains.kotlin.android'
-    // Google services (only if you're actually using Firebase/GMS — otherwise you can drop this line)
     id 'com.google.gms.google-services'
 }
 
+def keystorePropertiesFile = rootProject.file("keystore.properties")
+def keystoreProperties = new Properties()
+keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+
 android {
-    namespace  "com.rankyourdank.potbot"      // ← your package name
+    namespace 'com.rankyourdank.potbot'
     compileSdk 34
 
     defaultConfig {
         applicationId "com.rankyourdank.potbot"
-        minSdk        24
-        targetSdk     34
-        versionCode   1
-        versionName   "1.0"
+        minSdk 23
+        targetSdk 34
+        versionCode 1
+        versionName "1.0"
+    }
 
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    signingConfigs {
+        release {
+            storeFile file(keystoreProperties["storeFile"])
+            storePassword keystoreProperties["storePassword"]
+            keyAlias keystoreProperties["keyAlias"]
+            keyPassword keystoreProperties["keyPassword"]
+        }
     }
 
     buildTypes {
         release {
-            // enableProguard / code shrinking here, if desired
-            isMinifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'),
-                          'proguard-rules.pro'
+            signingConfig signingConfigs.release
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            signingConfig signingConfigs.release
+            minifyEnabled false
         }
     }
 
@@ -34,20 +44,14 @@ android {
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
     }
-    kotlinOptions {
-        jvmTarget = "17"
-    }
 }
 
 dependencies {
-    // Kotlin stdlib
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-
-    // Core AndroidX libraries
     implementation 'androidx.core:core-ktx:1.12.0'
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'com.google.android.material:material:1.11.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
 
-    // (Add any other dependencies you need below)
+    // Capacitor core runtime
+    implementation 'com.capacitorjs:capacitor-android:5.0.5'
 }
