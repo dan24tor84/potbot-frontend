@@ -3,17 +3,10 @@ pluginManagement {
         gradlePluginPortal()
         google()
         mavenCentral()
+        maven { url 'https://registry.npmjs.org/@capacitor/android/maven' }
     }
 }
 
-dependencyResolutionManagement {
-    // prefer the repos declared here, not in individual modules
-    repositoriesMode.set(RepositoriesMode.PREFER_SETTINGS)
-    repositories {
-        google()
-        mavenCentral()
-    }
-}
+rootProject.name = 'PotBot'
 
-rootProject.name = "PotBot"
-include(":app", ":capacitor-cordova-android-plugins")
+include ':app'
