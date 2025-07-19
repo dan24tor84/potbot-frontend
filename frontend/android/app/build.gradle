@@ -52,6 +52,7 @@ dependencies {
     implementation 'com.google.android.material:material:1.11.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
 
-    // Capacitor Android Runtime
+    // Capacitor dependencies (aligned with 5.0.5)
     implementation 'com.capacitorjs:capacitor-android:5.0.5'
+    implementation 'com.capacitorjs:capacitor-core:5.0.5'
 }
