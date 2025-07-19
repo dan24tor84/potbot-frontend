@@ -1,8 +1,10 @@
+// frontend/android/build.gradle
+
 buildscript {
     repositories {
         google()
         mavenCentral()
-        maven { url 'https://registry.npmjs.org/@capacitor/android/maven' }
+        maven { url 'https://registry.npmjs.org/@capacitor/android/maven' } //  Capacitor Android registry
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:8.1.1'
@@ -14,6 +16,6 @@ allprojects {
     repositories {
         google()
         mavenCentral()
-        maven { url 'https://registry.npmjs.org/@capacitor/android/maven' }
+        maven { url 'https://registry.npmjs.org/@capacitor/android/maven' } // ✅ Capacitor Android registry
     }
 }
