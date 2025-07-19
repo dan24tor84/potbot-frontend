@@ -22,8 +22,6 @@ buildscript {
         // (Optional) Google services plugin
         classpath 'com.google.gms:google-services:4.4.1'
 
-        // Detekt static-analysis plugin
-        classpath "io.gitlab.arturbosch.detekt:detekt-gradle-plugin:2.5.0"
     }
 }
 
