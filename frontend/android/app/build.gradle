@@ -1,101 +1,53 @@
-// File: potbot-main/frontend/android/app/build.gradle
-
-// ─── 0) Repositories ─────────────────────────────────────────────────────────
-repositories {
-    google()
-    mavenCentral()
+plugins {
+    // The Android application plugin
+    id 'com.android.application'
+    // The Kotlin Android plugin
+    id 'org.jetbrains.kotlin.android'
+    // Google services (only if you're actually using Firebase/GMS — otherwise you can drop this line)
+    id 'com.google.gms.google-services'
 }
 
-// ─── 1) Plugins ─────────────────────────────────────────────────────────────
-apply plugin: 'com.android.application'
-apply plugin: 'org.jetbrains.kotlin.android'
-apply plugin: 'io.gitlab.arturbosch.detekt'   // Detekt static-analysis plugin
-
-// ─── 2) Android Configuration ────────────────────────────────────────────────
 android {
-    namespace   "com.rankyourdank.potbot"
-    compileSdk  34
+    namespace  "com.rankyourdank.potbot"      // ← your package name
+    compileSdk 34
 
     defaultConfig {
-        applicationId             "com.rankyourdank.potbot"
-        minSdk                    24
-        targetSdk                 34
-        versionCode               1
-        versionName               "1.0"
+        applicationId "com.rankyourdank.potbot"
+        minSdk        24
+        targetSdk     34
+        versionCode   1
+        versionName   "1.0"
+
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
-    // ─── Lint auto-fix configuration ────────────────────────────────────────
-    lint {
-        abortOnError      false
-        checkReleaseBuilds false
-        autoFix           true
-        htmlOutput        file("$buildDir/reports/lint/lint-report.html")
-        xmlOutput         file("$buildDir/reports/lint/lint-report.xml")
-    }
-
-    // ─── Signing configuration ─────────────────────────────────────────────
-    def keystorePropsFile = rootProject.file("keystore.properties")
-    def keystoreProps     = new Properties()
-    if (keystorePropsFile.exists()) {
-        keystoreProps.load(new FileInputStream(keystorePropsFile))
-    }
-
-    signingConfigs {
-        release {
-            if (keystorePropsFile.exists()) {
-                storeFile     file(keystoreProps['storeFile'])
-                storePassword keystoreProps['storePassword']
-                keyAlias      keystoreProps['keyAlias']
-                keyPassword   keystoreProps['keyPassword']
-            }
-        }
-    }
-
-    // ─── Build types ─────────────────────────────────────────────────────────
     buildTypes {
-        debug { }
         release {
-            minifyEnabled false
+            // enableProguard / code shrinking here, if desired
+            isMinifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'),
-                           'proguard-rules.pro'
-            if (keystorePropsFile.exists()) {
-                signingConfig signingConfigs.release
-            }
+                          'proguard-rules.pro'
         }
     }
 
-    // ─── Java & Kotlin options ───────────────────────────────────────────────
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_11
-        targetCompatibility JavaVersion.VERSION_11
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = '11'
+        jvmTarget = "17"
     }
 }
 
-// ─── 3) Dependencies ─────────────────────────────────────────────────────────
 dependencies {
-    // Capacitor modules
-    implementation project(':capacitor-android')
-    implementation project(':capacitor-cordova-android-plugins')
-
-    // Kotlin & AndroidX
+    // Kotlin stdlib
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    implementation 'androidx.core:core-ktx:1.10.1'
+
+    // Core AndroidX libraries
+    implementation 'androidx.core:core-ktx:1.12.0'
     implementation 'androidx.appcompat:appcompat:1.6.1'
-    implementation 'com.google.android.material:material:1.9.0'
+    implementation 'com.google.android.material:material:1.11.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
 
-    // Optional annotations
-    implementation "androidx.annotation:annotation:1.5.1"
-}
-
-// ─── 4) Detekt auto-format configuration ────────────────────────────────────
-detekt {
-    // Path to your detekt rules file
-    config              = files("$rootDir/config/detekt/detekt.yml")
-    buildUponDefaultConfig = true
-    autoCorrect         = true
-    // you can also configure reports here if desired
+    // (Add any other dependencies you need below)
 }
