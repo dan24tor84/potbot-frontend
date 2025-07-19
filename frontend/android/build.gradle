@@ -16,6 +16,6 @@ allprojects {
     repositories {
         google()
         mavenCentral()
-        maven { url 'https://registry.npmjs.org/@capacitor/android/maven' } // ✅ Capacitor Android registry
+        maven { url 'https://registry.npmjs.org/@capacitor/android/maven' } // Capacitor Android registry
     }
 }
