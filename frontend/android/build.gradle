@@ -1,34 +1,19 @@
-// File: potbot-main/frontend/android/build.gradle
-
 buildscript {
-    // Kotlin version used by the build
-    ext.kotlin_version = '1.9.10'
-
-    // Where to find the Gradle plugins
     repositories {
-        gradlePluginPortal()    // for Detekt
-        google()                // for Android Gradle plugin
-        mavenCentral()          // for Kotlin, Google Services, etc.
+        google()
+        mavenCentral()
+        maven { url 'https://registry.npmjs.org/@capacitor/android/maven' }
     }
-
-    // Plugin classpaths
     dependencies {
-        // Android Gradle plugin
         classpath 'com.android.tools.build:gradle:8.1.1'
-
-        // Kotlin Gradle plugin
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-
-        // (Optional) Google services plugin
         classpath 'com.google.gms:google-services:4.4.1'
-
     }
 }
 
 allprojects {
-    // These repos apply to every module: app, capacitor plugins, etc.
     repositories {
         google()
         mavenCentral()
+        maven { url 'https://registry.npmjs.org/@capacitor/android/maven' }
     }
 }
