@@ -1,3 +1,5 @@
+// File: frontend/android/app/build.gradle
+
 plugins {
     id 'com.android.application'
     id 'com.google.gms.google-services'
@@ -17,6 +19,7 @@ android {
         targetSdk 34
         versionCode 1
         versionName "1.0"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
     signingConfigs {
@@ -32,11 +35,10 @@ android {
         release {
             signingConfig signingConfigs.release
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
         }
         debug {
             signingConfig signingConfigs.release
-            minifyEnabled false
         }
     }
 
@@ -51,7 +53,4 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'com.google.android.material:material:1.11.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-
-    // Capacitor core runtime (this needs the Maven registry set in project-level!)
-    implementation 'com.capacitorjs:capacitor-android:5.0.5'
 }
