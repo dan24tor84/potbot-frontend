@@ -1,4 +1,4 @@
-// File: potbot-main/frontend/android/settings.gradle
+// File: frontend/android/settings.gradle
 
 pluginManagement {
     repositories {
@@ -18,6 +18,9 @@ dependencyResolutionManagement {
 
 rootProject.name = 'PotBot'
 include ':app'
-include ':capacitor-cordova-android-plugins'
-project(':capacitor-cordova-android-plugins').projectDir = new File('capacitor-cordova-android-plugins')
+
+// Removed Cordova plugin line to prevent build failure
+// include ':capacitor-cordova-android-plugins'
+// project(':capacitor-cordova-android-plugins').projectDir = new File('capacitor-cordova-android-plugins')
+
 apply from: 'capacitor.settings.gradle'
