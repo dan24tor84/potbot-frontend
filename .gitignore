@@ -1,46 +1,48 @@
-# Node modules (never commit)
+# Node.js / Yarn
 node_modules/
-**/node_modules/
-
-# Dependency lock files (choose one package manager)
-package-lock.json
-.pnpm-lock.yaml
-
-# Yarn integrity files (only needed in local dev)
-.yarn-integrity
+.yarn/
+.pnp.*
+.yarnrc.yml
 
 # Build output
-dist/
 build/
-android/app/build/
-ios/build/
-ios/Pods/
-
-# Capacitor/Android/iOS artifacts
-android/.gradle/
-android/.idea/
-android/local.properties
-android/app/*.keystore
-
-# React scripts & Vite output
-.env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
-
-# IDE/editor folders
-.vscode/
-.idea/
-*.swp
-*.swo
-
-# OS files
-.DS_Store
-Thumbs.db
+dist/
+.out/
+.cache/
+.next/
 
 # Logs
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-potbot-release-key.keystore
+
+# Env and config
+.env
+.env.*.local
+*.local
+
+# Capacitor output
+android/build/
+ios/App/App.xcworkspace/
+ios/App/Pods/
+ios/Podfile.lock
+ios/Pods/
+
+# Firebase logs
+firebase-debug.log
+firebase.json
+
+# System junk
+.DS_Store
+Thumbs.db
+
+# IDEs/editors
+.vscode/
+.idea/
+*.iml
+*.swp
+*.swo
+*.orig
+
+# GitHub
+*.tsbuildinfo
