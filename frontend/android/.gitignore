@@ -1,48 +1,27 @@
-# Node.js / Yarn
-node_modules/
-.yarn/
-.pnp.*
-.yarnrc.yml
-
-# Build output
+# Gradle
+.gradle/
 build/
-dist/
-.out/
-.cache/
-.next/
+.cxx/
+.externalNativeBuild/
+captures/
 
-# Logs
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
-# Env and config
-.env
-.env.*.local
-*.local
-
-# Capacitor output
-android/build/
-ios/App/App.xcworkspace/
-ios/App/Pods/
-ios/Podfile.lock
-ios/Pods/
-
-# Firebase logs
-firebase-debug.log
-firebase.json
-
-# System junk
-.DS_Store
-Thumbs.db
-
-# IDEs/editors
-.vscode/
+# Android Studio
 .idea/
 *.iml
-*.swp
-*.swo
-*.orig
+local.properties
 
-# GitHub
-*.tsbuildinfo
+# Output
+app/release/
+app/debug/
+app/.cxx/
+
+# Security
+*.jks
+keystore.properties
+
+# Misc
+*.log
+*.lock
+*.pyc
+*.dex
+*.class
