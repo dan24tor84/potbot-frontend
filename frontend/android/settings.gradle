@@ -1,5 +1,19 @@
-// settings.gradle (Project Root) pluginManagement { repositories { gradlePluginPortal() google() mavenCentral() } }
+// settings.gradle (Project Root)
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        google()
+        mavenCentral()
+    }
+}
 
-dependencyResolutionManagement { repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS) repositories { google() mavenCentral() } }
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
 
-rootProject.name = 'PotBot' include ':app'
+rootProject.name = 'PotBot'
+include ':app'
