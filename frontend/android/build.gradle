@@ -4,11 +4,9 @@ buildscript {
     repositories {
         google()
         mavenCentral()
-        maven { url 'https://jitpack.io' }
-        maven { url 'https://capacitor.github.io/android/maven' }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:8.2.0'
+        classpath 'com.android.tools.build:gradle:8.4.0'
         classpath 'com.google.gms:google-services:4.4.0'
     }
 }
@@ -17,11 +15,8 @@ allprojects {
     repositories {
         google()
         mavenCentral()
-        maven { url 'https://jitpack.io' }
-        maven { url 'https://capacitor.github.io/android/maven' }
-    }
-}
 
-task clean(type: Delete) {
-    delete rootProject.buildDir
+        // ✅ REQUIRED for Capacitor 5 plugins to resolve
+        maven { url 'https://plugins.capacitorjs.com/' }
+    }
 }
