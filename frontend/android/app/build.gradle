@@ -1,5 +1,3 @@
-// File: frontend/android/app/build.gradle
-
 plugins {
     id 'com.android.application'
     id 'com.google.gms.google-services'
@@ -38,7 +36,7 @@ android {
             proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
         }
         debug {
-            signingConfig signingConfigs.release
+            // Allow unsigned debug build for testing
         }
     }
 
@@ -52,16 +50,6 @@ dependencies {
     implementation 'androidx.core:core-ktx:1.12.0'
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'com.google.android.material:material:1.11.0'
-
-    // ✅ Required Capacitor dependencies
     implementation 'com.getcapacitor:capacitor-android:6.1.2'
-
-    // ✅ Optional plugins — only include the ones you actually use
-    implementation 'com.getcapacitor:camera:5.0.6'
-    implementation 'com.getcapacitor:filesystem:5.0.6'
-    implementation 'com.getcapacitor:geolocation:5.0.6'
-    implementation 'com.getcapacitor:local-notifications:5.0.6'
-
-    // ✅ Firebase (already present, keep it)
     implementation 'com.google.firebase:firebase-analytics:21.6.1'
 }

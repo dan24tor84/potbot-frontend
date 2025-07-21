@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <!-- Required Material Theme Colors -->
     <color name="purple_200">#BB86FC</color>
     <color name="purple_500">#6200EE</color>
     <color name="purple_700">#3700B3</color>
     <color name="teal_200">#03DAC5</color>
     <color name="teal_700">#018786</color>
-    <color name="white">#FFFFFF</color>
     <color name="black">#000000</color>
+    <color name="white">#FFFFFF</color>
 
     <!-- Legacy Primary Theme -->
     <color name="colorPrimary">#1C1C1E</color>
@@ -22,13 +23,14 @@
     <color name="potbot_text_primary">#FFFFFF</color>
     <color name="potbot_text_secondary">#AAAAAA</color>
     <color name="potbot_highlight">#88FF00</color>
-    <color name="potbot_error_red">#FF3B30</color>
+    <color name="potbot_error_red">#FF3030</color>
     <color name="potbot_warning_orange">#FF9500</color>
 
-    <!-- Additional UI Colors -->
+    <!-- Additional UI Elements -->
     <color name="background_gray">#2C2C2E</color>
     <color name="divider_gray">#3A3A3C</color>
     <color name="light_gray_text">#8E8E93</color>
     <color name="success_green">#34C759</color>
     <color name="link_blue">#0A84FF</color>
+
 </resources>
