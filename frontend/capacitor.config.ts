@@ -6,15 +6,9 @@ const config: CapacitorConfig = {
   webDir: 'build',
   bundledWebRuntime: false,
   plugins: {
-    Keyboard: {
-      resize: 'body'
+    SplashScreen: {
+      launchShowDuration: 0
     }
-  },
-  android: {
-    path: 'android'
-  },
-  server: {
-    cleartext: true
   }
 };
 
