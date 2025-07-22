@@ -16,14 +16,16 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+        with:
+          persist-credentials: false
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 18
 
-      - name: Install dependencies
-        run: yarn install
+      - name: Install frontend dependencies
+        run: yarn install --frozen-lockfile
         working-directory: ./frontend
 
       - name: Build frontend
@@ -38,18 +40,16 @@ jobs:
         run: npx cap copy android
         working-directory: ./frontend
 
-      - name: Set up JDK
-        uses: actions/setup-java@v3
-        with:
-          distribution: 'temurin'
-          java-version: '17'
+      - name: Set Gradle executable permission
+        run: chmod +x ./gradlew
+        working-directory: ./frontend/android
 
       - name: Build Android AAB
         run: ./gradlew bundleRelease
-        working-directory: frontend/android
+        working-directory: ./frontend/android
 
-      - name: Upload AAB Artifact
-        uses: actions/upload-artifact@v3
+      - name: Upload AAB artifact
+        uses: actions/upload-artifact@v4
         with:
-          name: app-bundle
-          path: frontend/android/app/build/outputs/bundle/release/app-release.aab
+          name: app-release.aab
+          path: ./frontend/android/app/build/outputs/bundle/release/app-release.aab
