@@ -1,6 +1,8 @@
-apply plugin: 'com.android.application'
-apply plugin: 'com.google.gms.google-services'
-apply plugin: 'kotlin-android'
+plugins {
+    id 'com.android.application'
+    id 'com.google.gms.google-services'
+    id 'org.jetbrains.kotlin.android'
+}
 
 android {
     namespace 'com.rankyourdank.potbot'
@@ -12,26 +14,39 @@ android {
         targetSdk 34
         versionCode 1
         versionName "1.0"
+        // testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner" // Good to have for tests
     }
 
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true      // Enable for production
+            shrinkResources true    // Enable for production
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-
             signingConfig signingConfigs.release
         }
         debug {
             debuggable true
+            // applicationIdSuffix ".debug" // Optional: for side-by-side installs
         }
     }
 
     signingConfigs {
         release {
-            storeFile file("keystore/potbot-release-key.jks")
-            storePassword System.getenv("KEYSTORE_PASSWORD")
-            keyAlias "potbotkey"
-            keyPassword System.getenv("KEY_PASSWORD")
+            // Assumes properties are in gradle.properties and that file is in .gitignore
+            if (project.hasProperty('KEYSTORE_FILE') &&
+                    project.hasProperty('KEYSTORE_PASSWORD') &&
+                    project.hasProperty('KEY_ALIAS') &&
+                    project.hasProperty('KEY_PASSWORD')) {
+                storeFile file(project.property('KEYSTORE_FILE'))
+                storePassword project.property('KEYSTORE_PASSWORD')
+                keyAlias project.property('KEY_ALIAS')
+                keyPassword project.property('KEY_PASSWORD')
+            } else {
+                println "WARNING: Release signing keystore properties not found. Build will use debug signing."
+                // Forcing debug signing for local release builds if keys aren't set up.
+                // Your CI should always have keys or fail the build.
+                signingConfig signingConfigs.debug
+            }
         }
     }
 
@@ -39,22 +54,40 @@ android {
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
     }
-
     kotlinOptions {
         jvmTarget = '17'
     }
 
     buildFeatures {
-        buildConfig true
+        // buildConfig true // Default, can be omitted if no custom fields
+        // viewBinding true // Consider enabling if you use XML layouts extensively
+    }
+
+    // Optional: Lint options
+    lintOptions {
+        abortOnError false // Set to true for CI builds
+        warningsAsErrors false // Set to true to be stricter
     }
 }
 
 dependencies {
     implementation project(':capacitor-android')
+
+    // Ensure kotlin_version is defined in your project-level build.gradle or gradle.properties
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    implementation 'com.google.firebase:firebase-analytics:21.6.1'
-    implementation 'com.google.android.gms:play-services-location:21.0.1'
-    implementation 'androidx.core:core-ktx:1.12.0'
-    implementation 'androidx.appcompat:appcompat:1.6.1'
-    implementation 'com.getcapacitor:capacitor-android:5.0.6'
+
+    // Firebase BoM - Manages versions for Firebase libraries
+    implementation platform('com.google.firebase:firebase-bom:33.0.0') // Check for latest
+    implementation 'com.google.firebase:firebase-analytics-ktx'
+
+    implementation 'com.google.android.gms:play-services-location:21.2.0' // Check for latest
+    implementation 'androidx.core:core-ktx:1.12.0' // Or latest
+    implementation 'androidx.appcompat:appcompat:1.6.1' // Or latest
+    implementation 'com.getcapacitor:capacitor-android:5.0.6' // Or latest (check for updates)
+
+    // Add testing libraries if you plan to write tests
+    // testImplementation 'junit:junit:4.13.2'
+    // androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+    // androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
 }
+
