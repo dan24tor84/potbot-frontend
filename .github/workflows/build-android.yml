@@ -1,4 +1,4 @@
-name: Build Android App Bundle
+name: Build Android App Bundle with Capacitor
 
 on:
   push:
@@ -16,15 +16,13 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-        with:
-          persist-credentials: false
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 18
 
-      - name: Install frontend dependencies
+      - name: Install frontend dependencies (Yarn)
         run: yarn install --frozen-lockfile
         working-directory: ./frontend
 
@@ -51,5 +49,5 @@ jobs:
       - name: Upload AAB artifact
         uses: actions/upload-artifact@v4
         with:
-          name: app-release.aab
-          path: ./frontend/android/app/build/outputs/bundle/release/app-release.aab
+          name: PotBot-aab
+          path: frontend/android/app/build/outputs/bundle/release/app-release.aab
