@@ -1,4 +1,4 @@
-name: Build Signed Android APK
+name: Build Android App Bundle
 
 on:
   push:
@@ -10,11 +10,11 @@ on:
 
 jobs:
   build:
-    name: Build Android APK with Capacitor
+    name: Build Android App Bundle with Capacitor
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Repository
+      - name: Checkout code
         uses: actions/checkout@v3
 
       - name: Set up Node.js
@@ -22,21 +22,11 @@ jobs:
         with:
           node-version: 18
 
-      - name: Set up JDK 17
-        uses: actions/setup-java@v3
-        with:
-          distribution: "temurin"
-          java-version: 17
-
-      - name: Decode Keystore File
-        run: |
-          echo "${{ secrets.KEYSTORE_FILE }}" | base64 -d > release.keystore
-
-      - name: Install Dependencies
-        run: yarn install --frozen-lockfile
+      - name: Install dependencies
+        run: yarn install
         working-directory: ./frontend
 
-      - name: Build React App
+      - name: Build frontend
         run: yarn build
         working-directory: ./frontend
 
@@ -44,20 +34,22 @@ jobs:
         run: npx cap sync android
         working-directory: ./frontend
 
-      - name: Copy Web Assets
+      - name: Copy web assets to Android
         run: npx cap copy android
         working-directory: ./frontend
 
-      - name: Make Gradle Executable
-        run: chmod +x ./gradlew
-        working-directory: ./frontend/android
-
-      - name: Build Signed APK
-        run: ./gradlew assembleRelease -Pandroid.injected.signing.store.file=../release.keystore -Pandroid.injected.signing.store.password=${{ secrets.KEYSTORE_PASSWORD }} -Pandroid.injected.signing.key.alias=${{ secrets.KEY_ALIAS }} -Pandroid.injected.signing.key.password=${{ secrets.KEY_PASSWORD }}
-        working-directory: ./frontend/android
-
-      - name: Upload APK Artifact
-        uses: actions/upload-artifact@v4
+      - name: Set up JDK
+        uses: actions/setup-java@v3
         with:
-          name: PotBot-Signed-APK
-          path: frontend/android/app/build/outputs/apk/release/app-release.apk
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Build Android AAB
+        run: ./gradlew bundleRelease
+        working-directory: frontend/android
+
+      - name: Upload AAB Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: app-bundle
+          path: frontend/android/app/build/outputs/bundle/release/app-release.aab
