@@ -7,8 +7,11 @@ const config: CapacitorConfig = {
   bundledWebRuntime: false,
   plugins: {
     SplashScreen: {
-      launchShowDuration: 0
-    }
+      launchShowDuration: 0,
+    },
+  },
+  android: {
+    path: 'android'
   }
 };
 
