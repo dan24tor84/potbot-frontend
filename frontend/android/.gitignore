@@ -1,27 +1,44 @@
-# Gradle
-.gradle/
+# Node modules and package lock
+node_modules/
+yarn.lock
+package-lock.json
+
+# Capacitor build output
+android/app/build/
+ios/App/App/build/
 build/
-.cxx/
-.externalNativeBuild/
-captures/
+
+# VS Code settings
+.vscode/
+
+# System files
+.DS_Store
+Thumbs.db
+
+# macOS/Linux/Windows junk
+*.swp
+*.swo
+*.bak
+*.tmp
 
 # Android Studio
 .idea/
-*.iml
+.gradle/
 local.properties
+*.iml
 
-# Output
-app/release/
-app/debug/
-app/.cxx/
+# Capacitor Cordova plugins (if removed)
+capacitor-cordova-android-plugins/
 
-# Security
+# Firebase and keystore secrets
+google-services.json
 *.jks
 keystore.properties
+signing.properties
 
-# Misc
-*.log
-*.lock
-*.pyc
-*.dex
-*.class
+# GitHub Codespaces
+.devcontainer/
+
+# Environment files
+.env
+.env.*
