@@ -1,12 +1,11 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
+<style name="AppTheme" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+    <item name="colorPrimary">@color/pot_primary</item>
+    <item name="colorPrimaryDark">@color/pot_primary_dark</item>
+    <item name="colorAccent">@color/pot_accent</item>
+    <item name="android:textColor">@color/pot_text_primary</item>
+    <item name="android:windowBackground">@color/pot_background</item>
+    <item name="android:navigationBarColor">@color/pot_surface</item>
+    <item name="android:statusBarColor">@color/pot_primary_dark</item>
+</style>
 
-    <!-- Base application theme -->
-    <style name="CapacitorTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <!-- Customize your theme here -->
-        <item name="android:statusBarColor">@android:color/transparent</item>
-        <item name="android:navigationBarColor">@android:color/black</item>
-        <item name="android:windowLightStatusBar">true</item>
-    </style>
-
-</resources>
+    </resources>
