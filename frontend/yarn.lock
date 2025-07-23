@@ -1581,7 +1581,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@capacitor/android@npm:^5.0.6":
+"@capacitor/android@npm:5.7.8":
   version: 5.7.8
   resolution: "@capacitor/android@npm:5.7.8"
   peerDependencies:
@@ -1599,7 +1599,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@capacitor/cli@npm:^5.0.6":
+"@capacitor/cli@npm:5.7.8":
   version: 5.7.8
   resolution: "@capacitor/cli@npm:5.7.8"
   dependencies:
@@ -1627,7 +1627,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@capacitor/core@npm:^5.0.6":
+"@capacitor/core@npm:5.7.8":
   version: 5.7.8
   resolution: "@capacitor/core@npm:5.7.8"
   dependencies:
@@ -10898,10 +10898,10 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "potbot@workspace:."
   dependencies:
-    "@capacitor/android": "npm:^5.0.6"
+    "@capacitor/android": "npm:5.7.8"
     "@capacitor/app": "npm:^5.0.6"
-    "@capacitor/cli": "npm:^5.0.6"
-    "@capacitor/core": "npm:^5.0.6"
+    "@capacitor/cli": "npm:5.7.8"
+    "@capacitor/core": "npm:5.7.8"
     "@capacitor/haptics": "npm:^5.0.6"
     "@capacitor/keyboard": "npm:^5.0.6"
     "@capacitor/status-bar": "npm:^5.0.6"
