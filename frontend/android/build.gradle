@@ -1,5 +1,4 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
-
 buildscript {
     ext.kotlin_version = '1.9.10'
 
@@ -15,7 +14,16 @@ buildscript {
     }
 }
 
-// No need for allprojects {} block in modern Gradle (use settings.gradle if needed)
+// Add this block for your project's runtime dependencies
+allprojects {
+    repositories {
+        google()        // Google's Maven repository for AndroidX, Firebase, Material Design, etc.
+        mavenCentral()  // Maven Central repository for many common Java/Kotlin libraries
+        // If you use other specialized repositories, add them here too.
+        // For example:
+        // maven { url 'https://jitpack.io' }
+    }
+}
 
 task clean(type: Delete) {
     delete rootProject.buildDir
