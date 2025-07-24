@@ -41,3 +41,5 @@ signing.properties
 
 # Environment files
 .env.*
+!.env.example
+.env
