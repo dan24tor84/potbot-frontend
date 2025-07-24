@@ -40,5 +40,4 @@ signing.properties
 .devcontainer/
 
 # Environment files
-.env
 .env.*
