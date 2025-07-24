@@ -1,6 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">PotBot</string>
-    <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">
-        AIzaSyCp3fH5k5gIBAu08YOnau_9D0UcCKSRVIQ
+    <string name="Maps_key" templateMergeStrategy="preserve" translatable="false">
+        AlzaSyCp3Fh5k5GIBAu08Y0nau_9DOUCCKSRVIQ
     </string>
-</resources>
+    <string name="welcome_message">Welcome to PotBot!</string>
+    </resources>
