@@ -23,7 +23,7 @@ jobs:
           node-version: 18
 
       - name: Install frontend dependencies (Yarn)
-        run: yarn install --frozen-lockfile
+        run: yarn install
         working-directory: ./frontend
 
       - name: Build frontend
