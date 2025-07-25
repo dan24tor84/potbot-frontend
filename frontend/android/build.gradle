@@ -1,23 +1,44 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
+// This file is located at 'frontend/android/build.gradle' within your project.
+
+// This 'buildscript' block defines repositories and dependencies for Gradle itself
+// to find and load the plugins specified in your 'dependencies' block below.
 buildscript {
     ext {
-        kotlin_version = '1.9.10' // You can adjust this Kotlin version if needed
+        kotlin_version = '1.9.10' // Ensure this version is correct
     }
     repositories {
-        google()      // Essential for Android-related build tools
-        mavenCentral() // Common repository for many Java/Gradle dependencies
+        google()      // Essential for Android Gradle Plugin
+        mavenCentral() // Common for other buildscript dependencies
+        // If 'gradlePluginPortal()' is needed for buildscript plugins, it would go here,
+        // but it's often covered by pluginManagement in settings.gradle.
     }
     dependencies {
-        // Android Gradle Plugin (AGP) - MUST match your desired Android Studio/SDK compatibility
-        classpath 'com.android.tools.build:gradle:8.3.0' // Adjust this AGP version if needed (e.g., 8.2.0, 8.4.0)
-
-        // Kotlin Gradle Plugin - MUST match your Kotlin version
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-
-        // Google Services Plugin (for Firebase, etc.)
-        classpath 'com.google.gms:google-services:4.4.1' // Adjust this version if needed
-
-        // Add any other top-level classpath dependencies that Gradle itself needs to run the build
-        // For example, if you have a Crashlytics plugin or other build-time plugins.
+        // These are the actual plugin JARs that Gradle needs at build time.
+        classpath 'com.android.tools.build:gradle:8.3.0' // Android Gradle Plugin
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version" // Kotlin Gradle Plugin
+        classpath 'com.google.gms:google-services:4.4.1' // Google Services Plugin
     }
 }
+
+// This 'allprojects' block defines repositories for dependencies that
+// your *sub-projects* (like your 'app' module) will use for their actual code dependencies
+// AND sometimes for resolving plugin IDs when settings.gradle strictness causes issues.
+// With 'repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)', this block might
+// theoretically be redundant, but in practice, it often resolves "plugin not found" errors
+// for core plugins like 'com.android.application'.
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+        // If you have any custom Maven repositories where your app's dependencies live,
+        // or where special plugins might be found, add them here.
+    }
+}
+
+// You may optionally have a 'clean' task here, but it's not strictly necessary for most projects.
+/*
+tasks.register('clean', Delete) {
+    delete rootProject.buildDir
+}
+*/
