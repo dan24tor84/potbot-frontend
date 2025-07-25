@@ -1,48 +1,56 @@
-apply plugin: 'com.android.application'
-apply plugin: 'com.google.gms.google-services'
-apply plugin: 'kotlin-android'
+// build.gradle (App Level)
+
+plugins {
+    id 'com.android.application'
+    id 'com.google.gms.google-services'
+    id 'com.capacitorjs.capacitor-android'
+}
 
 android {
     namespace 'com.rankyourdank.potbot'
     compileSdk 34
 
     defaultConfig {
-        applicationId "com.rankyourdank.potbot"
+        applicationId 'com.rankyourdank.potbot'
         minSdk 24
         targetSdk 34
         versionCode 1
-        versionName "1.0"
+        versionName '1.0'
+
+        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+    }
+
+    signingConfigs {
+        release {
+            storeFile file("../keystore.potbot.jks")
+            storePassword System.getenv("KEYSTORE_PASSWORD")
+            keyAlias "potbotkey"
+            keyPassword System.getenv("KEY_PASSWORD")
+        }
     }
 
     buildTypes {
         release {
+            signingConfig signingConfigs.release
             minifyEnabled false
-            shrinkResources false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            signingConfig signingConfigs.release
         }
     }
 
-    buildFeatures {
-        viewBinding true
-        buildConfig true
-    }
-
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_17
-        targetCompatibility JavaVersion.VERSION_17
-    }
-
-    kotlinOptions {
-        jvmTarget = '17'
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
     }
 }
 
 dependencies {
-    implementation 'androidx.core:core-ktx:1.12.0'
+    implementation 'com.google.android.gms:play-services-maps:18.2.0'
+    implementation 'com.google.firebase:firebase-analytics'
     implementation 'androidx.appcompat:appcompat:1.6.1'
-    implementation 'com.google.android.material:material:1.12.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-    implementation 'com.google.firebase:firebase-analytics:21.5.0'
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    implementation 'com.getcapacitor:capacitor-android:5.0.6'
+    implementation 'com.google.android.material:material:1.11.0'
+    implementation 'androidx.core:core-ktx:1.12.0'
+    implementation project(':capacitor-android')
 }
