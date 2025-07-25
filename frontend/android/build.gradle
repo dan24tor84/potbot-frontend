@@ -5,40 +5,28 @@
 // to find and load the plugins specified in your 'dependencies' block below.
 buildscript {
     ext {
-        kotlin_version = '1.9.10' // Ensure this version is correct
+        kotlin_version = '1.9.10'
     }
     repositories {
-        google()      // Essential for Android Gradle Plugin
-        mavenCentral() // Common for other buildscript dependencies
-        // If 'gradlePluginPortal()' is needed for buildscript plugins, it would go here,
-        // but it's often covered by pluginManagement in settings.gradle.
+        google()      // Essential for Android Gradle Plugin classpath
+        mavenCentral() // Common for other buildscript classpath dependencies
     }
     dependencies {
         // These are the actual plugin JARs that Gradle needs at build time.
-        classpath 'com.android.tools.build:gradle:8.3.0' // Android Gradle Plugin
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version" // Kotlin Gradle Plugin
-        classpath 'com.google.gms:google-services:4.4.1' // Google Services Plugin
+        classpath 'com.android.tools.build:gradle:8.3.0'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath 'com.google.gms:google-services:4.4.1'
     }
 }
 
 // This 'allprojects' block defines repositories for dependencies that
 // your *sub-projects* (like your 'app' module) will use for their actual code dependencies
-// AND sometimes for resolving plugin IDs when settings.gradle strictness causes issues.
-// With 'repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)', this block might
-// theoretically be redundant, but in practice, it often resolves "plugin not found" errors
-// for core plugins like 'com.android.application'.
+// AND it's crucial for resolving plugin IDs like 'com.android.application'
+// when settings.gradle strictness causes issues.
 allprojects {
     repositories {
         google()
         mavenCentral()
-        // If you have any custom Maven repositories where your app's dependencies live,
-        // or where special plugins might be found, add them here.
+        // If you have any other custom plugin repositories or dependency repositories, add them here.
     }
 }
-
-// You may optionally have a 'clean' task here, but it's not strictly necessary for most projects.
-/*
-tasks.register('clean', Delete) {
-    delete rootProject.buildDir
-}
-*/
