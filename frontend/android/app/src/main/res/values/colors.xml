@@ -1,26 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Primary Brand Colors -->
-    <color name="pot_primary">#00FF88</color> <!-- neon green -->
-    <color name="pot_primary_dark">#007755</color> <!-- deep green -->
-    <color name="pot_accent">#B6FF00</color> <!-- lime pop -->
 
-    <!-- Backgrounds & Surfaces -->
-    <color name="pot_background">#121212</color>
-    <color name="pot_surface">#1E1E1E</color>
+    <!-- Base application theme -->
+    <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+        <!-- Customize your theme here -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryVariant">@color/colorPrimaryDark</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorSecondary">@color/potbot_green</item>
+        <item name="colorSecondaryVariant">@color/success_green</item>
+        <item name="colorOnSecondary">@color/black</item>
+        <item name="android:statusBarColor">@color/colorPrimaryDark</item>
+    </style>
 
-    <!-- Text Colors -->
-    <color name="pot_text_primary">#FFFFFF</color>
-    <color name="pot_text_secondary">#CCCCCC</color>
-    <color name="pot_text_disabled">#777777</color>
+    <style name="AppTheme.NoActionBar">
+        <!-- Add customizations here for NoActionBar theme if needed -->
+    </style>
 
-    <!-- Status Colors -->
-    <color name="pot_error">#FF4B4B</color>
-    <color name="pot_success">#22FF88</color>
-    <color name="pot_warning">#FFCC00</color>
-    <color name="pot_info">#33CCFF</color>
-
-    <!-- Misc -->
-    <color name="pot_border">#333333</color>
-    <color name="pot_divider">#444444</color>
 </resources>
