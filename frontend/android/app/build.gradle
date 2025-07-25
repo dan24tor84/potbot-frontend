@@ -13,6 +13,15 @@ android {
         versionName "1.0"
     }
 
+    signingConfigs {
+        release {
+            storeFile file(System.getenv("POTBOT_KEYSTORE_PATH"))
+            storePassword System.getenv("POTBOT_KEYSTORE_PASSWORD")
+            keyAlias System.getenv("POTBOT_KEY_ALIAS")
+            keyPassword System.getenv("POTBOT_KEY_PASSWORD")
+        }
+    }
+
     buildTypes {
         release {
             minifyEnabled false
