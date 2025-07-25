@@ -2,60 +2,62 @@ name: Build Android App Bundle
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
   pull_request:
-    branches:
-      - main
+    branches: [main]
 
 jobs:
   build:
-    name: Build Android App Bundle with Capacitor
+    name: Build Android AAB with Capacitor
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+        with:
+          persist-credentials: false
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 20
+          node-version: 18
 
-      - name: Set up Java
+      - name: Install frontend dependencies
+        run: yarn install --frozen-lockfile
+        working-directory: ./frontend
+
+      - name: Build frontend
+        run: yarn build
+        working-directory: ./frontend
+
+      - name: Sync Capacitor
+        run: npx cap sync android
+        working-directory: ./frontend
+
+      - name: Copy web assets to Android
+        run: npx cap copy android
+        working-directory: ./frontend
+
+      - name: Set up JDK
         uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Install frontend dependencies
-        working-directory: ./frontend
-        run: yarn install
-
-      - name: Build frontend
-        working-directory: ./frontend
-        run: yarn build
-
-      - name: Sync Capacitor
-        working-directory: ./frontend
+      - name: Decode keystore from base64
         run: |
-          yarn add @capacitor/core @capacitor/cli --dev
-          npx cap sync android
+          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > keystore.jks
 
-      - name: Copy web assets to Android
-        working-directory: ./frontend
-        run: npx cap copy android
-
-      - name: Grant execute permission for gradlew
-        working-directory: ./frontend/android
-        run: chmod +x gradlew
+      - name: Grant permission to Gradle
+        run: chmod +x ./gradlew
+        working-directory: frontend/android
 
       - name: Build Android AAB
-        working-directory: ./frontend/android
-        run: ./gradlew bundleRelease
+        run: ./gradlew bundleRelease -Pandroid.injected.signing.store.file=../../keystore.jks -Pandroid.injected.signing.store.password=${{ secrets.KEYSTORE_PASSWORD }} -Pandroid.injected.signing.key.alias=${{ secrets.KEY_ALIAS }} -Pandroid.injected.signing.key.password=${{ secrets.KEY_PASSWORD }}
+        working-directory: frontend/android
 
-      - name: Upload AAB artifact
-        uses: actions/upload-artifact@v4
+      - name: Upload AAB Artifact
+        uses: actions/upload-artifact@v3
         with:
-          name: app-release.aab
+          name: PotBot-AAB
           path: frontend/android/app/build/outputs/bundle/release/app-release.aab
