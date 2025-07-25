@@ -1,13 +1,13 @@
+// Top-level build file for Android build tools
 buildscript {
     repositories {
         google()
         mavenCentral()
-        maven { url 'https://registry.npmjs.org/' }
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:8.3.1'
         classpath 'com.google.gms:google-services:4.4.1'
-        classpath 'com.capacitorjs:capacitor-android:4.0.0'
+        classpath 'com.capacitorjs:capacitor-android:5.0.0'
     }
 }
 
@@ -15,6 +15,5 @@ allprojects {
     repositories {
         google()
         mavenCentral()
-        maven { url 'https://registry.npmjs.org/' }
     }
 }
