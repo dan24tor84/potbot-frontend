@@ -1,37 +1,45 @@
-// app/build.gradle
-
-plugins {
-    id 'com.android.application'
-    id 'com.google.gms.google-services' // Keep this if you're using Firebase/Google Services
-    id 'com.capacitorjs.capacitor-android' // This is the standard plugin ID for Capacitor in the plugins block
-}
+apply plugin: 'com.android.application'
+apply plugin: 'com.google.gms.google-services'
 
 android {
-    namespace 'com.rankyourdank.potbot' // Your application's package name
-    compileSdk 34 // Or your desired compile SDK version (e.g., 34 for Android 14)
+    namespace "com.rankyourdank.potbot"
+    compileSdkVersion 34
 
     defaultConfig {
-        applicationId 'com.rankyourdank.potbot' // Your application ID (usually same as namespace)
-        minSdk 24 // Your desired minimum SDK version
-        targetSdk 34 // Your desired target SDK version (usually same as compileSdk)
+        applicationId "com.rankyourdank.potbot"
+        minSdkVersion 24
+        targetSdkVersion 34
         versionCode 1
         versionName "1.0"
-
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
         release {
             minifyEnabled false
+            shrinkResources false
+            signingConfig signingConfigs.release
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
     }
-    // If you're using Kotlin, add this block:
-    // kotlinOptions {
-    //     jvmTarget = '1.8'
-    // }
+
+    kotlinOptions {
+        jvmTarget = "11"
+    }
+
+    buildFeatures {
+        buildConfig true
+    }
+}
+
+dependencies {
+    implementation project(':capacitor-android')
+    implementation 'com.google.firebase:firebase-analytics'
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'com.google.android.material:material:1.9.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
 }
