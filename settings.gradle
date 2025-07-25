@@ -15,4 +15,6 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = 'PotBot'
+
 include ':app'
+project(':app').projectDir = file('frontend/android/app')

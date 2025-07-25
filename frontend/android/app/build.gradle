@@ -1,23 +1,21 @@
-// app/build.gradle
+// app/build.gradle (Located at frontend/android/app/build.gradle)
 
-plugins {
-    id 'com.android.application'
-    id 'com.google.gms.google-services' // Keep this if you're using Firebase/Google Services
-    id 'com.capacitorjs.capacitor-android' // This is the standard plugin ID for Capacitor in the plugins block
-}
+apply plugin: 'com.android.application'
+apply plugin: 'com.google.gms.google-services'
+apply plugin: 'com.capacitorjs.capacitor-android'
 
 android {
-    namespace 'com.rankyourdank.potbot' // Your application's package name
-    compileSdk 34 // Or your desired compile SDK version (e.g., 34 for Android 14)
+    namespace 'com.rankyourdank.potbot'
+    compileSdk 34
 
     defaultConfig {
-        applicationId 'com.rankyourdank.potbot' // Your application ID (usually same as namespace)
-        minSdk 24 // Your desired minimum SDK version
-        targetSdk 34 // Your desired target SDK version (usually same as compileSdk)
+        applicationId 'com.rankyourdank.potbot'
+        minSdk 24
+        targetSdk 34
         versionCode 1
-        versionName "1.0"
+        versionName '1.0'
 
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
     }
 
     buildTypes {
@@ -26,12 +24,35 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
-    // If you're using Kotlin, add this block:
-    // kotlinOptions {
-    //     jvmTarget = '1.8'
-    // }
+
+    // Uncomment if you're using Kotlin
+    /*
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+    */
+}
+
+dependencies {
+    // Standard AndroidX libraries
+    implementation 'androidx.core:core-ktx:1.10.1'
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'com.google.android.material:material:1.9.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+
+    // Capacitor dependency
+    implementation project(':capacitor-android')
+
+    // Optional: Your additional libraries
+    implementation 'com.squareup.okhttp3:okhttp:4.9.3'
+
+    // Testing dependencies
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
 }

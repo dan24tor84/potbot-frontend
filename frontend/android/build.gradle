@@ -1,23 +1,21 @@
-// Top-level build file where you can add configuration options common to all sub-projects/modules.
+// frontend/android/build.gradle
+
 buildscript {
-    ext {
-        kotlin_version = '1.9.10' // You can adjust this Kotlin version if needed
-    }
     repositories {
-        google()      // Essential for Android-related build tools
-        mavenCentral() // Common repository for many Java/Gradle dependencies
+        google()
+        mavenCentral()
     }
+
     dependencies {
-        // Android Gradle Plugin (AGP) - MUST match your desired Android Studio/SDK compatibility
-        classpath 'com.android.tools.build:gradle:8.3.0' // Adjust this AGP version if needed (e.g., 8.2.0, 8.4.0)
+        classpath 'com.android.tools.build:gradle:8.3.1'
+        classpath 'com.google.gms:google-services:4.4.1'
+        classpath 'com.capacitorjs:capacitordependency:4.0.0'
+    }
+}
 
-        // Kotlin Gradle Plugin - MUST match your Kotlin version
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-
-        // Google Services Plugin (for Firebase, etc.)
-        classpath 'com.google.gms:google-services:4.4.1' // Adjust this version if needed
-
-        // Add any other top-level classpath dependencies that Gradle itself needs to run the build
-        // For example, if you have a Crashlytics plugin or other build-time plugins.
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
     }
 }
