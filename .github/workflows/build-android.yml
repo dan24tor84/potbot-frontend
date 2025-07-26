@@ -1,4 +1,4 @@
-name: Build Android App Bundle with Capacitor
+name: Build Android App Bundle
 
 on:
   push:
@@ -10,11 +10,15 @@ on:
 
 jobs:
   build:
-    name: Build Android App Bundle with Capacitor
+    name: Build Android AAB with Capacitor
     runs-on: ubuntu-latest
 
+    defaults:
+      run:
+        shell: bash
+
     steps:
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v3
 
       - name: Set up Node.js
@@ -22,38 +26,46 @@ jobs:
         with:
           node-version: 18
 
-      - name: Install frontend dependencies (Yarn)
-        run: yarn install
+      - name: Install frontend dependencies
+        run: yarn install --frozen-lockfile
         working-directory: ./frontend
 
       - name: Build frontend
         run: yarn build
         working-directory: ./frontend
 
-      - name: Sync Capacitor
+      - name: Capacitor sync
         run: npx cap sync android
         working-directory: ./frontend
 
-      - name: Copy web assets to Android
+      - name: Capacitor copy
         run: npx cap copy android
         working-directory: ./frontend
 
-      - name: Set up JDK 17
+      - name: Decode Keystore File
+        run: echo "${{ secrets.potbotkey }}" | base64 --decode > ./frontend/android/potbot-release-key.jks
+
+      - name: Set up Java
         uses: actions/setup-java@v3
         with:
-          distribution: 'temurin'
+          distribution: temurin
           java-version: 17
 
-      - name: Set Gradle executable permission
+      - name: Grant execute permission to Gradlew
         run: chmod +x ./gradlew
         working-directory: ./frontend/android
 
-      - name: Build Android AAB
-        run: ./gradlew bundleRelease
+      - name: Build Android App Bundle
+        run: |
+          ./gradlew bundleRelease \
+            -Pandroid.injected.signing.store.file=potbot-release-key.jks \
+            -Pandroid.injected.signing.store.password=Dlt846adt! \
+            -Pandroid.injected.signing.key.alias=potbotkey \
+            -Pandroid.injected.signing.key.password=Dlt846adt!
         working-directory: ./frontend/android
 
-      - name: Upload AAB artifact
+      - name: Upload AAB Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: PotBot-aab
+          name: PotBot-AAB
           path: frontend/android/app/build/outputs/bundle/release/app-release.aab
