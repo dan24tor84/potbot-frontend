@@ -3,22 +3,25 @@ package com.rankyourdank.potbot;
 import android.os.Bundle;
 import com.getcapacitor.BridgeActivity;
 import com.getcapacitor.Plugin;
+import com.getcapacitor.plugin.Camera;
+import com.getcapacitor.plugin.Geolocation;
+import com.getcapacitor.plugin.Permissions;
 
-import com.getcapacitor.community.camera.CameraPreview;
-import com.getcapacitor.community.filepicker.FilePicker;
-import com.getcapacitor.community.geolocation.GeolocationPlugin;
-import com.getcapacitor.community.permissions.PermissionsPlugin;
+import java.util.ArrayList;
 
 public class MainActivity extends BridgeActivity {
-  @Override
-  public void onCreate(Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
-    this.init(savedInstanceState, new Plugin[] {
-      CameraPreview.class,
-      FilePicker.class,
-      GeolocationPlugin.class,
-      PermissionsPlugin.class
-    });
-  }
+        // Initialize Capacitor plugins
+        this.init(
+            savedInstanceState,
+            new ArrayList<Class<? extends Plugin>>() {{
+                add(Camera.class);
+                add(Geolocation.class);
+                add(Permissions.class);
+            }}
+        );
+    }
 }
