@@ -1,18 +1,24 @@
+
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
     <!-- Base application theme -->
     <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
-        <!-- Customize your theme here -->
+        <!-- Primary brand colors -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryVariant">@color/colorPrimaryDark</item>
         <item name="colorOnPrimary">@color/white</item>
+
+        <!-- Secondary brand colors -->
         <item name="colorSecondary">@color/potbot_green</item>
         <item name="colorSecondaryVariant">@color/success_green</item>
         <item name="colorOnSecondary">@color/black</item>
+
+        <!-- Status bar color -->
         <item name="android:statusBarColor">@color/colorPrimaryDark</item>
     </style>
 
+    <!-- Optional: No action bar version -->
     <style name="AppTheme.NoActionBar">
         <!-- Add customizations here for NoActionBar theme if needed -->
     </style>
