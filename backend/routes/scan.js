@@ -3,7 +3,7 @@ const express = require('express');
 const router = express.Router();
 const { analyzeImage } = require('../utils/aiAnalyzer');
 
-router.post('/', (req, res) => {
+router.post('/', async (req, res) => {
   try {
     const { image } = req.body;
 
@@ -11,7 +11,7 @@ router.post('/', (req, res) => {
       return res.status(400).json({ error: 'No image provided' });
     }
 
-    const result = analyzeImage(image);
+    const result = await analyzeImage(image); // ✅ FIX: added await
     res.json(result);
   } catch (error) {
     console.error('Error during scan:', error);
