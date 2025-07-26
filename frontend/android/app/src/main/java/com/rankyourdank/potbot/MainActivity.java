@@ -1,5 +1,6 @@
 package com.rankyourdank.potbot;
 
+import android.os.Bundle;
 import com.getcapacitor.BridgeActivity;
 import com.getcapacitor.Plugin;
 
