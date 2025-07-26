@@ -1,43 +1,57 @@
-const axios = require('axios');
+// backend/utils/aiAnalyzer.js
 
-// Make sure this is set in your .env
-const REPLICATE_API_TOKEN = process.env.REPLICATE_API_TOKEN;
+const { Configuration, OpenAIApi } = require("openai");
 
-// Replicate model for cannabis quality detection (example placeholder)
-const MODEL_URL = "https://api.replicate.com/v1/predictions";
+const configuration = new Configuration({
+  apiKey: process.env.OpenAI,
+});
 
+const openai = new OpenAIApi(configuration);
+
+/**
+ * Analyze a cannabis image and return AI-based insights.
+ * @param {string} base64Image - A base64-encoded image string (data:image/jpeg;base64,...)
+ * @returns {Promise<Object>} - AI analysis result
+ */
 async function analyzeImage(base64Image) {
   try {
-    const response = await axios.post(MODEL_URL, {
-      version: "cjwbw/bud-quality-scanner", // Example Replicate model
-      input: {
-        image: base64Image,
-      },
-    }, {
-      headers: {
-        Authorization: `Token ${REPLICATE_API_TOKEN}`,
-        'Content-Type': 'application/json',
-      }
+    const response = await openai.createChatCompletion({
+      model: "gpt-4-vision-preview",
+      messages: [
+        {
+          role: "system",
+          content: "You're an expert cannabis quality inspector. Analyze trichomes, trim, mold, and visual quality from the photo provided. Provide a Dank Score (0–100) and 3 expert tips.",
+        },
+        {
+          role: "user",
+          content: [
+            {
+              type: "text",
+              text: "Please analyze this cannabis bud image and rate its quality.",
+            },
+            {
+              type: "image_url",
+              image_url: {
+                url: base64Image,
+              },
+            },
+          ],
+        },
+      ],
+      max_tokens: 1000,
     });
 
-    const output = response.data;
+    const result = response.data.choices[0].message.content;
 
-    // Extract and format the results
     return {
-      dankScore: output?.output?.score || 80,
-      trichomeDensity: output?.output?.trichomes || 'Moderate',
-      trimQuality: output?.output?.trim || 'Clean',
-      moldRisk: output?.output?.mold || 'Low',
-      impression: output?.output?.description || 'Looks pretty good!'
+      success: true,
+      analysis: result,
     };
-  } catch (error) {
-    console.error("AI analysis error:", error.response?.data || error.message);
+  } catch (err) {
+    console.error("OpenAI error:", err?.response?.data || err.message);
     return {
-      dankScore: 75,
-      trichomeDensity: 'Unknown',
-      trimQuality: 'Unknown',
-      moldRisk: 'Unknown',
-      impression: 'AI analysis failed — using fallback values.'
+      success: false,
+      error: "Failed to analyze image with AI.",
     };
   }
 }
