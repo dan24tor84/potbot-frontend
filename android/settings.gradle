@@ -5,15 +5,15 @@ pluginManagement {
         mavenCentral()
     }
 }
+
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
         google()
         mavenCentral()
-        // Add other custom repos here if needed, e.g., maven { url 'https://jitpack.io' }
+        maven { url 'https://capacitor.github.io/android-maven/' }
     }
 }
+
 rootProject.name = "potbot"
-include ':app'
-// If capacitor-android is a local module, ensure it's included:
-// include ':capacitor-android'
+include(":app")

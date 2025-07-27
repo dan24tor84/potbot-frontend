@@ -1,12 +1,10 @@
 {
   "build": {
-    "env": {
-      "NODE_ENV": "production"
-    }
+    "builder": "npm",
+    "buildCommand": "yarn build",
+    "outputDirectory": "build"
   },
   "deploy": {
-    "startCommand": "node server.js",
-    "healthcheckPath": "/",
-    "restartPolicyType": "ALWAYS"
+    "startCommand": "serve -s build"
   }
 }
