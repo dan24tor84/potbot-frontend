@@ -1,16 +1,24 @@
-import React from 'react';
-import { useCamera } from './hooks/useCamera';
+import { useState } from 'react';
+import { Camera } from '@capacitor/camera';
 
-const CameraButton = () => {
-  const { takePicture, photoUri, error } = useCamera();
+export const useCamera = () => {
+  const [photoUri, setPhotoUri] = useState(null);
+  const [error, setError] = useState(null);
 
-  return (
-    <div style={{ textAlign: 'center', padding: '2rem' }}>
-      <button onClick={takePicture}>Take Photo</button>
-      {photoUri && <img src={photoUri} alt="Captured" style={{ marginTop: '1rem', maxWidth: '100%' }} />}
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-    </div>
-  );
+  const takePicture = async () => {
+    try {
+      const image = await Camera.getPhoto({
+        quality: 90,
+        allowEditing: false,
+        resultType: 'uri',
+        source: 'CAMERA'
+      });
+
+      setPhotoUri(image.webPath);
+    } catch (err) {
+      setError(err);
+    }
+  };
+
+  return { takePicture, photoUri, error };
 };
-
-export default CameraButton;
