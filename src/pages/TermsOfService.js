@@ -3,15 +3,14 @@ import React from "react";
 const TermsOfService = () => {
   return (
     <div style={{ padding: "20px" }}>
-      <h1>Terms of Service</h1>
+      <h2>Terms of Service</h2>
       <p>
-        By using PotBot, you agree not to misuse the app or submit illegal content.
+        PotBot is intended for legal cannabis users 21+ in jurisdictions where cannabis is permitted.
+        By using PotBot, you agree not to misuse the AI tools for unlawful activity or misrepresentation.
       </p>
       <p>
-        PotBot is an AI-powered tool provided “as is.” We are not responsible for health decisions based solely on scan results.
-      </p>
-      <p>
-        All purchases are final. No refunds are guaranteed unless required by law.
+        All analyses are estimates and for informational purposes only. PotBot is not a substitute
+        for lab testing or professional diagnosis.
       </p>
     </div>
   );
