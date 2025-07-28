@@ -1,20 +1,20 @@
 import React from "react";
 
-const TermsOfService = () => {
+const PrivacyPolicy = () => {
   return (
     <div style={{ padding: "20px" }}>
-      <h1>Terms of Service</h1>
+      <h2>Privacy Policy</h2>
       <p>
-        By using PotBot, you agree not to misuse the app or submit illegal content.
+        PotBot respects your privacy. We do not sell or share your data.
+        Image uploads are used solely for analysis and never stored without your consent.
+        Any AI model integrations (including mold detection) are secure and transient.
       </p>
       <p>
-        PotBot is an AI-powered tool provided “as is.” We are not responsible for health decisions based solely on scan results.
-      </p>
-      <p>
-        All purchases are final. No refunds are guaranteed unless required by law.
+        We use cookies to enhance app performance and remember user preferences.
+        By continuing to use the app, you agree to our data practices.
       </p>
     </div>
   );
 };
 
-export default TermsOfService;
+export default PrivacyPolicy;
