@@ -3,15 +3,14 @@ import React from "react";
 const Security = () => {
   return (
     <div style={{ padding: "20px" }}>
-      <h1>Security Notice</h1>
+      <h2>Security Practices</h2>
       <p>
-        PotBot implements secure image upload and encrypted database storage.
+        PotBot uses secure HTTPS and follows best practices to protect your uploads and interactions.
+        Your image data is processed in real-time and not saved unless explicitly permitted.
       </p>
       <p>
-        API keys and user data are protected using environment variables and backend authentication.
-      </p>
-      <p>
-        We take security seriously. Report any concerns to: security@rankyourdank.com
+        We implement secure API keys and monitor third-party services (OpenAI, Replicate, Firebase)
+        for any vulnerabilities.
       </p>
     </div>
   );
