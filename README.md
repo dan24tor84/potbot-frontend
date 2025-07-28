@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="https://raw.githubusercontent.com/dan24tor84/potbot-frontend/main/public/potbot-logo.png" alt="PotBot Logo" width="200"/>
+</p>
+
 # PotBot 🌿🤖  
 **The World’s First AI-Powered Cannabis Scanner App**
 
@@ -78,30 +82,4 @@ Custom domain and branding active.
 
 ## 👨‍💻 Developer Info
 
-- Built by: [dan24tor84](https://github.com/dan24tor84)  
-- Brand: **Rank Your Dank**  
-- Gmail: `daniel@rankyourdank.com`
-
----
-
-## 💡 Want to Buy This App?
-
-This app is for sale.  
-If you're a cannabis brand, SaaS reseller, or marketing firm interested in exclusive rights, contact the developer via GitHub or [daniel@rankyourdank.com](mailto:daniel@rankyourdank.com).
-
----
-
-## 🧠 Coming Soon
-
-- Vendor Portal with affiliate gear
-- Cannabis seed/grow kit marketplace
-- iOS version
-- Shareable scan results
-- AI-trained model fine-tuning
-
----
-
-## 📝 License
-
-MIT License.  
-© 2025 Rank Your Dank™ — All Rights Reserved.
+- Built by: [
