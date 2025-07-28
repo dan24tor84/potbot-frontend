@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "155798422559",
+    "project_id": "potbotai",
+    "storage_bucket": "potbotai.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:155798422559:android:442fd73bf47c1c2793c12a",
+        "android_client_info": {
+          "package_name": "com.rankyourdank.potbot"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCp3fH5k5gIBAu08YOnau_9D0UcCKSRVIQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
