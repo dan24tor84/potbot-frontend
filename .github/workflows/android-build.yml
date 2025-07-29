@@ -29,37 +29,28 @@ jobs:
         uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
-          java-version: 17
+          java-version: '17'
 
       - name: Install dependencies
         run: yarn install
-        working-directory: .
 
       - name: Install Capacitor CLI
-        run: |
-          yarn global add @capacitor/cli
-          yarn install
-        working-directory: .
+        run: yarn dlx @capacitor/cli@5.0.5 --version
 
       - name: Build frontend
         run: yarn build
-        working-directory: .
 
       - name: Sync Capacitor
-        run: npx cap sync android
-        working-directory: .
+        run: yarn dlx cap sync android
 
       - name: Copy web assets
-        run: npx cap copy android
-        working-directory: .
+        run: yarn dlx cap copy android
 
       - name: Set Gradlew permissions
         run: chmod +x android/gradlew
-        working-directory: .
 
       - name: Build AAB
-        run: ./gradlew bundleRelease
-        working-directory: android
+        run: cd android && ./gradlew bundleRelease
 
       - name: Upload AAB artifact
         uses: actions/upload-artifact@v4
