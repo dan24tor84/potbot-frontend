@@ -4,23 +4,23 @@ import android.os.Bundle;
 import com.getcapacitor.BridgeActivity;
 import com.getcapacitor.Plugin;
 
+import com.getcapacitor.plugin.camera.CameraPlugin;
+import com.getcapacitor.plugin.filesystem.FilesystemPlugin;
+import com.getcapacitor.plugin.geolocation.GeolocationPlugin;
+import com.getcapacitor.plugin.permissions.PermissionsPlugin;
+
 import java.util.ArrayList;
 
-import com.getcapacitor.community.camera.Camera;
-import com.getcapacitor.community.filesystem.Filesystem;
-import com.getcapacitor.community.geolocation.Geolocation;
-import com.getcapacitor.community.permissions.Permissions;
-
 public class MainActivity extends BridgeActivity {
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+  @Override
+  public void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
 
-        this.init(savedInstanceState, new ArrayList<Class<? extends Plugin>>() {{
-            add(Camera.class);
-            add(Filesystem.class);
-            add(Geolocation.class);
-            add(Permissions.class);
-        }});
-    }
+    this.init(savedInstanceState, new ArrayList<Class<? extends Plugin>>() {{
+      add(CameraPlugin.class);
+      add(FilesystemPlugin.class);
+      add(GeolocationPlugin.class);
+      add(PermissionsPlugin.class);
+    }});
+  }
 }
