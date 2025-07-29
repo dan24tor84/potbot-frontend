@@ -35,12 +35,14 @@ jobs:
         run: yarn install
         working-directory: .
 
-      - name: Build frontend
-        run: yarn build
+      - name: Install Capacitor CLI
+        run: |
+          yarn global add @capacitor/cli
+          yarn install
         working-directory: .
 
-      - name: Install Capacitor CLI
-        run: yarn dlx @capacitor/cli sync android
+      - name: Build frontend
+        run: yarn build
         working-directory: .
 
       - name: Sync Capacitor
