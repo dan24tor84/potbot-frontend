@@ -2,16 +2,18 @@ name: Build Android App Bundle
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
   pull_request:
-    branches:
-      - main
+    branches: [main]
 
 jobs:
   build:
     name: Build Android App Bundle with Capacitor
     runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: ./
 
     steps:
       - name: Checkout repo
@@ -25,32 +27,24 @@ jobs:
       - name: Enable Corepack for Yarn 4
         run: corepack enable
 
-      - name: Set up Java
-        uses: actions/setup-java@v3
-        with:
-          distribution: 'temurin'
-          java-version: '17'
-
       - name: Install dependencies
         run: yarn install
-
-      - name: Install Capacitor CLI
-        run: yarn dlx @capacitor/cli@5.0.5 --version
 
       - name: Build frontend
         run: yarn build
 
       - name: Sync Capacitor
-        run: yarn dlx cap sync android
+        run: npx cap sync android
 
-      - name: Copy web assets
-        run: yarn dlx cap copy android
+      - name: Copy web assets to Android
+        run: npx cap copy android
 
-      - name: Set Gradlew permissions
+      - name: Grant Gradle permission
         run: chmod +x android/gradlew
 
-      - name: Build AAB
-        run: cd android && ./gradlew bundleRelease
+      - name: Build Android AAB
+        run: ./android/gradlew bundleRelease
+        working-directory: android
 
       - name: Upload AAB artifact
         uses: actions/upload-artifact@v4
