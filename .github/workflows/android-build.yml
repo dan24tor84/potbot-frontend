@@ -4,7 +4,9 @@ on:
   push:
     branches:
       - main
-  workflow_dispatch:
+  pull_request:
+    branches:
+      - main
 
 jobs:
   build:
@@ -14,6 +16,8 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
+        with:
+          persist-credentials: false
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
@@ -26,33 +30,39 @@ jobs:
       - name: Set up Java
         uses: actions/setup-java@v3
         with:
-          distribution: 'zulu'
+          distribution: 'temurin'
           java-version: '17'
 
       - name: Install dependencies
         run: yarn install
+        working-directory: ./frontend
 
       - name: Build frontend
         run: yarn build
+        working-directory: ./frontend
 
-      - name: Install Capacitor CLI
-        run: yarn global add @capacitor/cli
+      - name: Install Capacitor CLI via Yarn DLX
+        run: yarn dlx @capacitor/cli --version
+        working-directory: ./frontend
 
       - name: Sync Capacitor
-        run: npx cap sync android
+        run: yarn dlx @capacitor/cli sync android
+        working-directory: ./frontend
 
       - name: Copy web assets
-        run: npx cap copy android
+        run: yarn dlx @capacitor/cli copy android
+        working-directory: ./frontend
 
       - name: Set Gradlew permissions
         run: chmod +x android/gradlew
+        working-directory: ./frontend
 
       - name: Build AAB
         run: ./gradlew bundleRelease
-        working-directory: android
+        working-directory: ./frontend/android
 
-      - name: Upload AAB
-        uses: actions/upload-artifact@v4
+      - name: Upload AAB artifact
+        uses: actions/upload-artifact@v3
         with:
-          name: potbot-release-aab
-          path: android/app/build/outputs/bundle/release/app-release.aab
+          name: app-release.aab
+          path: frontend/android/app/build/outputs/bundle/release/app-release.aab
