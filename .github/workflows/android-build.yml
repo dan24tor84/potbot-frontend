@@ -20,40 +20,41 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 18
+          node-version: 20
 
       - name: Enable Corepack for Yarn 4
         run: corepack enable
 
-      - name: Set up Java
-        uses: actions/setup-java@v3
-        with:
-          distribution: 'temurin'
-          java-version: '17'
-
       - name: Install dependencies
         run: yarn install
+        working-directory: ./frontend
 
       - name: Install Capacitor CLI locally
         run: yarn add @capacitor/cli
+        working-directory: ./frontend
 
       - name: Build frontend
         run: yarn build
+        working-directory: ./frontend
 
       - name: Sync Capacitor
         run: yarn exec cap sync android
+        working-directory: ./frontend
 
       - name: Copy web assets to Android
         run: yarn exec cap copy android
+        working-directory: ./frontend
 
       - name: Grant Gradlew permissions
-        run: chmod +x android/gradlew
+        run: chmod +x ./android/gradlew
+        working-directory: ./frontend
 
-      - name: Build AAB
-        run: cd android && ./gradlew bundleRelease
+      - name: Build Android AAB
+        run: ./gradlew bundleRelease
+        working-directory: ./frontend/android
 
       - name: Upload AAB artifact
         uses: actions/upload-artifact@v4
         with:
-          name: app-bundle
-          path: android/app/build/outputs/bundle/release/app-release.aab
+          name: release-bundle
+          path: frontend/android/app/build/outputs/bundle/release/app-release.aab
