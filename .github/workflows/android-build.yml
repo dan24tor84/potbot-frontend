@@ -10,14 +10,12 @@ on:
 
 jobs:
   build:
-    name: Build Android AAB with Capacitor
+    name: Build Android App Bundle with Capacitor
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
-        with:
-          persist-credentials: false
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
@@ -31,38 +29,38 @@ jobs:
         uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
-          java-version: '17'
+          java-version: 17
 
       - name: Install dependencies
         run: yarn install
-        working-directory: ./frontend
+        working-directory: .
 
       - name: Build frontend
         run: yarn build
-        working-directory: ./frontend
+        working-directory: .
 
-      - name: Install Capacitor CLI via Yarn DLX
-        run: yarn dlx @capacitor/cli --version
-        working-directory: ./frontend
+      - name: Install Capacitor CLI
+        run: yarn dlx @capacitor/cli sync android
+        working-directory: .
 
       - name: Sync Capacitor
-        run: yarn dlx @capacitor/cli sync android
-        working-directory: ./frontend
+        run: npx cap sync android
+        working-directory: .
 
       - name: Copy web assets
-        run: yarn dlx @capacitor/cli copy android
-        working-directory: ./frontend
+        run: npx cap copy android
+        working-directory: .
 
       - name: Set Gradlew permissions
         run: chmod +x android/gradlew
-        working-directory: ./frontend
+        working-directory: .
 
       - name: Build AAB
         run: ./gradlew bundleRelease
-        working-directory: ./frontend/android
+        working-directory: android
 
       - name: Upload AAB artifact
         uses: actions/upload-artifact@v4
         with:
-        name: app-release.aab
-        path: frontend/android/app/build/outputs/bundle/release/app-release.aab
+          name: app-release.aab
+          path: android/app/build/outputs/bundle/release/app-release.aab
