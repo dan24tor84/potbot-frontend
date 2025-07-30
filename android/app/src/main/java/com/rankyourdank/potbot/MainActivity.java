@@ -11,7 +11,6 @@ import com.getcapacitor.plugin.haptics.HapticsPlugin;
 import com.getcapacitor.plugin.preferences.PreferencesPlugin;
 import com.getcapacitor.plugin.statusbar.StatusBarPlugin;
 import com.getcapacitor.plugin.toast.ToastPlugin;
-import com.getcapacitor.plugin.permission.PermissionPlugin;
 
 import java.util.ArrayList;
 
@@ -29,7 +28,6 @@ public class MainActivity extends BridgeActivity {
         add(PreferencesPlugin.class);
         add(StatusBarPlugin.class);
         add(ToastPlugin.class);
-        add(PermissionPlugin.class);
       }}
     );
   }
