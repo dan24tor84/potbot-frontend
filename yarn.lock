@@ -1581,7 +1581,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@capacitor/android@npm:^5.0.5":
+"@capacitor/android@npm:5":
   version: 5.7.8
   resolution: "@capacitor/android@npm:5.7.8"
   peerDependencies:
@@ -1599,12 +1599,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@capacitor/camera@npm:^5.0.5":
-  version: 5.0.10
-  resolution: "@capacitor/camera@npm:5.0.10"
+"@capacitor/camera@npm:^7.0.1":
+  version: 7.0.1
+  resolution: "@capacitor/camera@npm:7.0.1"
   peerDependencies:
-    "@capacitor/core": ^5.0.0
-  checksum: 10c0/1915bd74e16873ca858453302699655398435fbf5d142f16c5cbca48f992ceb2f6fd60ec443bc86595e7b890ebc6fb753f63300616d47cc3499c17b32fa12ddd
+    "@capacitor/core": ">=7.0.0"
+  checksum: 10c0/703c4c2b0c76126d3eda0d8b54a59e6f32e22ffc9faf96f8b6c815fbfeae7712b7f05d587a9b4644a00bfaea5e1f94ae1f5e5329ba5db33608a037f1201460f4
   languageName: node
   linkType: hard
 
@@ -1636,7 +1636,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@capacitor/core@npm:^5.0.5":
+"@capacitor/core@npm:5":
   version: 5.7.8
   resolution: "@capacitor/core@npm:5.7.8"
   dependencies:
@@ -1645,57 +1645,68 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@capacitor/filesystem@npm:^5.0.5":
-  version: 5.2.2
-  resolution: "@capacitor/filesystem@npm:5.2.2"
+"@capacitor/filesystem@npm:^7.1.3":
+  version: 7.1.3
+  resolution: "@capacitor/filesystem@npm:7.1.3"
+  dependencies:
+    "@capacitor/synapse": "npm:^1.0.3"
   peerDependencies:
-    "@capacitor/core": ^5.1.1
-  checksum: 10c0/bb60684563959c744db0dfb3543c32265bdd9841c338e50da71cec019dce0cdf0e56a68c56bfa280d14e5aa1684dc1646406884d32fa31a6290ae0d6966b914e
+    "@capacitor/core": ">=7.0.0"
+  checksum: 10c0/3aa830c7849deea6265601f06d76de8176658714851ba8d833630dcb147e4a7db251d2fbf56d1ac385594272524e434f394a5b1f63738989cb8977f9bf6b7a4e
   languageName: node
   linkType: hard
 
-"@capacitor/geolocation@npm:^5.0.5":
-  version: 5.0.8
-  resolution: "@capacitor/geolocation@npm:5.0.8"
+"@capacitor/geolocation@npm:^7.1.4":
+  version: 7.1.4
+  resolution: "@capacitor/geolocation@npm:7.1.4"
+  dependencies:
+    "@capacitor/synapse": "npm:^1.0.3"
   peerDependencies:
-    "@capacitor/core": ^5.0.0
-  checksum: 10c0/3784048f75ee79a0bbaf7353524dd3a6c9317ee40c7c85970cb2842997faa31e749fb22a2628d7e456ae0e1156dbc6b190a6e5377dbee2d0089dfeaf277df70f
+    "@capacitor/core": ">=7.0.0"
+  checksum: 10c0/c1116a0ffd1053882d79a54a6b7b795f9f61924dc5191f52bef022470c1ebd858c441f088c2873452127350b4af4f28f4ddfdbe2b014759aa9a93aa065b06774
   languageName: node
   linkType: hard
 
-"@capacitor/haptics@npm:^5.0.5":
-  version: 5.0.8
-  resolution: "@capacitor/haptics@npm:5.0.8"
+"@capacitor/haptics@npm:^7.0.1":
+  version: 7.0.1
+  resolution: "@capacitor/haptics@npm:7.0.1"
   peerDependencies:
-    "@capacitor/core": ^5.0.0
-  checksum: 10c0/6a38a45df83ccaadabe0062f22d25dfe0a5fe06622ac5db3c427e3741a8e68b20fa1920ad05cb35e8d42169e9d39268c431fd0e0a59bf8828b14305b3beb7d74
+    "@capacitor/core": ">=7.0.0"
+  checksum: 10c0/3e8145b80d29acfb26b6b615b13dda22bd9a1afb4c110b148efb27ccd4db26cc8e26246f83b1c11704a3bf159224db5247fdf91dd3c9cf652122fc76fed7aff7
   languageName: node
   linkType: hard
 
-"@capacitor/preferences@npm:^5.0.5":
-  version: 5.0.8
-  resolution: "@capacitor/preferences@npm:5.0.8"
+"@capacitor/preferences@npm:^7.0.1":
+  version: 7.0.1
+  resolution: "@capacitor/preferences@npm:7.0.1"
   peerDependencies:
-    "@capacitor/core": ^5.0.0
-  checksum: 10c0/643f1f8495a11d6684b1803159c4e66313aaa2ebfb32d622434a743e671196613cae86c61cfb3cca3fa5cc3133cd3117416b95caa26f3006df8ce916bbe574c6
+    "@capacitor/core": ">=7.0.0"
+  checksum: 10c0/b44ba50d9d3ac1f1bca93a5ec7443571792bc849a19ec03a7bc1d5d27cad9ff9a4550dfb21a4761cb01b625375a2b7669acdd0e33f0bbe80ed1e7a5024d53e45
   languageName: node
   linkType: hard
 
-"@capacitor/status-bar@npm:^5.0.5":
-  version: 5.0.8
-  resolution: "@capacitor/status-bar@npm:5.0.8"
+"@capacitor/status-bar@npm:^7.0.1":
+  version: 7.0.1
+  resolution: "@capacitor/status-bar@npm:7.0.1"
   peerDependencies:
-    "@capacitor/core": ^5.0.0
-  checksum: 10c0/263394ed28a5aeaf05b8ddc2a875ec89bfd7bf05431da51fb09637c68f0e36168890631d85a209d85e54cca7418698c2d455a7dd7ffa9303c1597675d7cbc5e7
+    "@capacitor/core": ">=7.0.0"
+  checksum: 10c0/bd1368030c0c051a32549b2dde6839e28328ec070896de202bb16b40af823772869687466569fa7a0186a4af8843597ced7933a5c04a2b88e924c858a4cf8675
   languageName: node
   linkType: hard
 
-"@capacitor/toast@npm:^5.0.5":
-  version: 5.0.8
-  resolution: "@capacitor/toast@npm:5.0.8"
+"@capacitor/synapse@npm:^1.0.3":
+  version: 1.0.4
+  resolution: "@capacitor/synapse@npm:1.0.4"
+  checksum: 10c0/83f37d06ebdb4234596f123417043aae8b0fd3b5905d399fe8bb7f1d7c3352c8449bef093793b01a0b3c4a59208ac27aec5b1ed7cf5e399c5c3004cc0ca74646
+  languageName: node
+  linkType: hard
+
+"@capacitor/toast@npm:^7.0.1":
+  version: 7.0.1
+  resolution: "@capacitor/toast@npm:7.0.1"
   peerDependencies:
-    "@capacitor/core": ^5.0.0
-  checksum: 10c0/976ef7d5b37cf31a2d48396408dd39e91385b8610f732308c99d5c46b8e6b418375574105ee13a86a43e4e35740280ac59dc08714b7c3d900a6efd489130a49a
+    "@capacitor/core": ">=7.0.0"
+  checksum: 10c0/39d1a0353b3a67324a04e4a8026ccdce1ae3e98b47083867b5fc5f850a448fe6d6ac61d4d6b02d8e76f2e2422eb6f23d916580a2c20f21e207606cf214479bde
   languageName: node
   linkType: hard
 
@@ -4173,8 +4184,8 @@ __metadata:
   linkType: hard
 
 "babel-preset-current-node-syntax@npm:^1.0.0":
-  version: 1.1.0
-  resolution: "babel-preset-current-node-syntax@npm:1.1.0"
+  version: 1.1.1
+  resolution: "babel-preset-current-node-syntax@npm:1.1.1"
   dependencies:
     "@babel/plugin-syntax-async-generators": "npm:^7.8.4"
     "@babel/plugin-syntax-bigint": "npm:^7.8.3"
@@ -4192,8 +4203,8 @@ __metadata:
     "@babel/plugin-syntax-private-property-in-object": "npm:^7.14.5"
     "@babel/plugin-syntax-top-level-await": "npm:^7.14.5"
   peerDependencies:
-    "@babel/core": ^7.0.0
-  checksum: 10c0/0b838d4412e3322cb4436f246e24e9c00bebcedfd8f00a2f51489db683bd35406bbd55a700759c28d26959c6e03f84dd6a1426f576f440267c1d7a73c5717281
+    "@babel/core": ^7.0.0 || ^8.0.0-0
+  checksum: 10c0/e774fbd1504fecbd209da23a6aaa575fa39b50edb21197284321f319c2e81831d6c114f6d3734ec22c5dfb66e54d6404b370590bf44b975003b6b6e650184064
   languageName: node
   linkType: hard
 
@@ -4561,9 +4572,9 @@ __metadata:
   linkType: hard
 
 "caniuse-lite@npm:^1.0.0, caniuse-lite@npm:^1.0.30001702, caniuse-lite@npm:^1.0.30001726":
-  version: 1.0.30001727
-  resolution: "caniuse-lite@npm:1.0.30001727"
-  checksum: 10c0/f0a441c05d8925d728c2d02ce23b001935f52183a3bf669556f302568fe258d1657940c7ac0b998f92bc41383e185b390279a7d779e6d96a2b47881f56400221
+  version: 1.0.30001731
+  resolution: "caniuse-lite@npm:1.0.30001731"
+  checksum: 10c0/d8cddf817d5bec8e7c2106affdbf1bfc3923463ca16697c992b2efeb043e6a5d9dcb70cda913bc6acf9112fd66f9e80279316c08e7800359116925066a63fdfa
   languageName: node
   linkType: hard
 
@@ -5732,9 +5743,9 @@ __metadata:
   linkType: hard
 
 "electron-to-chromium@npm:^1.5.173":
-  version: 1.5.191
-  resolution: "electron-to-chromium@npm:1.5.191"
-  checksum: 10c0/26b22ec2ae2a152da09f062d8582e54384a15ddc2a27149cdc2747a0c3f46154370a37b9e687de2d6d71ea1ebc1319f8394283ffb1581f1d4495cdefffd7a2a6
+  version: 1.5.192
+  resolution: "electron-to-chromium@npm:1.5.192"
+  checksum: 10c0/7993350fdd3c12d9667a42370ce3202bf3012fd6fed13ac1393eeb3fdda51347e805f340ae06939192f37b00a3d0856034b69b1bf6696ba96848fd42267a6f8b
   languageName: node
   linkType: hard
 
@@ -6845,22 +6856,23 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "frontend@workspace:."
   dependencies:
-    "@capacitor/android": "npm:^5.0.5"
+    "@capacitor/android": "npm:5"
     "@capacitor/app": "npm:^5.0.5"
-    "@capacitor/camera": "npm:^5.0.5"
+    "@capacitor/camera": "npm:^7.0.1"
     "@capacitor/cli": "npm:^5.0.5"
-    "@capacitor/core": "npm:^5.0.5"
-    "@capacitor/filesystem": "npm:^5.0.5"
-    "@capacitor/geolocation": "npm:^5.0.5"
-    "@capacitor/haptics": "npm:^5.0.5"
-    "@capacitor/preferences": "npm:^5.0.5"
-    "@capacitor/status-bar": "npm:^5.0.5"
-    "@capacitor/toast": "npm:^5.0.5"
+    "@capacitor/core": "npm:5"
+    "@capacitor/filesystem": "npm:^7.1.3"
+    "@capacitor/geolocation": "npm:^7.1.4"
+    "@capacitor/haptics": "npm:^7.0.1"
+    "@capacitor/preferences": "npm:^7.0.1"
+    "@capacitor/status-bar": "npm:^7.0.1"
+    "@capacitor/toast": "npm:^7.0.1"
     react: "npm:^18.2.0"
     react-dom: "npm:^18.2.0"
     react-router-dom: "npm:^6.21.0"
     react-scripts: "npm:^5.0.1"
     serve: "npm:^14.2.0"
+    typescript: "npm:^5.8.3"
     web-vitals: "npm:^3.1.1"
   languageName: unknown
   linkType: soft
@@ -8968,12 +8980,12 @@ __metadata:
   linkType: hard
 
 "launch-editor@npm:^2.6.0":
-  version: 2.10.0
-  resolution: "launch-editor@npm:2.10.0"
+  version: 2.11.0
+  resolution: "launch-editor@npm:2.11.0"
   dependencies:
-    picocolors: "npm:^1.0.0"
-    shell-quote: "npm:^1.8.1"
-  checksum: 10c0/8b5a26be6b0da1da039ed2254b837dea0651a6406ea4dc4c9a5b28ea72862f1b12880135c495baf9d8a08997473b44034172506781744cf82e155451a40b7d51
+    picocolors: "npm:^1.1.1"
+    shell-quote: "npm:^1.8.3"
+  checksum: 10c0/999b7816941398089bbf97919aeacab3dfac80230c5e59d491f23327786ee1ad24058b017eafb9e2d8f84384bb017a7b525ead718a30517b0efae9889a00fcc0
   languageName: node
   linkType: hard
 
@@ -12285,7 +12297,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"shell-quote@npm:^1.7.3, shell-quote@npm:^1.8.1":
+"shell-quote@npm:^1.7.3, shell-quote@npm:^1.8.3":
   version: 1.8.3
   resolution: "shell-quote@npm:1.8.3"
   checksum: 10c0/bee87c34e1e986cfb4c30846b8e6327d18874f10b535699866f368ade11ea4ee45433d97bf5eada22c4320c27df79c3a6a7eb1bf3ecfc47f2c997d9e5e2672fd
@@ -13407,6 +13419,26 @@ __metadata:
   languageName: node
   linkType: hard
 
+"typescript@npm:^5.8.3":
+  version: 5.8.3
+  resolution: "typescript@npm:5.8.3"
+  bin:
+    tsc: bin/tsc
+    tsserver: bin/tsserver
+  checksum: 10c0/5f8bb01196e542e64d44db3d16ee0e4063ce4f3e3966df6005f2588e86d91c03e1fb131c2581baf0fb65ee79669eea6e161cd448178986587e9f6844446dbb48
+  languageName: node
+  linkType: hard
+
+"typescript@patch:typescript@npm%3A^5.8.3#optional!builtin<compat/typescript>":
+  version: 5.8.3
+  resolution: "typescript@patch:typescript@npm%3A5.8.3#optional!builtin<compat/typescript>::version=5.8.3&hash=5786d5"
+  bin:
+    tsc: bin/tsc
+    tsserver: bin/tsserver
+  checksum: 10c0/39117e346ff8ebd87ae1510b3a77d5d92dae5a89bde588c747d25da5c146603a99c8ee588c7ef80faaf123d89ed46f6dbd918d534d641083177d5fac38b8a1cb
+  languageName: node
+  linkType: hard
+
 "unbox-primitive@npm:^1.1.0":
   version: 1.1.0
   resolution: "unbox-primitive@npm:1.1.0"
@@ -13812,8 +13844,8 @@ __metadata:
   linkType: hard
 
 "webpack@npm:^5.64.4":
-  version: 5.100.2
-  resolution: "webpack@npm:5.100.2"
+  version: 5.101.0
+  resolution: "webpack@npm:5.101.0"
   dependencies:
     "@types/eslint-scope": "npm:^3.7.7"
     "@types/estree": "npm:^1.0.8"
@@ -13845,7 +13877,7 @@ __metadata:
       optional: true
   bin:
     webpack: bin/webpack.js
-  checksum: 10c0/0add75d44c482634c6879a3fc87fa2af6a6c7c8eacda5d5f60ed778a2ce13d33fd6178a2b4750368706a49e769af6d828934c28914b4faa2e21be790f92b4110
+  checksum: 10c0/0fb5f70032ac53cfc2e667c97c6ceb903d280cebd03dd7f7ca794d8ab75d4f692483313efb90c616c2e4e266cf580a54df84cbaee43db36d7d42e450bf1569fd
   languageName: node
   linkType: hard
 
