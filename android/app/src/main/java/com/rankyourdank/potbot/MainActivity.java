@@ -12,7 +12,6 @@ import com.capacitorjs.plugins.preferences.PreferencesPlugin;
 import com.capacitorjs.plugins.statusbar.StatusBarPlugin;
 import com.capacitorjs.plugins.toast.ToastPlugin;
 import com.capacitorjs.plugins.localnotifications.LocalNotificationsPlugin;
-import com.capacitorjs.plugins.permissions.PermissionsPlugin;
 
 import java.util.ArrayList;
 
@@ -31,7 +30,6 @@ public class MainActivity extends BridgeActivity {
                 add(StatusBarPlugin.class);
                 add(ToastPlugin.class);
                 add(LocalNotificationsPlugin.class);
-                add(PermissionsPlugin.class);
             }}
         );
     }
