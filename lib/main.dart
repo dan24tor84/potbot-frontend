@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
-import 'screens/home_screen.dart';
-import 'screens/scan_screen.dart';
-import 'screens/grower_mode_screen.dart';
-import 'screens/leaderboard_screen.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
-void main() {
+void main() async {
+  // Load .env file before app runs
+  await dotenv.load(fileName: ".env");
   runApp(const PotBotApp());
 }
 
@@ -15,43 +18,134 @@ class PotBotApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'PotBot',
-      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         brightness: Brightness.dark,
-        scaffoldBackgroundColor: const Color(0xFF1A1A1A),
-        appBarTheme: const AppBarTheme(
-          backgroundColor: Colors.black,
-          foregroundColor: Color(0xFF00FF66),
-        ),
-        elevatedButtonTheme: ElevatedButtonThemeData(
-          style: ElevatedButton.styleFrom(
-            backgroundColor: const Color(0xFF00FF66),
-            foregroundColor: Colors.black,
-            textStyle: const TextStyle(fontWeight: FontWeight.bold),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(12)),
-            ),
-          ),
-        ),
-        colorScheme: const ColorScheme.dark(
-          primary: Color(0xFF00FF66),
-          secondary: Colors.tealAccent,
-        ),
+        primarySwatch: Colors.green,
+        scaffoldBackgroundColor: Colors.black,
         textTheme: const TextTheme(
           bodyLarge: TextStyle(color: Colors.white),
-          titleLarge: TextStyle(
-            color: Color(0xFF00FF66),
-            fontWeight: FontWeight.w600,
-          ),
+          bodyMedium: TextStyle(color: Colors.white70),
         ),
       ),
-      initialRoute: '/',
-      routes: {
-        '/': (context) => const HomeScreen(),
-        '/scan': (context) => const ScanScreen(),
-        '/grower': (context) => const GrowerModeScreen(),
-        '/leaderboard': (context) => const LeaderboardScreen(),
-      },
+      home: const PotBotHomePage(),
+    );
+  }
+}
+
+class PotBotHomePage extends StatefulWidget {
+  const PotBotHomePage({super.key});
+
+  @override
+  State<PotBotHomePage> createState() => _PotBotHomePageState();
+}
+
+class _PotBotHomePageState extends State<PotBotHomePage> {
+  File? _selectedImage;
+  String? _scanResult;
+  bool _isLoading = false;
+
+  Future<void> _pickImage(ImageSource source) async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(source: source);
+
+    if (pickedFile != null) {
+      setState(() {
+        _selectedImage = File(pickedFile.path);
+        _scanResult = null;
+      });
+
+      await _scanImage(_selectedImage!);
+    }
+  }
+
+  Future<void> _scanImage(File image) async {
+    setState(() => _isLoading = true);
+
+    final replicateApiToken = dotenv.env['REPLICATE_API_TOKEN'];
+    final apiUrl = dotenv.env['POTBOT_API_URL'];
+
+    if (replicateApiToken == null || apiUrl == null) {
+      setState(() {
+        _scanResult = "Missing API credentials.";
+        _isLoading = false;
+      });
+      return;
+    }
+
+    try {
+      final bytes = await image.readAsBytes();
+      final base64Image = base64Encode(bytes);
+
+      final response = await http.post(
+        Uri.parse('$apiUrl/api/scan'),
+        headers: {
+          'Authorization': 'Bearer $replicateApiToken',
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode({
+          'image': base64Image,
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        final json = jsonDecode(response.body);
+        setState(() {
+          _scanResult = json['result'] ?? 'Scan complete.';
+        });
+      } else {
+        setState(() {
+          _scanResult = 'Error: ${response.statusCode}';
+        });
+      }
+    } catch (e) {
+      setState(() {
+        _scanResult = 'Scan failed: $e';
+      });
+    } finally {
+      setState(() => _isLoading = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('PotBot'),
+        backgroundColor: Colors.green.shade800,
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            if (_selectedImage != null)
+              Image.file(_selectedImage!, height: 200),
+            const SizedBox(height: 20),
+            if (_isLoading)
+              const CircularProgressIndicator()
+            else if (_scanResult != null)
+              Text(
+                _scanResult!,
+                style: const TextStyle(fontSize: 18),
+              ),
+            const Spacer(),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                ElevatedButton.icon(
+                  onPressed: () => _pickImage(ImageSource.camera),
+                  icon: const Icon(Icons.camera_alt),
+                  label: const Text("Camera"),
+                ),
+                ElevatedButton.icon(
+                  onPressed: () => _pickImage(ImageSource.gallery),
+                  icon: const Icon(Icons.photo_library),
+                  label: const Text("Gallery"),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
