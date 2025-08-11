@@ -8,7 +8,6 @@ plugins {
 android {
     // *** Keep this as your official namespace ***
     namespace = "com.rankyourdank.potbot"
-
     // Flutter 3.22+ / AGP 8.x
     compileSdk = 34
 
