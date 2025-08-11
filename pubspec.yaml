@@ -1,12 +1,10 @@
-name: potbot_frontend_flutter
-description: "A new Flutter project."
-
-publish_to: 'none'
-
+name: potbot
+description: PotBot — AI‑powered cannabis quality scanner and grow assistant.
+publish_to: "none"
 version: 1.0.0+1
 
 environment:
-  sdk: ^3.8.1
+  sdk: ">=3.3.0 <4.0.0"
 
 dependencies:
   flutter:
@@ -21,31 +19,25 @@ dependencies:
 
   # File system / paths
   path_provider: ^2.1.2
+  path: ^1.9.0
 
   # Permissions
   permission_handler: ^11.3.0
 
-  # Geolocation (for Grower Mode, etc.)
+  # Geolocation (optional for grower mode)
   geolocator: ^10.1.0
 
-  # Firebase (optional, comment out if not using Firebase yet)
-  firebase_core: ^2.27.0
-  firebase_storage: ^11.6.0
-  firebase_auth: ^4.17.0
-  cloud_firestore: ^4.15.0
-
-  # Device info and local storage
-  shared_preferences: ^2.2.2
-  fluttertoast: ^8.2.4
-
-  # Notifications
-  flutter_local_notifications: ^17.0.0
+  # .env loader + HTTP client
+  flutter_dotenv: ^5.1.0
+  http: ^0.13.6
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-
-  flutter_lints: ^5.0.0
+  flutter_lints: ^3.0.1
 
 flutter:
   uses-material-design: true
+  assets:
+    - assets/images/
+    - .env
