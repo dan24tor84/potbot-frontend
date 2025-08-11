@@ -1,3 +1,4 @@
+// lib/main.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
@@ -17,8 +18,10 @@ class PotBotApp extends StatelessWidget {
     return MaterialApp(
       title: 'PotBot',
       theme: ThemeData(
-        brightness: Brightness.dark,
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.teal),
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: Colors.teal,
+          brightness: Brightness.dark, // <-- set it only here
+        ),
         useMaterial3: true,
       ),
       home: const ScanScreen(),
