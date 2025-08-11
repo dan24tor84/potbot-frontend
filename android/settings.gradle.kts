@@ -1,13 +1,20 @@
+// android/settings.gradle.kts
+
+import java.util.Properties
+
 pluginManagement {
-    val flutterSdkPath = run {
-        val properties = java.util.Properties()
-        file("local.properties").inputStream().use { properties.load(it) }
-        val flutterSdkPath = properties.getProperty("flutter.sdk")
-        require(flutterSdkPath != null) { "flutter.sdk not set in local.properties" }
-        flutterSdkPath
+    // Read Flutter SDK path from local.properties (created by Flutter)
+    val localProps = java.util.Properties()
+    val localPropsFile = File(rootDir, "local.properties")
+    if (localPropsFile.exists()) {
+        localPropsFile.inputStream().use { localProps.load(it) }
     }
 
-    includeBuild("$flutterSdkPath/packages/flutter_tools/gradle")
+    val flutterSdk = localProps.getProperty("flutter.sdk")
+        ?: throw GradleException("Missing `flutter.sdk` in android/local.properties. Run `flutter doctor` or `flutter pub get` to regenerate it.")
+
+    // Make Flutter’s Gradle plugins available
+    includeBuild("$flutterSdk/packages/flutter_tools/gradle")
 
     repositories {
         google()
@@ -16,10 +23,12 @@ pluginManagement {
     }
 }
 
+// Keep these versions aligned with what your project already uses.
+// If Android Studio suggests newer versions later, accept them.
 plugins {
     id("dev.flutter.flutter-plugin-loader") version "1.0.0"
-    id("com.android.application") version "8.7.3" apply false
-    id("org.jetbrains.kotlin.android") version "2.1.0" apply false
+    id("com.android.application") version "8.5.0" apply false
+    id("org.jetbrains.kotlin.android") version "1.9.24" apply false
 }
 
 include(":app")

@@ -1,3 +1,5 @@
+// Top-level Gradle build file
+
 allprojects {
     repositories {
         google()
@@ -5,13 +7,7 @@ allprojects {
     }
 }
 
-val newBuildDir: Directory = rootProject.layout.buildDirectory.dir("../../build").get()
-rootProject.layout.buildDirectory.value(newBuildDir)
-
-subprojects {
-    val newSubprojectBuildDir: Directory = newBuildDir.dir(project.name)
-    project.layout.buildDirectory.value(newSubprojectBuildDir)
-}
+// Keep the app module evaluated before others that depend on it
 subprojects {
     project.evaluationDependsOn(":app")
 }

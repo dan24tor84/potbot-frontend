@@ -1,5 +1,5 @@
 name: potbot_frontend_flutter
-description: PotBot – AI‑powered cannabis quality scanner and grow assistant
+description: PotBot – AI-powered cannabis quality scanner and grow assistant
 publish_to: 'none'
 version: 1.0.0+1
 
@@ -18,7 +18,6 @@ dependencies:
 
   # Files / paths
   path_provider: ^2.1.2
-  path: ^1.9.0
 
   # .env + HTTP
   flutter_dotenv: ^5.1.0
@@ -30,7 +29,10 @@ dev_dependencies:
   flutter_lints: ^6.0.0
 
 flutter:
+
   uses-material-design: true
+
+  # Add assets here if needed in the future
   assets:
     - assets/images/
     - .env
