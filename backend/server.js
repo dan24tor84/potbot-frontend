@@ -1,137 +1,122 @@
-import 'dotenv/config';
-import express from 'express';
-import cors from 'cors';
-import multer from 'multer';
-import fetch from 'node-fetch';
+// backend/server.js
+require("dotenv").config();
+const express = require("express");
+const cors = require("cors");
+const multer = require("multer");
+const axios = require("axios");
 
 const app = express();
+
+// --- config ---
+const PORT = process.env.PORT || 8080;
+const REPLICATE_TOKEN = process.env.REPLICATE_API_TOKEN;
+const REPLICATE_MODEL = process.env.REPLICATE_MODEL;        // e.g. "owner/model"
+const REPLICATE_VERSION = process.env.REPLICATE_VERSION;    // the version hash
+
+// CORS + JSON
+app.use(cors({ origin: true }));
+app.use(express.json({ limit: "25mb" }));
+app.use(express.urlencoded({ extended: true, limit: "25mb" }));
+
+// Multer (memory) – works for file uploads from mobile
 const upload = multer({ storage: multer.memoryStorage() });
 
-// ---------- CORS ----------
-const allowed = process.env.CORS_ORIGIN?.split(',').map(s => s.trim()).filter(Boolean);
-app.use(cors({
-  origin: allowed && allowed.length ? allowed : true, // allow specific origins or all in dev
-  credentials: false
-}));
+// Health check
+app.get("/health", (_req, res) => res.json({ ok: true }));
 
-app.use(express.json({ limit: '10mb' }));
-app.use(express.urlencoded({ extended: true }));
-
-// ---------- Helpers ----------
-function requireEnv(name) {
-  const v = process.env[name];
-  if (!v || !v.trim()) throw new Error(`Missing required env var: ${name}`);
-  return v.trim();
-}
-
-const PORT = Number(process.env.PORT || 3000);
-
-// ---------- Health ----------
-app.get('/api/health', (_req, res) => {
-  res.json({ ok: true, service: 'potbot-backend', time: new Date().toISOString() });
-});
-
-// ---------- Analyze (multipart: field "image") ----------
-app.post('/api/analyze', upload.single('image'), async (req, res) => {
+/**
+ * POST /api/analyze
+ * Accepts:
+ *  - multipart/form-data with field "image" (mobile)  OR
+ *  - JSON body with { image_base64: "<BASE64_WITHOUT_PREFIX>" } (web fallback)
+ * Returns: the Replicate prediction output.
+ */
+app.post("/api/analyze", upload.single("image"), async (req, res) => {
   try {
-    if (!req.file) {
-      return res.status(400).json({ ok: false, error: 'Missing file field "image".' });
-    }
-
-    // Required keys (already in your Railway/ENV)
-    const replicateToken = requireEnv('REPLICATE_API_TOKEN');
-    const model = process.env.REPLICATE_MODEL || 'yorickvp/llava-13b';
-    const version = process.env.REPLICATE_VERSION || ''; // optional pin
-
-    // Convert to data URL for models that accept base64 images
-    const base64 = req.file.buffer.toString('base64');
-    const dataUrl = `data:${req.file.mimetype};base64,${base64}`;
-
-    // Prompt tailored to your needs — adjust as you like
-    const prompt =
-      "Analyze this cannabis bud image for quality risks and visual traits. " +
-      "Return JSON with keys: moldRisk (0-1), powderyMildewRisk (0-1), " +
-      "trichomeScore (0-10), structureScore (0-10), trimScore (0-10), " +
-      "densityScore (0-10), overall (0-100), notes (string). " +
-      "Be concise and only output JSON.";
-
-    // Create prediction
-    const createBody = version
-      ? { version, input: { image: dataUrl, prompt }, model }
-      : { input: { image: dataUrl, prompt }, model };
-
-    const createResp = await fetch('https://api.replicate.com/v1/predictions', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Token ${replicateToken}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(createBody)
-    });
-
-    if (!createResp.ok) {
-      const text = await createResp.text();
-      return res.status(502).json({ ok: false, stage: 'create', error: text });
-    }
-
-    const prediction = await createResp.json();
-    const predUrl = `https://api.replicate.com/v1/predictions/${prediction.id}`;
-
-    // Poll
-    let status = prediction.status;
-    let result = prediction;
-    const started = Date.now();
-    const timeoutMs = Number(process.env.REPLICATE_TIMEOUT_MS || 120000); // 120s default
-
-    while (status === 'starting' || status === 'processing') {
-      if (Date.now() - started > timeoutMs) {
-        return res.status(504).json({ ok: false, error: 'AI timeout' });
-      }
-      await new Promise(s => setTimeout(s, 1500));
-      const pr = await fetch(predUrl, {
-        headers: { 'Authorization': `Token ${replicateToken}` }
+    if (!REPLICATE_TOKEN || !REPLICATE_MODEL || !REPLICATE_VERSION) {
+      return res.status(500).json({
+        error:
+          "Server missing REPLICATE_* env vars. Set REPLICATE_API_TOKEN, REPLICATE_MODEL and REPLICATE_VERSION in Railway.",
       });
-      if (!pr.ok) {
-        const t = await pr.text();
-        return res.status(502).json({ ok: false, stage: 'poll', error: t });
+    }
+
+    // 1) get image bytes from either multipart file or base64 in JSON
+    let imageBuffer = null;
+
+    if (req.file && req.file.buffer) {
+      imageBuffer = req.file.buffer; // from mobile (MultipartFile.fromPath)
+    } else if (req.body && req.body.image_base64) {
+      imageBuffer = Buffer.from(req.body.image_base64, "base64"); // from web
+    }
+
+    if (!imageBuffer) {
+      return res.status(400).json({
+        error:
+          "No image provided. Send 'image' as multipart file or 'image_base64' in JSON.",
+      });
+    }
+
+    // 2) turn into data URI – many Replicate models accept this directly
+    const dataUri = `data:image/jpeg;base64,${imageBuffer.toString("base64")}`;
+
+    // 3) kick off Replicate prediction
+    const create = await axios.post(
+      "https://api.replicate.com/v1/predictions",
+      {
+        version: REPLICATE_VERSION,
+        input: {
+          // IMPORTANT: change 'image' to the actual input key for your model if different
+          image: dataUri,
+        },
+      },
+      {
+        headers: {
+          Authorization: `Token ${REPLICATE_TOKEN}`,
+          "Content-Type": "application/json",
+        },
       }
-      result = await pr.json();
-      status = result.status;
+    );
+
+    // 4) poll until complete
+    let getUrl = create.data?.urls?.get;
+    if (!getUrl) {
+      return res
+        .status(500)
+        .json({ error: "Replicate response missing polling URL." });
     }
 
-    if (status !== 'succeeded') {
-      return res.status(502).json({ ok: false, status, error: result?.error || 'AI failed' });
+    let status = create.data.status;
+    let output = null;
+    let tries = 0;
+
+    while (status === "starting" || status === "processing") {
+      await new Promise((r) => setTimeout(r, 1500));
+      const poll = await axios.get(getUrl, {
+        headers: { Authorization: `Token ${REPLICATE_TOKEN}` },
+      });
+      status = poll.data.status;
+      output = poll.data.output;
+      if (++tries > 120) break; // ~3min safety
     }
 
-    // Replicate output varies by model; try to parse JSON if present
-    let parsed = null;
-    try {
-      if (typeof result.output === 'string') {
-        parsed = JSON.parse(result.output);
-      } else if (Array.isArray(result.output) && typeof result.output[0] === 'string') {
-        // some models return an array of strings
-        parsed = JSON.parse(result.output.join('\n'));
-      } else if (typeof result.output === 'object') {
-        parsed = result.output;
-      }
-    } catch (_) {
-      // not valid JSON; pass-through
+    if (status !== "succeeded") {
+      return res.status(502).json({
+        error: "Prediction failed or timed out",
+        status,
+      });
     }
 
-    return res.json({
-      ok: true,
-      model,
-      status,
-      result: parsed ?? result.output ?? result
-    });
-
+    // 5) send back model output (shape depends on model)
+    return res.json({ status, output });
   } catch (err) {
-    console.error(err);
-    return res.status(500).json({ ok: false, error: String(err) });
+    console.error(err?.response?.data || err.message);
+    return res.status(500).json({
+      error: "Server error",
+      details: err?.response?.data || err.message,
+    });
   }
 });
 
-// ---------- Start ----------
 app.listen(PORT, () => {
-  console.log(`PotBot backend listening on port ${PORT}`);
+  console.log(`PotBot backend running on :${PORT}`);
 });
