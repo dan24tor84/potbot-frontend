@@ -1,5 +1,5 @@
-package com.example.potbot_frontend_flutter
+package com.rankyourdank.potbot  // <-- match AndroidManifest package exactly
 
-import io.flutter.embedding.android.FlutterActivity
+import com.getcapacitor.BridgeActivity
 
-class MainActivity : FlutterActivity()
+class MainActivity : BridgeActivity()
