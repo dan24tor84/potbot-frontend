@@ -15,67 +15,34 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      # JDK 17 is required by AGP 8.x
       - name: Set up Java 17
         uses: actions/setup-java@v4
         with:
-          distribution: temurin
+          distribution: 'temurin'
           java-version: '17'
-          cache: gradle
 
-      # Install Android SDK + cmdline-tools so sdkmanager/gradle work
       - name: Set up Android SDK
         uses: android-actions/setup-android@v3
         with:
           api-level: 34
-          # NDK not needed; omit to save time
 
-      # Create local.properties so Gradle knows where the SDK is
-      - name: Create local.properties
-        working-directory: android
-        run: |
-          echo "sdk.dir=$ANDROID_SDK_ROOT" > local.properties
-          cat local.properties
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'   # or pin a version: flutter-version: '3.22.2'
 
-      - name: Make gradlew executable
-        working-directory: android
-        run: chmod +x ./gradlew
+      - name: Flutter pub get
+        run: flutter pub get
 
-      # Build the AAB
-      - name: Build release AAB
-        working-directory: android
-        run: ./gradlew --no-daemon bundleRelease
+      # Optional but helpful if you ever need to recreate platform files
+      # - name: Ensure android files exist
+      #   run: flutter create .
+
+      - name: Build AAB
+        run: flutter build appbundle --release
 
       - name: Upload AAB artifact
         uses: actions/upload-artifact@v4
         with:
-          name: potbot-release-aab
-          path: android/app/build/outputs/bundle/release/*.aab
-
-      # ------- Optional signing in CI (uncomment when secrets are set) -------
-      # - name: Decode keystore
-      #   if: ${{ secrets.ANDROID_KEYSTORE_BASE64 != '' }}
-      #   working-directory: android
-      #   run: echo "$ANDROID_KEYSTORE_BASE64" | base64 -d > keystore.jks
-      #
-      # - name: Build signed AAB
-      #   if: ${{ secrets.ANDROID_KEYSTORE_BASE64 != '' }}
-      #   working-directory: android
-      #   env:
-      #     KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
-      #     KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
-      #     KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
-      #   run: |
-      #     printf "\nMYAPP_UPLOAD_STORE_FILE=keystore.jks
-      # MYAPP_UPLOAD_KEY_ALIAS=$KEY_ALIAS
-      # MYAPP_UPLOAD_STORE_PASSWORD=$KEYSTORE_PASSWORD
-      # MYAPP_UPLOAD_KEY_PASSWORD=$KEY_PASSWORD
-      # " >> ./gradle.properties
-      #     ./gradlew --no-daemon clean bundleRelease
-      #
-      # - name: Upload SIGNED AAB
-      #   if: ${{ secrets.ANDROID_KEYSTORE_BASE64 != '' }}
-      #   uses: actions/upload-artifact@v4
-      #   with:
-      #     name: potbot-release-aab-signed
-      #     path: android/app/build/outputs/bundle/release/*.aab
+          name: app-release-aab
+          path: build/app/outputs/bundle/release/app-release.aab
