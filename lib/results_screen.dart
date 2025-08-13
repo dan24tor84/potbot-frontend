@@ -1,130 +1,94 @@
-import 'dart:convert';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart' show kIsWeb; // <-- needed for kIsWeb
+import 'package:potbot_frontend_flutter/widgets/image_preview.dart';
 
-/// ResultsScreen
-/// - Accepts either a raw string (`rawText`) or a JSON-like map (`data`).
-/// - If you pass raw JSON text, it will try to pretty‑print it.
 class ResultsScreen extends StatelessWidget {
-  final String? rawText;
-  final Map<String, dynamic>? data;
+  final String? path;
+  final Uint8List? webBytes;
+  final Map<String, dynamic> results;
 
   const ResultsScreen({
     super.key,
-    this.rawText,
-    this.data,
+    this.path,
+    this.webBytes,
+    required this.results,
   });
-
-  /// Convenience helper: give it a response body and it will try to decode JSON,
-  /// falling back to raw text if decoding fails.
-  factory ResultsScreen.fromResponseBody(String body) {
-    try {
-      final decoded = json.decode(body) as Map<String, dynamic>;
-      return ResultsScreen(data: decoded);
-    } catch (_) {
-      return ResultsScreen(rawText: body);
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    Widget content;
-    if (data != null) {
-      content = _JsonView(data!);
-    } else if (rawText != null) {
-      // Try pretty print if the raw text is actually JSON
-      content = _maybePrettyJson(rawText!);
-    } else {
-      content = const Text('No results available.');
-    }
-
     return Scaffold(
-      appBar: AppBar(title: const Text('Analysis Result')),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Card(
-          elevation: 0,
-          color: theme.colorScheme.surfaceContainerHighest,
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: content,
-          ),
+      appBar: AppBar(
+        title: const Text('Analysis Results'),
+      ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            _preview(),
+            const SizedBox(height: 20),
+            _resultsList(),
+          ],
         ),
       ),
     );
   }
 
-  Widget _maybePrettyJson(String text) {
-    try {
-      final jsonObj = json.decode(text);
-      final pretty = const JsonEncoder.withIndent('  ').convert(jsonObj);
-      return SelectableText(pretty);
-    } catch (_) {
-      return SelectableText(text);
-    }
-  }
-}
-
-/// Simple expandable JSON viewer for Map<String, dynamic>
-class _JsonView extends StatelessWidget {
-  final Map<String, dynamic> map;
-  const _JsonView(this.map);
-
-  @override
-  Widget build(BuildContext context) {
-    return ListView(
-      children: map.entries.map((e) => _JsonEntry(e.key, e.value)).toList(),
-    );
-  }
-}
-
-class _JsonEntry extends StatelessWidget {
-  final String keyName;
-  final dynamic value;
-  const _JsonEntry(this.keyName, this.value);
-
-  @override
-  Widget build(BuildContext context) {
-    final isLeaf = value is! Map && value is! List;
-
-    if (isLeaf) {
-      return ListTile(
-        title: Text(keyName),
-        subtitle: SelectableText('$value'),
+  Widget _preview() {
+    if (kIsWeb) {
+      if (webBytes == null) return _placeholder();
+      return ImagePreview(
+        webBytes: webBytes,
+        height: 220,
+      );
+    } else {
+      if (path == null) return _placeholder();
+      return ImagePreview(
+        path: path,
+        height: 220,
       );
     }
+  }
 
-    // Complex value -> ExpansionTile
-    return ExpansionTile(
-      title: Text(keyName),
-      children: [_buildComplex(value)],
+  Widget _placeholder() {
+    return Container(
+      width: double.infinity,
+      height: 220,
+      decoration: BoxDecoration(
+        border: Border.all(
+          // using withValues (non-deprecated) instead of withOpacity
+          color: Colors.tealAccent.withValues(alpha: 0.3),
+        ),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      alignment: Alignment.center,
+      child: const Text(
+        'No image selected',
+        style: TextStyle(color: Colors.white54),
+      ),
     );
   }
 
-  Widget _buildComplex(dynamic v) {
-    if (v is Map) {
-      return Padding(
-        padding: const EdgeInsets.only(left: 8, right: 8, bottom: 8),
-        child: Column(
-          children: v.entries
-              .map<Widget>((e) => _JsonEntry(e.key, e.value))
-              .toList(),
-        ),
-      );
-    }
-    if (v is List) {
-      return Padding(
-        padding: const EdgeInsets.only(left: 8, right: 8, bottom: 8),
-        child: Column(
-          children: v
-              .asMap()
-              .entries
-              .map<Widget>((e) => _JsonEntry('[${e.key}]', e.value))
-              .toList(),
-        ),
-      );
-    }
-    return SelectableText('$v');
+  Widget _resultsList() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: results.entries.map((entry) {
+        final key = entry.key;
+        final value = entry.value;
+
+        // Example thresholds: `<50` low quality, `>80` high quality (text in backticks avoids doc-comment HTML)
+        return Card(
+          margin: const EdgeInsets.symmetric(vertical: 4.0),
+          child: ListTile(
+            title: Text(
+              key,
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
+            subtitle: Text(value.toString()),
+          ),
+        );
+      }).toList(),
+    );
   }
 }
