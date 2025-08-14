@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'widgets/scan_screen.dart';
 import 'widgets/results_screen.dart';
 import 'widgets/home_screen.dart'; // (new file below)
-import 'widgets/ai_service.dart'; // keeps IDE happy if you jump to def
+// keeps IDE happy if you jump to def
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -36,7 +36,7 @@ class PotBotApp extends StatelessWidget {
       home: const HomeScreen(),
       routes: {
         '/scan': (_) => const ScanScreen(),
-        '/results': (_) => const ResultsScreen(),
+        '/results': (_) => const ResultsScreen(results: {},),
         '/grower': (_) => const GrowerScreen(),
         '/pro': (_) => const ProScreen(),
         '/leaderboard': (_) => const LeaderboardScreen(),

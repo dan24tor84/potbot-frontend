@@ -9,7 +9,9 @@ import 'package:image_picker/image_picker.dart';
 import '../services/ai_service.dart';
 import 'image_preview.dart';
 
-class ScanScreen extends StatefulWidget {
+class qScanScreen extends StatelessWidget {
+  const qScanScreen({super.key});
+
   const ScanScreen({super.key});
 
   @override
