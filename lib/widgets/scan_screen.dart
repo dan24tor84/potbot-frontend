@@ -1,12 +1,10 @@
-// lib/widgets/scan_screen.dart
 import 'dart:typed_data';
-import 'dart:io' show File; // Only used on mobile
-
-import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../services/ai_service.dart';
+import 'results_screen.dart';
 import 'image_preview.dart';
 
 class ScanScreen extends StatefulWidget {
@@ -20,186 +18,111 @@ class _ScanScreenState extends State<ScanScreen> {
   final _picker = ImagePicker();
   final _api = AIService();
 
-  // Selection state
-  Uint8List? _webBytes; // web image bytes
-  String? _path;        // mobile file path
-
-  // UI state
+  Uint8List? _bytes;
   bool _isLoading = false;
+  Map<String, dynamic>? _lastResult;
 
-  /// Pick an image from gallery
-  Future<void> _pickFromGallery() async {
-    final XFile? x = await _picker.pickImage(
-      source: ImageSource.gallery,
-      imageQuality: 85,
-    );
-    if (x == null) return;
-
-    if (kIsWeb) {
-      final bytes = await x.readAsBytes();
+  Future<void> _pick(ImageSource source) async {
+    try {
+      final x = await _picker.pickImage(source: source, imageQuality: 85);
+      if (x == null) return;
+      final b = await x.readAsBytes();
+      if (!mounted) return;
       setState(() {
-        _webBytes = bytes;
-        _path = null;
+        _bytes = b;
+        _lastResult = null;
       });
-    } else {
-      setState(() {
-        _path = x.path;
-        _webBytes = null;
-      });
-    }
-  }
-
-  /// Capture from camera (mobile only – web opens file dialog)
-  Future<void> _pickFromCamera() async {
-    final XFile? x = await _picker.pickImage(
-      source: ImageSource.camera,
-      imageQuality: 85,
-    );
-    if (x == null) return;
-
-    if (kIsWeb) {
-      final bytes = await x.readAsBytes();
-      setState(() {
-        _webBytes = bytes;
-        _path = null;
-      });
-    } else {
-      setState(() {
-        _path = x.path;
-        _webBytes = null;
-      });
-    }
-  }
-
-  /// Run analysis and navigate to ResultsScreen
-  Future<void> _analyze() async {
-    if (kIsWeb && _webBytes == null || !kIsWeb && _path == null) {
+    } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please choose a photo first.')),
+        SnackBar(content: Text('Failed to pick image: $e')),
       );
-      return;
     }
+  }
 
-    setState(() => _isLoading = true);
-
+  Future<void> _analyze() async {
     try {
-      final result = await _api.analyze(
-        file: kIsWeb ? null : File(_path!),
-        bytes: kIsWeb ? _webBytes! : null,
-        filename: 'photo.jpg',
-      );
+      setState(() {
+        _isLoading = true;
+        _lastResult = null;
+      });
 
+      if (_bytes == null) {
+        throw Exception('Please pick an image first.');
+      }
+
+      final res = await _api.analyze(bytes: _bytes!, filename: 'photo.jpg');
       if (!mounted) return;
-      // Navigate with a direct constructor to avoid route-arg wiring
-      Navigator.push(
-        context,
+
+      setState(() {
+        _lastResult = res;
+        _isLoading = false;
+      });
+
+      // Navigate to results
+      Navigator.of(context).push(
         MaterialPageRoute(
-          builder: (_) => ResultsScreen(results: result),
+          builder: (_) => ResultsScreen(result: res, originalBytes: _bytes),
         ),
       );
     } catch (e) {
       if (!mounted) return;
+      setState(() => _isLoading = false);
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to analyze image: $e')),
+        SnackBar(content: Text('Analyze failed: $e')),
       );
-    } finally {
-      if (mounted) setState(() => _isLoading = false);
     }
-  }
-
-  /// Clear current selection
-  void _clear() {
-    setState(() {
-      _webBytes = null;
-      _path = null;
-    });
-  }
-
-  Widget _preview() {
-    if (_webBytes == null && _path == null) {
-      return _placeholder();
-    }
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(12),
-      child: kIsWeb
-          ? ImagePreview(
-        webBytes: _webBytes!,
-        height: 220,
-      )
-          : ImagePreview(
-        path: _path,
-        height: 220,
-      ),
-    );
-  }
-
-  Widget _placeholder() {
-    return Container(
-      width: double.infinity,
-      height: 220,
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.tealAccent.withOpacity(0.3)),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      alignment: Alignment.center,
-      child: const Text(
-        'No image selected',
-        style: TextStyle(color: Colors.white54),
-      ),
-    );
   }
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Scaffold(
-      appBar: AppBar(title: const Text('Scan Your Bud')),
+      appBar: AppBar(title: const Text('Bud Bot')),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            _preview(),
-            const SizedBox(height: 16),
-            Wrap(
-              spacing: 12,
-              runSpacing: 12,
-              alignment: WrapAlignment.center,
+        child: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 680),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                ElevatedButton.icon(
-                  onPressed: _pickFromGallery,
-                  icon: const Icon(Icons.photo),
-                  label: const Text('Pick Photo'),
+                ImagePreview(webBytes: _bytes, height: 220),
+                const SizedBox(height: 16),
+                Wrap(
+                  alignment: WrapAlignment.center,
+                  spacing: 12,
+                  runSpacing: 12,
+                  children: [
+                    FilledButton.icon(
+                      onPressed: () => _pick(ImageSource.gallery),
+                      icon: const Icon(Icons.photo_outlined),
+                      label: const Text('Choose Photo'),
+                    ),
+                    FilledButton.icon(
+                      onPressed: kIsWeb ? null : () => _pick(ImageSource.camera),
+                      icon: const Icon(Icons.photo_camera_outlined),
+                      label: const Text('Use Camera'),
+                    ),
+                    OutlinedButton.icon(
+                      onPressed: _isLoading ? null : _analyze,
+                      icon: _isLoading
+                          ? const SizedBox(
+                          width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2))
+                          : const Icon(Icons.search),
+                      label: Text(_isLoading ? 'Analyzing…' : 'Scan Bud'),
+                    ),
+                  ],
                 ),
-                ElevatedButton.icon(
-                  onPressed: _pickFromCamera,
-                  icon: const Icon(Icons.photo_camera),
-                  label: const Text('Take Photo'),
-                ),
-                OutlinedButton.icon(
-                  onPressed: _clear,
-                  icon: const Icon(Icons.clear),
-                  label: const Text('Clear'),
-                ),
-                FilledButton.icon(
-                  onPressed: _isLoading ? null : _analyze,
-                  icon: _isLoading
-                      ? const SizedBox(
-                    height: 16, width: 16,
-                    child: CircularProgressIndicator(strokeWidth: 2),
-                  )
-                      : const Icon(Icons.science),
-                  label: Text(_isLoading ? 'Analyzing…' : 'Analyze'),
-                ),
+                const SizedBox(height: 12),
+                if (_lastResult != null)
+                  Text(
+                    'Last result: ${_lastResult!['summary'] ?? _lastResult}',
+                    style: theme.textTheme.bodyMedium,
+                  ),
               ],
             ),
-            const SizedBox(height: 8),
-            const Text(
-              'Tip: Good lighting and focus improves results.',
-              textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.white70),
-            ),
-          ],
+          ),
         ),
       ),
     );
