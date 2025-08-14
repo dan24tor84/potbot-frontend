@@ -1,64 +1,38 @@
-name: Build Android App Bundle (Flutter)
+name: Build & Deploy Flutter Web to Railway
 
 on:
   push:
     branches: [ main ]
-  pull_request:
-    branches: [ main ]
-  workflow_dispatch:
 
 jobs:
-  build-android:
+  build-deploy:
     runs-on: ubuntu-latest
-    env:
-      ANDROID_SDK_ROOT: /usr/local/lib/android/sdk
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up Java 17
-        uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: "17"
-          cache: gradle
-
-      - name: Set up Flutter (stable)
+      - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          channel: stable
-          cache: true
-
-      - name: Accept Android licenses & install NDK
-        shell: bash
-        run: |
-          yes | sdkmanager --licenses
-          sdkmanager "ndk;27.0.12077973"
-
-      # Make sure the assets folder exists so Flutter can bundle it (even if empty)
-      - name: Ensure assets folder exists
-        run: mkdir -p assets/images
-
-      # ---------- IMPORTANT ----------
-      # This generates .env for the build using your repo secrets.
-      # Add these in GitHub: Settings → Secrets and variables → Actions
-      #   POTBOT_API_URL, REPLICATE_API_TOKEN (and any others you need)
-      - name: Create .env from secrets
-        run: |
-          cat > .env <<'EOF'
-          POTBOT_API_URL=${{ secrets.POTBOT_API_URL }}
-          REPLICATE_API_TOKEN=${{ secrets.REPLICATE_API_TOKEN }}
-          EOF
+          flutter-version: '3.24.3'   # match your local flutter --version
+          channel: 'stable'
 
       - name: Flutter pub get
         run: flutter pub get
 
-      - name: Build AAB (release)
-        run: flutter build appbundle --release
+      - name: Build Flutter Web (release)
+        run: |
+          flutter build web --release \
+            --dart-define=API_BASE_URL=${{ secrets.API_BASE_URL }} \
+            --dart-define=REPLICATE_API_TOKEN=${{ secrets.REPLICATE_API_TOKEN }} \
+            --dart-define=BUILD_TIME=${{ github.run_id }}
 
-      - name: Upload AAB artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: potbot-release-aab
-          path: build/app/outputs/bundle/release/*.aab
+      - name: Install Railway CLI
+        run: npm i -g @railway/cli
+
+      - name: Deploy build/web to Railway (frontend)
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+        run: |
+          railway up --service "potbot-frontend" --path "build/web" --detach
