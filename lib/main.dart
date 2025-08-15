@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-import 'widgets/home_screen.dart';
 import 'widgets/scan_screen.dart';
 import 'widgets/results_screen.dart';
 
-void main() {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await dotenv.load(fileName: ".env"); // loads API_URL
   runApp(const PotBotApp());
 }
 
@@ -16,33 +17,18 @@ class PotBotApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'PotBot',
-      debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        brightness: Brightness.light,
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFF2BB673),
-        ),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.green, brightness: Brightness.dark),
         useMaterial3: true,
-        fontFamily: 'Roboto',
+        scaffoldBackgroundColor: Colors.black,
       ),
+      initialRoute: '/',
       routes: {
-        '/': (_) => const HomeScreen(),
-        '/scan': (_) => const ScanScreen(),
+        '/': (context) => const ScanScreen(),
+        // we’ll pass args when navigating:
+        '/results': (context) => const ResultsScreen(),
       },
-      onGenerateRoute: (settings) {
-        if (settings.name == '/results') {
-          final args = settings.arguments as Map<String, dynamic>? ?? {};
-          final dynamic resultPayload = args['result'] ?? args['results'];
-          return MaterialPageRoute(
-            builder: (_) => ResultsScreen(
-              // pass it ONCE; choose the key that exists
-              result: resultPayload,
-            ),
-            settings: settings,
-          );
-        }
-        return null;
-      },
+      // If you prefer onGenerateRoute, you can, but the simple routes map + arguments is enough.
     );
   }
 }
