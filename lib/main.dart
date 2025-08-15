@@ -23,24 +23,19 @@ class PotBotApp extends StatelessWidget {
         useMaterial3: true,
         fontFamily: 'Roboto',
       ),
-
-      // Named routes you navigate to without args
       routes: {
         '/': (_) => const HomeScreen(),
         '/scan': (_) => const ScanScreen(),
       },
-
-      // Routes that may need arguments (e.g., results payload)
-      onGenerateRoute: (RouteSettings settings) {
+      onGenerateRoute: (settings) {
         if (settings.name == '/results') {
-          final args = settings.arguments as Map<String, dynamic>?;
-          final results = args?['results'];
+          final args = settings.arguments as Map<String, dynamic>? ?? {};
+          final results = args['results']; // adjust key if needed
           return MaterialPageRoute(
             builder: (_) => ResultsScreen(results: results),
-            settings: settings,
           );
         }
-        return null; // fall back to default handling
+        return null;
       },
     );
   }
