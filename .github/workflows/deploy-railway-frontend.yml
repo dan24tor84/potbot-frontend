@@ -15,8 +15,8 @@ jobs:
       - name: Set up Flutter (stable)
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.24.3'
-          channel: 'stable'
+          # Matches your pubspec Dart constraint (>=3.7.0 <4.0.0)
+          flutter-version: '3.27.0'
 
       - name: Show versions
         run: |
