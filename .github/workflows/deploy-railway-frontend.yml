@@ -1,3 +1,4 @@
+# .github/workflows/deploy-railway-frontend.yml
 name: Build & Deploy Flutter Web to Railway
 
 on:
@@ -7,7 +8,6 @@ on:
 jobs:
   build-deploy:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -15,8 +15,7 @@ jobs:
       - name: Set up Flutter (stable)
         uses: subosito/flutter-action@v2
         with:
-          # Matches your pubspec Dart constraint (>=3.7.0 <4.0.0)
-          flutter-version: '3.27.0'
+          flutter-version: '3.27.0'   # ✅ includes Dart 3.7.x
 
       - name: Show versions
         run: |
