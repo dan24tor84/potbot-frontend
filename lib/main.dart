@@ -19,7 +19,9 @@ class PotBotApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         brightness: Brightness.light,
-        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF2BB673)),
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: const Color(0xFF2BB673),
+        ),
         useMaterial3: true,
         fontFamily: 'Roboto',
       ),
@@ -30,9 +32,13 @@ class PotBotApp extends StatelessWidget {
       onGenerateRoute: (settings) {
         if (settings.name == '/results') {
           final args = settings.arguments as Map<String, dynamic>? ?? {};
-          final results = args['results']; // adjust key if needed
+          final dynamic resultPayload = args['result'] ?? args['results'];
           return MaterialPageRoute(
-            builder: (_) => ResultsScreen(results: results),
+            builder: (_) => ResultsScreen(
+              // pass it ONCE; choose the key that exists
+              result: resultPayload,
+            ),
+            settings: settings,
           );
         }
         return null;
