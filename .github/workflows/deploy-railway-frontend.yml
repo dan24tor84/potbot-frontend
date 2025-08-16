@@ -1,36 +1,63 @@
-name: Build & Deploy Flutter Web to Railway
+name: Build Android AAB
 
 on:
+  workflow_dispatch:
   push:
     branches: [ main ]
+    paths:
+      - "android/**"
+      - "lib/**"
+      - "pubspec.yaml"
 
 jobs:
-  build-deploy:
+  android-aab:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up Flutter (stable)
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+          cache: gradle
+
+      - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.27.0'   # ✅ ships with Dart 3.7.x
+          channel: stable
+          flutter-version: "3.35.1"
+          cache: true
 
-      - name: Show Flutter & Dart versions
-        run: |
-          flutter --version
-          dart --version
+      - name: Flutter doctor
+        run: flutter --version
 
-      - name: Flutter pub get
+      - name: Pub get
         run: flutter pub get
 
-      - name: Build Flutter Web (release)
-        run: flutter build web --release
+      - name: Decode signing keystore
+        if: ${{ secrets.ANDROID_KEYSTORE && secrets.ANDROID_KEY_ALIAS && secrets.ANDROID_KEYSTORE_PASSWORD && secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          mkdir -p android/app
+          echo "${{ secrets.ANDROID_KEYSTORE }}" | base64 -d > android/app/keystore.jks
 
-      - name: Install Railway CLI
-        run: npm i -g @railway/cli
+      - name: Create key.properties
+        if: ${{ secrets.ANDROID_KEYSTORE && secrets.ANDROID_KEY_ALIAS && secrets.ANDROID_KEYSTORE_PASSWORD && secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          cat > android/key.properties <<EOF
+          storePassword=${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          keyPassword=${{ secrets.ANDROID_KEY_PASSWORD }}
+          keyAlias=${{ secrets.ANDROID_KEY_ALIAS }}
+          storeFile=keystore.jks
+          EOF
 
-      - name: Deploy build/web to Railway service
-        env:
-          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
-        run: railway up --service potbot-frontend --path build/web --detach
+      - name: Build AAB
+        run: flutter build appbundle --release
+
+      - name: Upload AAB artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-release.aab
+          path: build/app/outputs/bundle/release/app-release.aab
