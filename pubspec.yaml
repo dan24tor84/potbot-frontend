@@ -24,6 +24,7 @@ dependencies:
   http: ^1.2.0
 
   path: any
+  camera: ^0.11.2
 dev_dependencies:
   flutter_test:
     sdk: flutter
