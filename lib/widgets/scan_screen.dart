@@ -69,13 +69,13 @@ class _ScanScreenState extends State<ScanScreen> {
   }
 
   // --- API call (edit API_BASE below if needed) ---
-  static const String API_BASE = String.fromEnvironment(
+  static const String apiBase = String.fromEnvironment(
     'API_BASE',
     defaultValue: 'https://potbot-production.up.railway.app',
   );
 
   Future<String> _sendImageToApi(File file) async {
-    final url = Uri.parse('$API_BASE/api/scan');
+    final url = Uri.parse('$apiBase/api/scan');
     final bytes = await file.readAsBytes();
     final resp = await http.post(
       url,

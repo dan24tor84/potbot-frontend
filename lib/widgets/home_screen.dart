@@ -1,3 +1,5 @@
+// ignore_for_file: unnecessary_underscores
+
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -14,7 +16,10 @@ class _HomeScreenState extends State<HomeScreen> {
   final List<XFile> _images = [];
 
   Future<void> _pick(ImageSource src) async {
-    final XFile? picked = await _picker.pickImage(source: src, imageQuality: 90);
+    final XFile? picked = await _picker.pickImage(
+      source: src,
+      imageQuality: 90,
+    );
     if (picked != null) setState(() => _images.insert(0, picked));
   }
 
@@ -42,7 +47,9 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             Text(
               'PotBot',
-              style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
+              style: theme.textTheme.titleLarge?.copyWith(
+                fontWeight: FontWeight.w700,
+              ),
             ),
           ],
         ),
@@ -92,17 +99,24 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Center(
                   child: ConstrainedBox(
                     constraints: const BoxConstraints(maxWidth: 680),
-                    child: _images.isEmpty
-                        ? _EmptyLanding(onScan: _openScan, onPick: () => _pick(ImageSource.gallery))
-                        : GridView.builder(
-                            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 3,
-                              crossAxisSpacing: 12,
-                              mainAxisSpacing: 12,
+                    child:
+                        _images.isEmpty
+                            ? _EmptyLanding(
+                              onScan: _openScan,
+                              onPick: () => _pick(ImageSource.gallery),
+                            )
+                            : GridView.builder(
+                              gridDelegate:
+                                  const SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: 3,
+                                    crossAxisSpacing: 12,
+                                    mainAxisSpacing: 12,
+                                  ),
+                              itemCount: _images.length,
+                              itemBuilder:
+                                  (context, i) =>
+                                      _ParameterBox(path: _images[i].path),
                             ),
-                            itemCount: _images.length,
-                            itemBuilder: (context, i) => _ParameterBox(path: _images[i].path),
-                          ),
                   ),
                 ),
               ),
@@ -111,7 +125,9 @@ class _HomeScreenState extends State<HomeScreen> {
               const SizedBox(height: 8),
               Text(
                 '© 2025 PotBot. All rights reserved.',
-                style: theme.textTheme.bodySmall?.copyWith(color: theme.hintColor),
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: theme.hintColor,
+                ),
                 textAlign: TextAlign.center,
               ),
             ],
@@ -212,11 +228,15 @@ class _ParameterBox extends StatelessWidget {
           child: Image.file(
             File(path),
             fit: BoxFit.cover,
-            errorBuilder: (_, __, ___) =>
-                const Center(child: Icon(Icons.broken_image, color: Colors.white38)),
+            errorBuilder:
+                (_, __, ___) => const Center(
+                  child: Icon(Icons.broken_image, color: Colors.white38),
+                ),
           ),
         ),
       ),
     );
   }
 }
+
+class _ {}
