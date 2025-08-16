@@ -30,7 +30,9 @@ class ImagePreview extends StatelessWidget {
       width: double.infinity,
       height: height,
       decoration: BoxDecoration(
-        border: Border.all(color: Colors.tealAccent.withOpacity(0.3)),
+        border: Border.all(
+          color: Colors.tealAccent.withAlpha((0.3 * 255).toInt()),
+        ),
         borderRadius: BorderRadius.circular(12),
       ),
       alignment: Alignment.center,

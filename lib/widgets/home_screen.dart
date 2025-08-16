@@ -238,5 +238,3 @@ class _ParameterBox extends StatelessWidget {
     );
   }
 }
-
-class _ {}

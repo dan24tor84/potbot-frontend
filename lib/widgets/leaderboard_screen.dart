@@ -5,7 +5,6 @@ class LeaderboardScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: replace with real data from backend when ready
     final mock = [
       {'name': 'Strain A', 'score': 92},
       {'name': 'Strain B', 'score': 88},
