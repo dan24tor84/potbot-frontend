@@ -4,7 +4,7 @@ publish_to: 'none'
 version: 1.0.0+1
 
 environment:
-  sdk: '>=3.7.0 <4.0.0'   # OK with Flutter 3.35.x (Dart 3.9)
+  sdk: '>=3.7.0 <4.0.0' # Flutter 3.35.x (Dart 3.9)
 
 dependencies:
   flutter:
@@ -13,7 +13,7 @@ dependencies:
   # UI
   cupertino_icons: ^1.0.8
 
-  # Camera (live preview on Android/iOS; file-pick on web still works via <input>)
+  # Camera (live preview on Android/iOS; on web use <input> file-pick)
   camera: ^0.11.0+2
 
   # Image/file picking (gallery/camera stills)
@@ -27,13 +27,11 @@ dependencies:
   path: ^1.9.0
 
   # HTTP client
-  http: ^1.2.1
+  http: ^1.2.2
 
-  # Env via dart-define (recommended). Keep for dev if you need it.
+  # Optional: keep if you use local .env in dev (we pass API_URL via --dart-define in CI)
   flutter_dotenv: ^5.1.0
 
-  path: any
-  camera: ^0.11.2
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -43,5 +41,3 @@ flutter:
   uses-material-design: true
   assets:
     - assets/images/
-    # ⚠️ Do NOT include a real .env file here in production.
-    # If you keep a .env.template for dev docs, that’s fine, but don’t list .env.
