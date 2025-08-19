@@ -1,15 +1,18 @@
-name: Build Flutter Web → webhost/ (main branch)
+name: Build Flutter Web → webhost/ (main)
 
 on:
   push:
     branches: [ main ]
   workflow_dispatch:
 
+permissions:
+  contents: write   # <-- needed so the action can commit to main
+
 jobs:
   build-and-stage:
     runs-on: ubuntu-latest
     env:
-      RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+      API_URL: ${{ secrets.WEB_API_URL }}   # set in GitHub → Settings → Secrets → Actions
 
     steps:
       - name: Checkout main
@@ -22,26 +25,56 @@ jobs:
         with:
           channel: 'stable'
 
-      - name: Flutter version
-        run: flutter --version
-
       - name: Enable web & get deps
         run: |
           flutter config --enable-web
           flutter pub get
+          flutter --version
 
       - name: Build web (release)
-        run: flutter build web --release
+        run: flutter build web --release --dart-define=API_URL=${{ secrets.WEB_API_URL }}
+
+      # Create server.js + package.json if missing at repo root (safety net)
+      - name: Ensure runtime files exist at repo root
+        run: |
+          if [ ! -f server.js ]; then
+            cat > server.js <<'JS'
+const express = require("express");
+const path = require("path");
+const app = express();
+const PORT = process.env.PORT || 8080;
+const WEB_ROOT = path.join(__dirname, "public");
+app.use(express.static(WEB_ROOT, { maxAge: "7d", immutable: true }));
+app.get("*", (_, res) => res.sendFile(path.join(WEB_ROOT, "index.html")));
+app.listen(PORT, () => console.log(`PotBot web listening on ${PORT}`));
+JS
+          fi
+          if [ ! -f package.json ]; then
+            cat > package.json <<'JSON'
+{
+  "name": "potbot-web",
+  "private": true,
+  "main": "server.js",
+  "scripts": { "start": "node server.js" },
+  "dependencies": { "express": "^4.19.2" },
+  "engines": { "node": ">=18" }
+}
+JSON
+          fi
 
       - name: Stage runtime into webhost/
         run: |
-          mkdir -p webhost
+          mkdir -p webhost/public
           rm -rf webhost/*
           mkdir -p webhost/public
           cp -r build/web/* webhost/public/
           cp server.js webhost/
           cp package.json webhost/
           echo "web: node server.js" > webhost/Procfile
+          echo "Staged files in webhost/:"
+          ls -la webhost
+          echo "Staged files in webhost/public/:"
+          ls -la webhost/public | head -50
 
       - name: Commit webhost/ to main
         run: |
