@@ -20,7 +20,7 @@ jobs:
         with:
           channel: 'stable'
 
-      - name: Flutter doctor (sanity)
+      - name: Flutter version
         run: flutter --version
 
       - name: Enable web & get deps
@@ -31,18 +31,38 @@ jobs:
       - name: Build web (release)
         run: flutter build web --release
 
-      - name: Prepare deploy branch contents
+      - name: Stage Node runtime
         run: |
-          rm -rf deploy_web_out
           mkdir -p deploy_web_out
-          # Copy ONLY what the runtime needs
           cp -r build/web deploy_web_out/public
           cp server.js deploy_web_out/
           cp package.json deploy_web_out/
-          # Optional: include a Procfile for clarity (not required by Railway)
           echo "web: node server.js" > deploy_web_out/Procfile
 
-      - name: Switch to deploy-web branch (create if missing)
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: deploy_web_out
+          path: deploy_web_out
+
+      # === new job to switch branches and commit ===
+  publish-web:
+    runs-on: ubuntu-latest
+    needs: build-web
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: deploy_web_out
+          path: deploy_web_out
+
+      - name: Switch to deploy-web branch
         run: |
           git fetch origin
           if git show-ref --verify --quiet refs/heads/deploy-web; then
@@ -52,15 +72,14 @@ jobs:
             git rm -rf . || true
           fi
 
-      - name: Replace branch contents
+      - name: Replace contents and commit
         run: |
           rm -rf ./*
-          cp -r ../deploy_web_out/* .
+          cp -r deploy_web_out/* .
           git add -A
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git commit -m "ci: deploy Flutter web $(date -u +'%Y-%m-%dT%H:%M:%SZ')"
+          git commit -m "ci: deploy Flutter web $(date -u +'%Y-%m-%dT%H:%M:%SZ')" || echo "No changes to commit"
 
       - name: Push deploy-web
-        run: |
-          git push -f origin deploy-web
+        run: git push -f origin deploy-web
