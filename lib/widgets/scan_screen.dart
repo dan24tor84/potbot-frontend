@@ -1,3 +1,4 @@
+// lib/widgets/scan_screen.dart
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
@@ -22,7 +23,11 @@ class _ScanScreenState extends State<ScanScreen> {
     setState(() {
       _error = null;
     });
-    final x = await _picker.pickImage(source: source, imageQuality: 85, maxWidth: 1600);
+    final x = await _picker.pickImage(
+      source: source,
+      imageQuality: 85,
+      maxWidth: 1600,
+    );
     if (x == null) return;
     setState(() => _imageFile = File(x.path));
   }
@@ -42,9 +47,10 @@ class _ScanScreenState extends State<ScanScreen> {
       final result = await api.scanImageBase64(base64Image);
 
       if (!mounted) return;
-      Navigator.of(context).pushNamed('/results', arguments: {
-        'result': result, // pass the model
-      });
+      Navigator.of(context).pushNamed(
+        '/results',
+        arguments: {'result': result},
+      );
     } catch (e) {
       setState(() => _error = e.toString());
     } finally {
@@ -56,9 +62,9 @@ class _ScanScreenState extends State<ScanScreen> {
   Widget build(BuildContext context) {
     final box = Container(
       width: double.infinity,
-      constraints: const BoxConstraints(maxWidth: 360), // keep it boxed on large screens
+      constraints: const BoxConstraints(maxWidth: 360),
       child: AspectRatio(
-        aspectRatio: 1, // perfect square
+        aspectRatio: 1,
         child: DecoratedBox(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(16),
@@ -68,7 +74,12 @@ class _ScanScreenState extends State<ScanScreen> {
           child: ClipRRect(
             borderRadius: BorderRadius.circular(14),
             child: _imageFile == null
-                ? const Center(child: Text('No image selected', style: TextStyle(color: Colors.white70)))
+                ? const Center(
+                    child: Text(
+                      'No image selected',
+                      style: TextStyle(color: Colors.white70),
+                    ),
+                  )
                 : Image.file(_imageFile!, fit: BoxFit.cover),
           ),
         ),
@@ -81,7 +92,8 @@ class _ScanScreenState extends State<ScanScreen> {
         actions: [
           IconButton(
             icon: const Icon(Icons.leaderboard),
-            onPressed: () => Navigator.of(context).pushNamed('/leaderboard'),
+            onPressed: () =>
+                Navigator.of(context).pushNamed('/leaderboard'),
           ),
         ],
       ),
