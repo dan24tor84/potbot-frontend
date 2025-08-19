@@ -1,0 +1,66 @@
+name: Build Flutter Web → deploy-web branch
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build-web:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Flutter (stable)
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+
+      - name: Flutter doctor (sanity)
+        run: flutter --version
+
+      - name: Enable web & get deps
+        run: |
+          flutter config --enable-web
+          flutter pub get
+
+      - name: Build web (release)
+        run: flutter build web --release
+
+      - name: Prepare deploy branch contents
+        run: |
+          rm -rf deploy_web_out
+          mkdir -p deploy_web_out
+          # Copy ONLY what the runtime needs
+          cp -r build/web deploy_web_out/public
+          cp server.js deploy_web_out/
+          cp package.json deploy_web_out/
+          # Optional: include a Procfile for clarity (not required by Railway)
+          echo "web: node server.js" > deploy_web_out/Procfile
+
+      - name: Switch to deploy-web branch (create if missing)
+        run: |
+          git fetch origin
+          if git show-ref --verify --quiet refs/heads/deploy-web; then
+            git checkout deploy-web
+          else
+            git checkout --orphan deploy-web
+            git rm -rf . || true
+          fi
+
+      - name: Replace branch contents
+        run: |
+          rm -rf ./*
+          cp -r ../deploy_web_out/* .
+          git add -A
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git commit -m "ci: deploy Flutter web $(date -u +'%Y-%m-%dT%H:%M:%SZ')"
+
+      - name: Push deploy-web
+        run: |
+          git push -f origin deploy-web
