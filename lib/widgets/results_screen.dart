@@ -1,66 +1,42 @@
-import 'dart:typed_data';
 import 'package:flutter/material.dart';
-import 'image_preview.dart';
+import '../services/api_service.dart';
 
 class ResultsScreen extends StatelessWidget {
-  const ResultsScreen({super.key, required this.result, this.originalBytes});
-
-  final Map<String, dynamic> result;
-  final Uint8List? originalBytes;
+  const ResultsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final score = result['score'];
-    final issues = (result['issues'] as List?)?.cast<String>() ?? const [];
+    // we expect arguments passed as: {'result': ScanResult}
+    final args = ModalRoute.of(context)?.settings.arguments;
+    final map = (args is Map) ? args : const {};
+    final ScanResult? result = map['result'] as ScanResult?;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Analysis Result')),
+      appBar: AppBar(title: const Text('Scan Results')),
       body: Center(
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 900),
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              children: [
-                if (originalBytes != null) ...[
-                  ImagePreview(webBytes: originalBytes, height: 220),
-                  const SizedBox(height: 16),
-                ],
-                Card(
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: result == null
+              ? const Text('No result found.')
+              : Card(
+                  elevation: 2,
                   child: Padding(
                     padding: const EdgeInsets.all(16),
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('Summary', style: theme.textTheme.titleLarge),
+                        Text('Label: ${result.label}', style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
                         const SizedBox(height: 8),
-                        Text(
-                          (result['summary'] ?? 'No summary').toString(),
-                          style: theme.textTheme.bodyLarge,
-                        ),
-                        const SizedBox(height: 16),
-                        if (score != null)
-                          Row(
-                            children: [
-                              Text('Quality score: ',
-                                  style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700)),
-                              Text('$score / 100', style: theme.textTheme.titleMedium),
-                            ],
-                          ),
-                        if (issues.isNotEmpty) ...[
-                          const SizedBox(height: 16),
-                          Text('Detected issues', style: theme.textTheme.titleMedium),
+                        Text('Score: ${result.score.toStringAsFixed(3)}'),
+                        if (result.message.isNotEmpty) ...[
                           const SizedBox(height: 8),
-                          for (final s in issues) Text('• $s'),
+                          Text(result.message),
                         ],
                       ],
                     ),
                   ),
                 ),
-              ],
-            ),
-          ),
         ),
       ),
     );

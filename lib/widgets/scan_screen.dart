@@ -1,123 +1,127 @@
+import 'dart:convert';
 import 'dart:io';
-import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
+import 'package:image_picker/image_picker.dart';
+
+import '../services/api_service.dart';
 
 class ScanScreen extends StatefulWidget {
   const ScanScreen({super.key});
+
   @override
   State<ScanScreen> createState() => _ScanScreenState();
 }
 
 class _ScanScreenState extends State<ScanScreen> {
-  CameraController? _controller;
-  bool _busy = false;
+  final ImagePicker _picker = ImagePicker();
+  File? _imageFile;
+  bool _isLoading = false;
+  String? _error;
 
-  @override
-  void initState() {
-    super.initState();
-    _initCamera();
+  Future<void> _pick(ImageSource source) async {
+    setState(() {
+      _error = null;
+    });
+    final x = await _picker.pickImage(source: source, imageQuality: 85, maxWidth: 1600);
+    if (x == null) return;
+    setState(() => _imageFile = File(x.path));
   }
 
-  Future<void> _initCamera() async {
+  Future<void> _scan() async {
+    if (_imageFile == null) return;
+    setState(() {
+      _isLoading = true;
+      _error = null;
+    });
+
     try {
-      final cams = await availableCameras();
-      final cam = cams.firstWhere(
-        (c) => c.lensDirection == CameraLensDirection.back,
-        orElse: () => cams.first,
-      );
-      final controller = CameraController(
-        cam,
-        ResolutionPreset.medium,
-        enableAudio: false,
-      );
-      await controller.initialize();
-      if (!mounted) return;
-      setState(() => _controller = controller);
-    } catch (e) {
-      debugPrint('Camera init error: $e');
-      if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('Camera error: $e')));
-      }
-    }
-  }
+      final bytes = await _imageFile!.readAsBytes();
+      final base64Image = base64Encode(bytes);
 
-  @override
-  void dispose() {
-    _controller?.dispose();
-    super.dispose();
-  }
+      final api = ApiService();
+      final result = await api.scanImageBase64(base64Image);
 
-  Future<void> _captureAndAnalyze() async {
-    if (_controller == null || !_controller!.value.isInitialized) return;
-    setState(() => _busy = true);
-    try {
-      final shot = await _controller!.takePicture();
-      final result = await _sendImageToApi(File(shot.path));
       if (!mounted) return;
-      Navigator.pushNamed(context, '/results', arguments: {'result': result});
+      Navigator.of(context).pushNamed('/results', arguments: {
+        'result': result, // pass the model
+      });
     } catch (e) {
-      if (!mounted) return;
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('Analyze failed: $e')));
+      setState(() => _error = e.toString());
     } finally {
-      if (mounted) setState(() => _busy = false);
+      if (mounted) setState(() => _isLoading = false);
     }
-  }
-
-  // --- API call (edit API_BASE below if needed) ---
-  static const String apiBase = String.fromEnvironment(
-    'API_BASE',
-    defaultValue: 'https://potbot-production.up.railway.app',
-  );
-
-  Future<String> _sendImageToApi(File file) async {
-    final url = Uri.parse('$apiBase/api/scan');
-    final bytes = await file.readAsBytes();
-    final resp = await http.post(
-      url,
-      headers: {'Content-Type': 'application/octet-stream'},
-      body: bytes,
-    );
-    if (resp.statusCode == 200) {
-      return resp.body; // adjust parsing if your backend returns JSON
-    }
-    throw 'Server ${resp.statusCode}: ${resp.body}';
   }
 
   @override
   Widget build(BuildContext context) {
-    final controller = _controller;
+    final box = Container(
+      width: double.infinity,
+      constraints: const BoxConstraints(maxWidth: 360), // keep it boxed on large screens
+      child: AspectRatio(
+        aspectRatio: 1, // perfect square
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: Colors.white24, width: 2),
+            color: Colors.black12,
+          ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(14),
+            child: _imageFile == null
+                ? const Center(child: Text('No image selected', style: TextStyle(color: Colors.white70)))
+                : Image.file(_imageFile!, fit: BoxFit.cover),
+          ),
+        ),
+      ),
+    );
+
     return Scaffold(
-      appBar: AppBar(title: const Text('Scan')),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
-            // Bounded preview box (3:4 aspect, rounded corners)
-            AspectRatio(
-              aspectRatio: 3 / 4,
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(16),
-                child: Container(
-                  color: Colors.black,
-                  child:
-                      (controller != null && controller.value.isInitialized)
-                          ? CameraPreview(controller)
-                          : const Center(child: CircularProgressIndicator()),
-                ),
+      appBar: AppBar(
+        title: const Text('PotBot'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.leaderboard),
+            onPressed: () => Navigator.of(context).pushNamed('/leaderboard'),
+          ),
+        ],
+      ),
+      body: Center(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              box,
+              const SizedBox(height: 16),
+              if (_isLoading) const LinearProgressIndicator(),
+              if (_error != null) ...[
+                const SizedBox(height: 8),
+                Text(_error!, style: const TextStyle(color: Colors.redAccent)),
+              ],
+              const SizedBox(height: 16),
+              Wrap(
+                spacing: 12,
+                runSpacing: 12,
+                children: [
+                  ElevatedButton.icon(
+                    icon: const Icon(Icons.photo_camera),
+                    label: const Text('Camera'),
+                    onPressed: () => _pick(ImageSource.camera),
+                  ),
+                  ElevatedButton.icon(
+                    icon: const Icon(Icons.photo_library),
+                    label: const Text('Gallery'),
+                    onPressed: () => _pick(ImageSource.gallery),
+                  ),
+                  ElevatedButton.icon(
+                    icon: const Icon(Icons.science),
+                    label: const Text('Scan'),
+                    onPressed: _isLoading || _imageFile == null ? null : _scan,
+                  ),
+                ],
               ),
-            ),
-            const SizedBox(height: 16),
-            FilledButton.icon(
-              onPressed: _busy ? null : _captureAndAnalyze,
-              icon: const Icon(Icons.camera),
-              label: Text(_busy ? 'Analyzing…' : 'Capture & Analyze'),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

@@ -71,12 +71,9 @@ JSON
           cp server.js webhost/
           cp package.json webhost/
           echo "web: node server.js" > webhost/Procfile
-          echo "=== webhost/ listing ==="
           ls -la webhost
-          echo "=== webhost/public/ listing (first 50) ==="
           ls -la webhost/public | head -50
 
-      # Ensure git will track webhost even if .gitignore excludes it
       - name: Allow tracking of webhost in .gitignore
         run: |
           if [ -f .gitignore ]; then
