@@ -8,6 +8,9 @@ on:
 jobs:
   build-and-stage:
     runs-on: ubuntu-latest
+    env:
+      RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+
     steps:
       - name: Checkout main
         uses: actions/checkout@v4
