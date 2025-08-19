@@ -6,13 +6,13 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write   # <-- needed so the action can commit to main
+  contents: write   # allow committing back to the repo
 
 jobs:
   build-and-stage:
     runs-on: ubuntu-latest
     env:
-      API_URL: ${{ secrets.WEB_API_URL }}   # set in GitHub → Settings → Secrets → Actions
+      API_URL: ${{ secrets.WEB_API_URL }}
 
     steps:
       - name: Checkout main
@@ -34,7 +34,7 @@ jobs:
       - name: Build web (release)
         run: flutter build web --release --dart-define=API_URL=${{ secrets.WEB_API_URL }}
 
-      # Create server.js + package.json if missing at repo root (safety net)
+      # Safety net: create server.js/package.json if missing at repo root
       - name: Ensure runtime files exist at repo root
         run: |
           if [ ! -f server.js ]; then
@@ -76,9 +76,19 @@ JSON
           echo "Staged files in webhost/public/:"
           ls -la webhost/public | head -50
 
+      # 🔧 Ensure .gitignore does NOT exclude webhost/*
+      - name: Allow tracking of webhost in .gitignore
+        run: |
+          if [ -f .gitignore ]; then
+            echo "" >> .gitignore
+            echo "# allow CI-managed webhost" >> .gitignore
+            echo "!webhost/**" >> .gitignore
+          fi
+
       - name: Commit webhost/ to main
         run: |
-          git add -A webhost
+          git add -f webhost   # force add in case of ignore rules
+          git status
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git commit -m "ci: update webhost from Flutter build" || echo "No changes to commit"
