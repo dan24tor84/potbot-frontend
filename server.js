@@ -6,12 +6,5 @@ const PORT = process.env.PORT || 8080;
 const WEB_ROOT = path.join(__dirname, "public");
 
 app.use(express.static(WEB_ROOT, { maxAge: "7d", immutable: true }));
-
-// SPA fallback to index.html
-app.get("*", (_, res) => {
-  res.sendFile(path.join(WEB_ROOT, "index.html"));
-});
-
-app.listen(PORT, () => {
-  console.log(`PotBot web listening on ${PORT}`);
-});
+app.get("*", (_, res) => res.sendFile(path.join(WEB_ROOT, "index.html")));
+app.listen(PORT, () => console.log(`PotBot web listening on ${PORT}`));
