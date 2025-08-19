@@ -1,4 +1,4 @@
-name: Build Flutter Web → deploy-web branch
+name: Build Flutter Web → webhost/ (main branch)
 
 on:
   push:
@@ -6,9 +6,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-web:
+  build-and-stage:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout main
         uses: actions/checkout@v4
@@ -31,55 +30,20 @@ jobs:
       - name: Build web (release)
         run: flutter build web --release
 
-      - name: Stage Node runtime
+      - name: Stage runtime into webhost/
         run: |
-          mkdir -p deploy_web_out
-          cp -r build/web deploy_web_out/public
-          cp server.js deploy_web_out/
-          cp package.json deploy_web_out/
-          echo "web: node server.js" > deploy_web_out/Procfile
+          mkdir -p webhost
+          rm -rf webhost/*
+          mkdir -p webhost/public
+          cp -r build/web/* webhost/public/
+          cp server.js webhost/
+          cp package.json webhost/
+          echo "web: node server.js" > webhost/Procfile
 
-      - name: Upload build artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: deploy_web_out
-          path: deploy_web_out
-
-      # === new job to switch branches and commit ===
-  publish-web:
-    runs-on: ubuntu-latest
-    needs: build-web
-
-    steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Download build artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: deploy_web_out
-          path: deploy_web_out
-
-      - name: Switch to deploy-web branch
+      - name: Commit webhost/ to main
         run: |
-          git fetch origin
-          if git show-ref --verify --quiet refs/heads/deploy-web; then
-            git checkout deploy-web
-          else
-            git checkout --orphan deploy-web
-            git rm -rf . || true
-          fi
-
-      - name: Replace contents and commit
-        run: |
-          rm -rf ./*
-          cp -r deploy_web_out/* .
-          git add -A
+          git add -A webhost
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git commit -m "ci: deploy Flutter web $(date -u +'%Y-%m-%dT%H:%M:%SZ')" || echo "No changes to commit"
-
-      - name: Push deploy-web
-        run: git push -f origin deploy-web
+          git commit -m "ci: update webhost from Flutter build" || echo "No changes to commit"
+          git push
