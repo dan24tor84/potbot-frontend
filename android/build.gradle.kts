@@ -1,4 +1,4 @@
-// Root-level build.gradle.kts
+// android/build.gradle.kts — Project-level (Kotlin DSL)
 
 plugins {
     id("com.android.application") version "8.5.2" apply false
@@ -14,6 +14,7 @@ allprojects {
     }
 }
 
+// Keep the app module evaluated before others that might depend on it
 subprojects {
     project.evaluationDependsOn(":app")
 }
