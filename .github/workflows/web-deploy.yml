@@ -6,13 +6,13 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write   # allow this workflow to commit to main
+  contents: write   # allow committing webhost/ back to main
 
 jobs:
   build-and-stage:
     runs-on: ubuntu-latest
     env:
-      API_URL: ${{ secrets.WEB_API_URL }}   # you already added this secret
+      API_URL: ${{ secrets.WEB_API_URL }}
 
     steps:
       - name: Checkout main
@@ -23,7 +23,7 @@ jobs:
       - name: Set up Flutter (stable)
         uses: subosito/flutter-action@v2
         with:
-          channel: 'stable'
+          channel: stable
 
       - name: Enable web & get deps
         run: |
@@ -34,51 +34,30 @@ jobs:
       - name: Build web (release)
         run: flutter build web --release --dart-define=API_URL=${{ secrets.WEB_API_URL }}
 
-      # Safety net: create runtime files at repo root if missing
-      - name: Ensure server.js and package.json exist
-        run: |
-          if [ ! -f server.js ]; then
-            cat > server.js <<'JS'
-const express = require("express");
-const path = require("path");
-const app = express();
-const PORT = process.env.PORT || 8080;
-const WEB_ROOT = path.join(__dirname, "public");
-app.use(express.static(WEB_ROOT, { maxAge: "7d", immutable: true }));
-app.get("*", (_, res) => res.sendFile(path.join(WEB_ROOT, "index.html")));
-app.listen(PORT, () => console.log(`PotBot web listening on ${PORT}`));
-JS
-          fi
-          if [ ! -f package.json ]; then
-            cat > package.json <<'JSON'
-{
-  "name": "potbot-web",
-  "private": true,
-  "main": "server.js",
-  "scripts": { "start": "node server.js" },
-  "dependencies": { "express": "^4.19.2" },
-  "engines": { "node": ">=18" }
-}
-JSON
-          fi
-
+      # Stage the runtime for Railway
       - name: Stage runtime into webhost/
         run: |
           mkdir -p webhost/public
           rm -rf webhost/*
           mkdir -p webhost/public
           cp -r build/web/* webhost/public/
+
+          # copy runtime files (must exist at repo root)
           cp server.js webhost/
           cp package.json webhost/
           echo "web: node server.js" > webhost/Procfile
+
+          echo "=== webhost ==="
           ls -la webhost
+          echo "=== webhost/public (first 50) ==="
           ls -la webhost/public | head -50
 
+      # Make sure .gitignore doesn’t exclude webhost/
       - name: Allow tracking of webhost in .gitignore
         run: |
           if [ -f .gitignore ]; then
             echo "" >> .gitignore
-            echo "# allow CI-managed webhost" >> .gitignore
+            echo "# allow CI-managed webhost bundle" >> .gitignore
             echo "!webhost/**" >> .gitignore
           fi
 

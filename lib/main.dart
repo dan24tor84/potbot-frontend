@@ -1,12 +1,11 @@
 // main.dart (diff-friendly paste)
 
-import 'dart:io' show Platform;
 import 'package:flutter/foundation.dart' show kReleaseMode;
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 // 1) Read config: prefer --dart-define, else .env fallback
-String readConfig(String key, {String defaultValue = ""}) {
+String readConfig(String key, {String defaultValue = ''}) {
   // Prefer compile-time defines (works on Android/iOS/Web)
   const fromEnvApiUrl = String.fromEnvironment('API_URL', defaultValue: '');
   if (key == 'API_URL' && fromEnvApiUrl.isNotEmpty) return fromEnvApiUrl;
@@ -25,7 +24,7 @@ Future<void> main() async {
   //    (keeps secrets out of release bundles if you forget to remove it)
   if (!kReleaseMode) {
     try {
-      await dotenv.load(fileName: ".env");
+      await dotenv.load(fileName: '.env');
     } catch (_) {
       // No local .env — that's fine in dev too.
     }
@@ -45,7 +44,7 @@ class PotBotApp extends StatelessWidget {
     // Pass apiUrl into your repositories/services or via an inherited widget/provider
     // Example: ApiClient(baseUrl: apiUrl)
 
-    return MaterialApp(
+    return const MaterialApp(
       title: 'PotBot',
       // ... your existing theme/routes
       // home: ScanScreen(apiUrl: apiUrl),
