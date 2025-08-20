@@ -1,7 +1,12 @@
 [phases.setup]
-nixPkgs = ["dart", "flutter"]
-runtime = "flutter"
+nixPkgs = ["bash", "git", "curl", "unzip", "which", "nodejs_20", "flutter"]
 
-[variables]
-FLUTTER_VERSION = "3.24.3"
-DART_VERSION = "3.7.0"
+[phases.build]
+cmds = [
+  "flutter --version",
+  "flutter pub get",
+  "flutter build web --release"
+]
+
+[start]
+cmd = "node server.js"
