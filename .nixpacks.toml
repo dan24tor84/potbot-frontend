@@ -1,7 +1,24 @@
 [phases.setup]
-nixPkgs = ["dart", "flutter"]
-runtime = "flutter"
+# We need git, curl, unzip, and Node to serve the built web app
+nixPkgs = ["bash", "curl", "git", "unzip", "nodejs_20"]
 
-[variables]
-FLUTTER_VERSION = "3.24.3"
-DART_VERSION = "3.7.0"
+[phases.install]
+cmds = [
+    # Install Flutter 3.22.x (Dart 3.7.x)
+    "git clone https://github.com/flutter/flutter.git -b 3.22.2 /opt/flutter",
+    "export PATH=/opt/flutter/bin:$PATH && flutter config --enable-web && flutter doctor -v",
+    # Get deps
+    "export PATH=/opt/flutter/bin:$PATH && flutter pub get"
+]
+
+[phases.build]
+cmds = [
+    # Build the web app; pass your backend URL from Railway env var POTBOT_API_URL
+    "export PATH=/opt/flutter/bin:$PATH && flutter build web --release --dart-define=API_URL=${POTBOT_API_URL}"
+]
+
+[start]
+# Serve the compiled web from build/web via the Node server below
+cmd = "node server.js"
+# Ensure these files/folders are present at runtime
+includes = ["build/web", "server.js", "package.json"]

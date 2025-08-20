@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'widgets/scan_screen.dart'; // <- file is under lib/widgets
+import 'widgets/scan_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -11,14 +11,13 @@ class PotBotApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const String apiUrl =
-        "http://10.0.2.2:8080"; // replace with your Railway URL when ready
+    const String apiUrl = 'http://10.0.2.2:8080'; // replace with Railway when ready
 
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'PotBot',
       theme: ThemeData(primarySwatch: Colors.green),
-      home: ScanScreen(apiUrl: apiUrl),
+      home: const ScanScreen(apiUrl: apiUrl),
     );
   }
 }
