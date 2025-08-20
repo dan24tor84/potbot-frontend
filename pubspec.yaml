@@ -1,5 +1,5 @@
-name: 
-description: PotBot frontend Flutter app
+name: potbot_flutter
+description: PotBot frontend Flutter
 publish_to: "none"
 version: 1.0.0+1
 
