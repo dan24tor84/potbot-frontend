@@ -1,0 +1,7 @@
+[phases.setup]
+nixPkgs = ["dart", "flutter"]
+runtime = "flutter"
+
+[variables]
+FLUTTER_VERSION = "3.24.3"
+DART_VERSION = "3.7.0"

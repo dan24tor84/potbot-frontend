@@ -1,11 +1,10 @@
-name: potbot_flutter
-description: PotBot frontend Flutter
-publish_to: "none"
+name: potbot_frontend_flutter
+description: PotBot – AI-powered cannabis quality scanner and grow assistant
+publish_to: 'none'
 version: 1.0.0+1
 
 environment:
-  sdk: ">=3.4.0 <4.0.0"
-  flutter: ">=3.22.0"
+  sdk: '>=3.7.0 <4.0.0' # Flutter 3.35.x (Dart 3.9)
 
 dependencies:
   flutter:
@@ -14,7 +13,7 @@ dependencies:
   # UI
   cupertino_icons: ^1.0.8
 
-  # Camera (live preview on Android/iOS; on web you’ll pick files)
+  # Camera (live preview on Android/iOS; on web use <input> file-pick)
   camera: ^0.11.0+2
 
   # Image/file picking (gallery/camera stills)
@@ -30,7 +29,7 @@ dependencies:
   # HTTP client
   http: ^1.2.2
 
-  # Optional: env via dart-define (keep for local/dev)
+  # Optional: keep if you use local .env in dev (we pass API_URL via --dart-define in CI)
   flutter_dotenv: ^5.1.0
 
 dev_dependencies:

@@ -1,3 +1,4 @@
+// lib/widgets/scan_screen.dart
 import 'dart:typed_data';
 import 'dart:io' show File;
 import 'package:flutter/foundation.dart' show kIsWeb;
@@ -23,10 +24,74 @@ class _ScanScreenState extends State<ScanScreen> {
   Uint8List? _previewBytes; // web
   bool _isLoading = false;
   String? _error;
-  Map<String, dynamic>? _result;
+
+  Future<void> _pick(ImageSource source) async {
+    setState(() {
+      _error = null;
+    });
+    final x = await _picker.pickImage(
+      source: source,
+      imageQuality: 85,
+      maxWidth: 1600,
+    );
+    if (x == null) return;
+    setState(() => _imageFile = File(x.path));
+  }
+
+  Future<void> _scan() async {
+    if (_imageFile == null) return;
+    setState(() {
+      _isLoading = true;
+      _error = null;
+    });
+
+    try {
+      final bytes = await _imageFile!.readAsBytes();
+      final base64Image = base64Encode(bytes);
+
+      final api = ApiService();
+      final result = await api.scanImageBase64(base64Image);
+
+      if (!mounted) return;
+      Navigator.of(context).pushNamed(
+        '/results',
+        arguments: {'result': result},
+      );
+    } catch (e) {
+      setState(() => _error = e.toString());
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    final box = Container(
+      width: double.infinity,
+      constraints: const BoxConstraints(maxWidth: 360),
+      child: AspectRatio(
+        aspectRatio: 1,
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: Colors.white24, width: 2),
+            color: Colors.black12,
+          ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(14),
+            child: _imageFile == null
+                ? const Center(
+                    child: Text(
+                      'No image selected',
+                      style: TextStyle(color: Colors.white70),
+                    ),
+                  )
+                : Image.file(_imageFile!, fit: BoxFit.cover),
+          ),
+        ),
+      ),
+    );
+
     return Scaffold(
       appBar: AppBar(title: const Text('Scan')),
       body: Padding(
