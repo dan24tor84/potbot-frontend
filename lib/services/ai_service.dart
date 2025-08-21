@@ -3,33 +3,32 @@ import 'dart:convert';
 import 'dart:typed_data';
 import 'package:http/http.dart' as http;
 
-/// We pass the backend base URL at build time:
+/// Backend base URL. Prefer passing at build time:
 /// flutter build web --release --dart-define=API_URL=https://your-backend
 ///
-/// On Railway, .nixpacks.toml injects POTBOT_API_URL into API_URL.
+/// On Railway, Nixpacks maps POTBOT_API_URL -> API_URL for production builds.
 const String _backendUrl = String.fromEnvironment(
   'API_URL',
-  // Safe fallback so the app still works if dart-define is missing.
-  defaultValue: 'https://potbot-production.up.railway.app',
+  defaultValue: 'https://potbot-production.up.railway.app', // safe fallback
 );
 
 class AIService {
   AIService({http.Client? client}) : _client = client ?? http.Client();
-
   final http.Client _client;
 
-  /// Sends image bytes to the backend and returns parsed JSON.
-  /// Expects POST <_backendUrl>/api/analyze with multipart field "image".
+  /// Sends image bytes to the backend and returns a parsed JSON map.
+  /// Expects backend route: POST <_backendUrl>/api/analyze
+  /// with multipart field name: "image".
   Future<Map<String, dynamic>> analyzeBytes(
     Uint8List data, {
     String filename = 'upload.jpg',
     Duration timeout = const Duration(seconds: 60),
   }) async {
-    final uri = Uri.parse('$_backendUrl/api/analyze'); // ensure /api
+    final uri = Uri.parse('$_backendUrl/api/analyze'); // <- /api
     final req = http.MultipartRequest('POST', uri)
       ..files.add(
         http.MultipartFile.fromBytes(
-          'image',   // <-- must match backend's field name
+          'image',           // <- must match backend field name
           data,
           filename: filename,
         ),
@@ -42,23 +41,16 @@ class AIService {
       throw Exception('Network error while sending request: $e');
     }
 
-    late final http.Response res;
-    try {
-      res = await http.Response.fromStream(streamed);
-    } catch (e) {
-      throw Exception('Failed to read response: $e');
-    }
-
+    final res = await http.Response.fromStream(streamed);
     if (res.statusCode == 200) {
       try {
-        final jsonMap = json.decode(res.body) as Map<String, dynamic>;
-        return jsonMap;
-      } catch (e) {
-        throw Exception('Response JSON parse error: $e\nBody: ${res.body}');
+        return json.decode(res.body) as Map<String, dynamic>;
+      } catch (_) {
+        throw Exception('Invalid JSON from server: ${res.body}');
       }
     }
 
-    // Non-200 → surface details for debugging in UI/console
+    // Bubble up structured error
     throw Exception(
       'Analyze failed: ${res.statusCode} ${res.reasonPhrase}\n${res.body}',
     );
