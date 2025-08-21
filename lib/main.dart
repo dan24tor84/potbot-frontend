@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'widgets/scan_screen.dart'; // <- file is under lib/widgets
+import 'widgets/scan_screen.dart';
 
-Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+void main() {
   runApp(const PotBotApp());
 }
 
@@ -11,8 +10,8 @@ class PotBotApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const String apiUrl =
-        'http://10.0.2.2:8080'; // replace with your Railway URL when ready
+    // Use your Railway backend URL here:
+    const String apiUrl = 'https://potbot-backend-production.up.railway.app';
 
     return MaterialApp(
       debugShowCheckedModeBanner: false,
