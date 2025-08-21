@@ -5,14 +5,12 @@ const app = express();
 const PORT = process.env.PORT || 8080;
 const WEB_ROOT = path.join(__dirname, "build", "web");
 
-// Serve static files from Flutter web build
 app.use(express.static(WEB_ROOT, { maxAge: "7d", immutable: true }));
 
-// Route everything else to index.html (for Flutter router)
-app.get("*", (_, res) => {
+// no-cache for SPA entry so users see new builds
+app.get("*", (_req, res) => {
+  res.setHeader("Cache-Control", "no-store, must-revalidate");
   res.sendFile(path.join(WEB_ROOT, "index.html"));
 });
 
-app.listen(PORT, () => {
-  console.log(`✅ PotBot web listening on port ${PORT}`);
-});
+app.listen(PORT, () => console.log(`✅ PotBot web listening on ${PORT}`));
