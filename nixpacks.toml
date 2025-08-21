@@ -1,24 +1,41 @@
+# --- Nixpacks config for Flutter web + Node host ---
+
 [phases.setup]
-# We need git, curl, unzip, and Node to serve the built web app
-nixPkgs = ["bash", "curl", "git", "unzip", "nodejs_20"]
+# tools we need during build
+nixPkgs = ["bash", "curl", "unzip", "git", "nodejs_20"]
 
 [phases.install]
+# Install Flutter 3.35.1 (Dart 3.9) into /opt/flutter and put it on PATH
 cmds = [
-    # Install Flutter 3.22.x (Dart 3.7.x)
-    "git clone https://github.com/flutter/flutter.git -b 3.22.2 /opt/flutter",
-    "export PATH=/opt/flutter/bin:$PATH && flutter config --enable-web && flutter doctor -v",
-    # Get deps
-    "export PATH=/opt/flutter/bin:$PATH && flutter pub get"
+  'set -eux',
+  'FLUTTER_VERSION=3.35.1',
+  'FLUTTER_URL=https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_${FLUTTER_VERSION}-stable.tar.xz',
+  'mkdir -p /opt',
+  'curl -fsSL "$FLUTTER_URL" -o /tmp/flutter.tar.xz',
+  'tar -xf /tmp/flutter.tar.xz -C /opt',
+  'export PATH=/opt/flutter/flutter/bin:$PATH',
+  # make sure web is enabled & doctor runs
+  'flutter config --enable-web',
+  'flutter doctor -v',
+  # get pub dependencies
+  'flutter pub get'
 ]
 
 [phases.build]
+# Build the Flutter web app; pass backend URL at build time if you
+# want it compiled in (optional)
 cmds = [
-    # Build the web app; pass your backend URL from Railway env var POTBOT_API_URL
-    "export PATH=/opt/flutter/bin:$PATH && flutter build web --release --dart-define=API_URL=${POTBOT_API_URL}"
+  'export PATH=/opt/flutter/flutter/bin:$PATH',
+  # If you want to inject the Railway env var POTBOT_API_URL into the build:
+  # 'flutter build web --release --dart-define=API_URL=${POTBOT_API_URL}',
+  'flutter build web --release',
+  # Install Node deps to serve the build (server.js + express)
+  'npm ci || npm i'
 ]
 
 [start]
-# Serve the compiled web from build/web via the Node server below
+# Serve compiled web via our Node server
 cmd = "node server.js"
-# Ensure these files/folders are present at runtime
+
+# Make sure Nixpacks keeps these in the final image
 includes = ["build/web", "server.js", "package.json"]
