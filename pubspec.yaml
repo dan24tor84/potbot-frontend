@@ -20,7 +20,7 @@ dependencies:
   image_picker: ^1.0.7
 
   # Permissions (Android/iOS)
-  permission_handler: ^11.3.1
+  permission_handler: ^12.0.1
 
   # Files / paths
   path_provider: ^2.1.3
@@ -30,12 +30,12 @@ dependencies:
   http: ^1.2.2
 
   # Optional: only for local .env in dev (we pass API_URL via --dart-define in CI)
-  flutter_dotenv: ^5.1.0
+  flutter_dotenv: ^6.0.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^3.0.2
+  flutter_lints: ^6.0.0
 
 flutter:
   uses-material-design: true
