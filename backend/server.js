@@ -11,7 +11,7 @@ const app = express();
 const PORT = process.env.PORT || 8080;
 const REPLICATE_TOKEN = process.env.REPLICATE_API_TOKEN;
 const REPLICATE_MODEL = process.env.REPLICATE_MODEL;        // e.g. "owner/model"
-const REPLICATE_VERSION = process.env.REPLICATE_VERSION;    // the version hash
+const REPLICATE_VERSION = process.env.REPLICATE_VERSION;    // version hash
 
 // CORS + JSON
 app.use(cors({ origin: true }));
@@ -28,7 +28,7 @@ app.get("/health", (_req, res) => res.json({ ok: true }));
  * POST /api/analyze
  * Accepts:
  *  - multipart/form-data with field "image" (mobile)  OR
- *  - JSON body with { image_base64: "<BASE64_WITHOUT_PREFIX>" } (web fallback)
+ *  - JSON body { image_base64: "<BASE64>" } (web)
  * Returns: the Replicate prediction output.
  */
 app.post("/api/analyze", upload.single("image"), async (req, res) => {
@@ -65,8 +65,9 @@ app.post("/api/analyze", upload.single("image"), async (req, res) => {
       {
         version: REPLICATE_VERSION,
         input: {
-          // IMPORTANT: change 'image' to the actual input key for your model if different
+          // IMPORTANT: change 'image' to the model's input key if different
           image: dataUri,
+          // ...add any model-specific inputs here...
         },
       },
       {
