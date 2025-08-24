@@ -4,33 +4,20 @@ publish_to: "none"
 version: 1.0.0+1
 
 environment:
-  sdk: ">=3.7.0 <4.0.0"   # Flutter 3.35.x uses Dart 3.9
+  sdk: ">=3.7.0 <4.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
 
-  # UI
   cupertino_icons: ^1.0.8
-
-  # Camera (Android/iOS only)
   camera: ^0.11.0+2
-
-  # Image/file picking (web & mobile)
   image_picker: ^1.0.7
-
-  # Permissions (Android/iOS)
   permission_handler: ^12.0.1
-
-  # Files / paths
   path_provider: ^2.1.3
   path: ^1.9.0
-
-  # HTTP client
   http: ^1.2.2
-
-  # Optional: only used for local dev (not for web prod)
-  flutter_dotenv: ^6.0.0
+  flutter_dotenv: ^6.0.0 # for local dev only (web build uses --dart-define)
 
 dev_dependencies:
   flutter_test:
@@ -41,5 +28,3 @@ flutter:
   uses-material-design: true
   assets:
     - assets/images/
-    # Example specific asset (optional, folder above already includes it):
-    # - assets/images/potbot_logo-512x512.png
