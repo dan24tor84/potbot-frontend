@@ -1,66 +1,41 @@
-// lib/services/ai_service.dart
 import 'dart:convert';
 import 'dart:typed_data';
 import 'package:http/http.dart' as http;
 
-/// Reads API_URL at build time (Railway Nixpacks injects POTBOT_API_URL -> API_URL)
-final String _backendBase = const String.fromEnvironment(
+/// Backend base URL. Injected by build:
+/// flutter build web --release --dart-define=API_URL=https://your-backend
+const String _backendUrl = String.fromEnvironment(
   'API_URL',
-  defaultValue: 'https://potbot-production.up.railway.app', // <-- correct backend
+  defaultValue: 'https://potbot-production.up.railway.app',
 );
 
-Uri _analyzeUri() => Uri.parse('$_backendBase/api/analyze');
-
 class AIService {
-  AIService({http.Client? client}) : _client = client ?? http.Client();
   final http.Client _client;
+  AIService({http.Client? client}) : _client = client ?? http.Client();
 
-  /// Send raw bytes via multipart/form-data (field name "image")
+  /// Sends image bytes to the backend and returns the parsed JSON.
+  /// Expects POST <_backendUrl>/api/analyze with multipart field name "image".
   Future<Map<String, dynamic>> analyzeBytes(
-    Uint8List bytes, {
+    Uint8List data, {
     String filename = 'upload.jpg',
     Duration timeout = const Duration(seconds: 60),
   }) async {
-    final req = http.MultipartRequest('POST', _analyzeUri())
-      ..files.add(
-        http.MultipartFile.fromBytes(
-          'image', // <-- matches backend server.js
-          bytes,
-          filename: filename,
-        ),
-      );
+    final uri = Uri.parse('$_backendUrl/api/analyze');
 
-    final streamed = await _client.send(req).timeout(timeout);
+    final req = http.MultipartRequest('POST', uri)
+      ..files.add(http.MultipartFile.fromBytes('image', data, filename: filename));
+
+    http.StreamedResponse streamed;
+    try {
+      streamed = await _client.send(req).timeout(timeout);
+    } catch (e) {
+      throw Exception('Network error sending image: $e');
+    }
+
     final res = await http.Response.fromStream(streamed);
-
     if (res.statusCode == 200) {
-      return (res.body.isEmpty)
-          ? <String, dynamic>{}
-          : jsonDecode(res.body) as Map<String, dynamic>;
+      return json.decode(res.body) as Map<String, dynamic>;
     }
-    throw Exception(
-      'Analyze failed: ${res.statusCode} ${res.reasonPhrase}\n${res.body}',
-    );
-  }
-
-  /// Alternative: send a base64 string in JSON (key "image_base64")
-  Future<Map<String, dynamic>> analyzeBase64(
-    String base64Image, {
-    Duration timeout = const Duration(seconds: 60),
-  }) async {
-    final res = await _client
-        .post(
-          _analyzeUri(),
-          headers: {'Content-Type': 'application/json'},
-          body: jsonEncode({'image_base64': base64Image}), // <-- correct key
-        )
-        .timeout(timeout);
-
-    if (res.statusCode == 200) {
-      return jsonDecode(res.body) as Map<String, dynamic>;
-    }
-    throw Exception(
-      'Analyze failed: ${res.statusCode} ${res.reasonPhrase}\n${res.body}',
-    );
+    throw Exception('Analyze failed: ${res.statusCode} ${res.reasonPhrase}\n${res.body}');
   }
 }
