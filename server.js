@@ -5,12 +5,14 @@ const app = express();
 const PORT = process.env.PORT || 8080;
 const WEB_ROOT = path.join(__dirname, "build", "web");
 
-// Serve static files from Flutter web build
+// Long-cache static assets
 app.use(express.static(WEB_ROOT, { maxAge: "7d", immutable: true }));
 
-// Route everything else to index.html (for Flutter router)
+// Always serve index.html (Flutter router)
 app.get("*", (_, res) => {
-  res.sendFile(path.join(WEB_ROOT, "index.html"));
+  res.sendFile(path.join(WEB_ROOT, "index.html"), {
+    headers: { "Cache-Control": "no-cache" }
+  });
 });
 
 app.listen(PORT, () => {
