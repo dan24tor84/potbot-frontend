@@ -1,240 +1,377 @@
-// ignore_for_file: unnecessary_underscores
-
-import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 
-class HomeScreen extends StatefulWidget {
+class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: const _TopNav(),
+      drawer: const _MobileDrawer(), // shows on small screens
+      body: const _HomeBody(),
+      bottomNavigationBar: const _Footer(),
+    );
+  }
 }
 
-class _HomeScreenState extends State<HomeScreen> {
-  final ImagePicker _picker = ImagePicker();
-  final List<XFile> _images = [];
+class _TopNav extends StatelessWidget implements PreferredSizeWidget {
+  const _TopNav();
 
-  Future<void> _pick(ImageSource src) async {
-    final XFile? picked = await _picker.pickImage(
-      source: src,
-      imageQuality: 90,
-    );
-    if (picked != null) setState(() => _images.insert(0, picked));
-  }
-
-  void _openScan() => Navigator.of(context).pushNamed('/scan');
-  void _openLeaderboard() => Navigator.of(context).pushNamed('/leaderboard');
+  @override
+  Size get preferredSize => const Size.fromHeight(64);
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final isWide = MediaQuery.of(context).size.width >= 900;
 
-    return Scaffold(
-      appBar: AppBar(
-        elevation: 0,
-        backgroundColor: theme.colorScheme.surface,
-        titleSpacing: 0,
-        title: Row(
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(right: 12),
-              child: Image.asset(
-                // use your actual logo file (from your older screen)
-                'assets/images/potbot_logo-512x512.png',
-                height: 36,
-              ),
+    return AppBar(
+      toolbarHeight: 64,
+      titleSpacing: 16,
+      title: Row(
+        children: [
+          // Logo
+          ClipRRect(
+            borderRadius: BorderRadius.circular(12),
+            child: Image.asset(
+              'assets/images/potbot_logo-512x512.png',
+              width: 36,
+              height: 36,
+              fit: BoxFit.cover,
             ),
-            Text(
-              'PotBot',
-              style: theme.textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.w700,
-              ),
+          ),
+          const SizedBox(width: 12),
+          const Text(
+            'PotBot',
+            style: TextStyle(fontWeight: FontWeight.w800, fontSize: 20),
+          ),
+          const Spacer(),
+          if (isWide) ...[
+            _NavLink(label: 'Home', onTap: () => _go(context, '/')),
+            _NavLink(label: 'Bud Bot', onTap: () => _go(context, '/scan')),
+            _NavLink(label: 'Grower Mode', onTap: () => _go(context, '/grower')),
+            _NavLink(label: 'Pro Mode', onTap: () => _showSoon(context)),
+          ],
+        ],
+      ),
+    );
+  }
+
+  static void _go(BuildContext ctx, String route) {
+    if (ModalRoute.of(ctx)?.settings.name == route) return;
+    Navigator.of(ctx).pushNamed(route);
+  }
+
+  static void _showSoon(BuildContext ctx) {
+    ScaffoldMessenger.of(ctx).showSnackBar(
+      const SnackBar(content: Text('Pro Mode is coming soon!')),
+    );
+  }
+}
+
+class _NavLink extends StatelessWidget {
+  final String label;
+  final VoidCallback onTap;
+  const _NavLink({required this.label, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return TextButton(
+      onPressed: onTap,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8),
+        child: Text(label, style: const TextStyle(fontSize: 15)),
+      ),
+    );
+  }
+}
+
+class _MobileDrawer extends StatelessWidget {
+  const _MobileDrawer();
+
+  @override
+  Widget build(BuildContext context) {
+    final isWide = MediaQuery.of(context).size.width >= 900;
+    if (isWide) return const SizedBox.shrink();
+
+    return Drawer(
+      child: SafeArea(
+        child: ListView(
+          padding: const EdgeInsets.all(8),
+          children: [
+            ListTile(
+              leading: const Icon(Icons.home_outlined),
+              title: const Text('Home'),
+              onTap: () => _go(context, '/'),
+            ),
+            ListTile(
+              leading: const Icon(Icons.camera_alt_outlined),
+              title: const Text('Bud Bot'),
+              onTap: () => _go(context, '/scan'),
+            ),
+            ListTile(
+              leading: const Icon(Icons.eco_outlined),
+              title: const Text('Grower Mode'),
+              onTap: () => _go(context, '/grower'),
+            ),
+            ListTile(
+              leading: const Icon(Icons.star_border),
+              title: const Text('Pro Mode'),
+              onTap: () {
+                Navigator.pop(context);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Pro Mode is coming soon!')),
+                );
+              },
             ),
           ],
         ),
-        actions: [
-          IconButton(
-            tooltip: 'Leaderboard',
-            onPressed: _openLeaderboard,
-            icon: const Icon(Icons.emoji_events_outlined),
-          ),
-        ],
       ),
+    );
+  }
 
-      // FABs for quick actions
-      floatingActionButton: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          FloatingActionButton.extended(
-            heroTag: 'scan',
-            onPressed: _openScan,
-            label: const Text('Scan'),
-            icon: const Icon(Icons.science),
-          ),
-          const SizedBox(height: 12),
-          FloatingActionButton(
-            heroTag: 'camera',
-            onPressed: () => _pick(ImageSource.camera),
-            tooltip: 'Camera',
-            child: const Icon(Icons.photo_camera),
-          ),
-          const SizedBox(height: 12),
-          FloatingActionButton(
-            heroTag: 'gallery',
-            onPressed: () => _pick(ImageSource.gallery),
-            tooltip: 'Gallery',
-            child: const Icon(Icons.photo_library),
-          ),
-        ],
-      ),
+  void _go(BuildContext ctx, String route) {
+    Navigator.pop(ctx);
+    if (ModalRoute.of(ctx)?.settings.name == route) return;
+    Navigator.of(ctx).pushNamed(route);
+  }
+}
 
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            children: [
-              // CONTENT
-              Expanded(
-                child: Center(
-                  child: ConstrainedBox(
-                    constraints: const BoxConstraints(maxWidth: 680),
-                    child:
-                        _images.isEmpty
-                            ? _EmptyLanding(
-                              onScan: _openScan,
-                              onPick: () => _pick(ImageSource.gallery),
-                            )
-                            : GridView.builder(
-                              gridDelegate:
-                                  const SliverGridDelegateWithFixedCrossAxisCount(
-                                    crossAxisCount: 3,
-                                    crossAxisSpacing: 12,
-                                    mainAxisSpacing: 12,
-                                  ),
-                              itemCount: _images.length,
-                              itemBuilder:
-                                  (context, i) =>
-                                      _ParameterBox(path: _images[i].path),
-                            ),
+class _HomeBody extends StatelessWidget {
+  const _HomeBody();
+
+  @override
+  Widget build(BuildContext context) {
+    final isWide = MediaQuery.of(context).size.width >= 900;
+
+    return SingleChildScrollView(
+      child: Padding(
+        padding: EdgeInsets.symmetric(
+          horizontal: isWide ? 64 : 20,
+          vertical: isWide ? 40 : 24,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            // Hero
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment:
+                        isWide ? CrossAxisAlignment.start : CrossAlignment.center,
+                    children: [
+                      Text(
+                        'Scan Your Bud.\nKnow Your Quality.',
+                        textAlign: isWide ? TextAlign.left : TextAlign.center,
+                        style: Theme.of(context).textTheme.headlineLarge,
+                      ),
+                      const SizedBox(height: 12),
+                      Text(
+                        'PotBot uses AI to analyze trichomes, structure and color — then gives you a clean quality score with tips.',
+                        textAlign: isWide ? TextAlign.left : TextAlign.center,
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodyLarge
+                            ?.copyWith(color: Colors.white70),
+                      ),
+                      const SizedBox(height: 20),
+                      Wrap(
+                        spacing: 12,
+                        runSpacing: 12,
+                        alignment:
+                            isWide ? WrapAlignment.start : WrapAlignment.center,
+                        children: [
+                          ElevatedButton.icon(
+                            onPressed: () => Navigator.pushNamed(context, '/scan'),
+                            icon: const Icon(Icons.camera_alt_outlined),
+                            label: const Text('Scan bud'),
+                          ),
+                          OutlinedButton.icon(
+                            onPressed: () =>
+                                Navigator.pushNamed(context, '/grower'),
+                            icon: const Icon(Icons.eco_outlined),
+                            label: const Text('Grower mode'),
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
                 ),
-              ),
+                if (isWide) const SizedBox(width: 40),
+                if (isWide)
+                  Expanded(
+                    child: Center(
+                      child: Image.asset(
+                        'assets/images/potbot_logo-512x512.png',
+                        height: 220,
+                        fit: BoxFit.contain,
+                      ),
+                    ),
+                  ),
+              ],
+            ),
 
-              // FOOTER (kept from the older landing)
-              const SizedBox(height: 8),
-              Text(
-                '© 2025 PotBot. All rights reserved.',
-                style: theme.textTheme.bodySmall?.copyWith(
-                  color: theme.hintColor,
+            const SizedBox(height: 40),
+
+            // Features
+            Wrap(
+              spacing: 16,
+              runSpacing: 16,
+              children: const [
+                _FeatureCard(
+                  icon: Icons.analytics_outlined,
+                  title: 'AI Quality Score',
+                  desc:
+                      'Fast analysis of structure, color and trichomes to estimate quality.',
                 ),
-                textAlign: TextAlign.center,
+                _FeatureCard(
+                  icon: Icons.eco_outlined,
+                  title: 'Grower Mode',
+                  desc:
+                      'Upload plant photos and get care tips, stress detection and stage notes.',
+                ),
+                _FeatureCard(
+                  icon: Icons.leaderboard_outlined,
+                  title: 'Leaderboard',
+                  desc:
+                      'Share your scans and see how your buds stack up against the community.',
+                ),
+              ],
+            ),
+
+            const SizedBox(height: 40),
+
+            // CTA
+            Container(
+              padding: const EdgeInsets.all(24),
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.04),
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: Colors.white12),
               ),
-            ],
-          ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Text(
+                    'Ready to rate your stash?',
+                    style: Theme.of(context).textTheme.headlineSmall,
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 12),
+                  Text(
+                    'No signup required. Works on mobile and desktop.',
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyMedium
+                        ?.copyWith(color: Colors.white70),
+                  ),
+                  const SizedBox(height: 16),
+                  Center(
+                    child: ElevatedButton.icon(
+                      onPressed: () => Navigator.pushNamed(context, '/scan'),
+                      icon: const Icon(Icons.camera_enhance_outlined),
+                      label: const Text('Start Scanning'),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            const SizedBox(height: 24),
+          ],
         ),
       ),
     );
   }
 }
 
-/// Empty state hero when there are no images yet
-class _EmptyLanding extends StatelessWidget {
-  final VoidCallback onScan;
-  final VoidCallback onPick;
-  const _EmptyLanding({required this.onScan, required this.onPick});
+class _FeatureCard extends StatelessWidget {
+  final IconData icon;
+  final String title;
+  final String desc;
+  const _FeatureCard({
+    required this.icon,
+    required this.title,
+    required this.desc,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        const Text(
-          'Scan Your Bud',
-          textAlign: TextAlign.center,
-          style: TextStyle(fontSize: 28, fontWeight: FontWeight.w800),
+    return ConstrainedBox(
+      constraints: const BoxConstraints(minWidth: 260),
+      child: Container(
+        width: 320,
+        padding: const EdgeInsets.all(18),
+        decoration: BoxDecoration(
+          color: Colors.white.withOpacity(0.04),
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: Colors.white12),
         ),
-        const SizedBox(height: 10),
-        const Text(
-          'Instant AI feedback on quality, contaminants, and visible issues.',
-          textAlign: TextAlign.center,
-        ),
-        const SizedBox(height: 20),
-        FilledButton.icon(
-          onPressed: onScan,
-          icon: const Icon(Icons.document_scanner_outlined),
-          label: const Text('Open Bud Bot'),
-          style: FilledButton.styleFrom(
-            padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 16),
-          ),
-        ),
-        const SizedBox(height: 16),
-        Wrap(
-          alignment: WrapAlignment.center,
-          spacing: 12,
-          runSpacing: 12,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            OutlinedButton.icon(
-              onPressed: onPick,
-              icon: const Icon(Icons.upload),
-              label: const Text('Upload'),
-            ),
-            OutlinedButton.icon(
-              onPressed: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Grower Mode coming soon')),
-                );
-              },
-              icon: const Icon(Icons.spa_outlined),
-              label: const Text('Grower Mode'),
-            ),
-            OutlinedButton.icon(
-              onPressed: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Pro Mode coming soon')),
-                );
-              },
-              icon: const Icon(Icons.star_outline),
-              label: const Text('Pro Mode'),
+            Icon(icon, size: 28, color: Theme.of(context).colorScheme.secondary),
+            const SizedBox(height: 10),
+            Text(title,
+                style: Theme.of(context)
+                    .textTheme
+                    .titleLarge
+                    ?.copyWith(fontWeight: FontWeight.w700)),
+            const SizedBox(height: 6),
+            Text(
+              desc,
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyMedium
+                  ?.copyWith(color: Colors.white70),
             ),
           ],
         ),
-      ],
+      ),
     );
   }
 }
 
-/// Strict “parameter box” so images never overflow:
-///  - perfect square
-///  - clipped radius
-///  - cover image within the square
-class _ParameterBox extends StatelessWidget {
-  final String path;
-  const _ParameterBox({required this.path});
+class _Footer extends StatelessWidget {
+  const _Footer();
 
   @override
   Widget build(BuildContext context) {
-    return AspectRatio(
-      aspectRatio: 1,
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(12),
-        child: DecoratedBox(
-          decoration: BoxDecoration(
-            border: Border.all(
-              color: Colors.tealAccent.withValues(alpha: 0.25),
-              width: 2,
-            ),
-          ),
-          child: Image.file(
-            File(path),
-            fit: BoxFit.cover,
-            errorBuilder:
-                (_, __, ___) => const Center(
-                  child: Icon(Icons.broken_image, color: Colors.white38),
-                ),
-          ),
-        ),
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
+      decoration: BoxDecoration(
+        color: const Color(0xFF0D0E12),
+        border: Border(top: BorderSide(color: Colors.white.withOpacity(0.06))),
       ),
+      child: Wrap(
+        alignment: WrapAlignment.center,
+        spacing: 16,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        children: [
+          const Text('© 2025 PotBot. All rights reserved.',
+              style: TextStyle(color: Colors.white70)),
+          _FooterLink(label: 'Privacy Policy', onTap: () {}),
+          _FooterLink(label: 'Terms of Service', onTap: () {}),
+          _FooterLink(label: 'Security', onTap: () {}),
+        ],
+      ),
+    );
+  }
+}
+
+class _FooterLink extends StatelessWidget {
+  final String label;
+  final VoidCallback onTap;
+  const _FooterLink({required this.label, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return TextButton(
+      onPressed: onTap,
+      child:
+          Text(label, style: const TextStyle(color: Colors.white70, fontSize: 13)),
     );
   }
 }
