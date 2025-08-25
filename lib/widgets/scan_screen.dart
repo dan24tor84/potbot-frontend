@@ -1,8 +1,70 @@
+// lib/widgets/scan_screen.dart
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
+import 'package:file_picker/file_picker.dart'; // Add to pubspec.yaml
+import '../services/api_service.dart';
 
-class ScanScreen extends StatelessWidget {
+class ScanScreen extends StatefulWidget {
   final String apiUrl;
   const ScanScreen({super.key, required this.apiUrl});
+
+  @override
+  State<ScanScreen> createState() => _ScanScreenState();
+}
+
+class _ScanScreenState extends State<ScanScreen> {
+  bool _isAnalyzing = false;
+  Uint8List? _selectedImage;
+
+  Future<void> _pickImage() async {
+    try {
+      final result = await FilePicker.platform.pickFiles(
+        type: FileType.image,
+        allowMultiple: false,
+        withData: true,
+      );
+
+      if (result != null && result.files.first.bytes != null) {
+        setState(() {
+          _selectedImage = result.files.first.bytes!;
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error picking image: $e')),
+        );
+      }
+    }
+  }
+
+  Future<void> _analyzeImage() async {
+    if (_selectedImage == null) return;
+
+    setState(() => _isAnalyzing = true);
+
+    try {
+      final results = await ApiService.analyzeImage(_selectedImage!);
+      
+      if (mounted) {
+        Navigator.pushNamed(
+          context,
+          '/results',
+          arguments: results,
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Analysis failed: $e')),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _isAnalyzing = false);
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,46 +105,64 @@ class ScanScreen extends StatelessWidget {
                         )),
                     const SizedBox(height: 8),
                     Text(
-                      'Upload a photo or use your camera. We\'ll analyze the flower and return an AI quality score.',
+                      'Upload a photo. We\'ll analyze the flower and return an AI quality score.',
                       textAlign: TextAlign.center,
                       style: theme.textTheme.bodyMedium?.copyWith(color: Colors.black54),
                     ),
                     const SizedBox(height: 24),
 
-                    // Buttons row
+                    // Image preview
+                    if (_selectedImage != null) ...[
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(12),
+                        child: Image.memory(
+                          _selectedImage!,
+                          height: 200,
+                          width: double.infinity,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                    ],
+
+                    // Buttons
                     Wrap(
                       spacing: 16,
                       runSpacing: 12,
                       alignment: WrapAlignment.center,
                       children: [
                         ElevatedButton.icon(
-                          icon: const Icon(Icons.photo_camera_outlined),
+                          icon: const Icon(Icons.photo_library_outlined),
                           style: ElevatedButton.styleFrom(
                             padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
                             backgroundColor: Colors.green.shade600,
                             foregroundColor: Colors.white,
                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
                           ),
-                          onPressed: () {
-                            // TODO: call your existing "open camera" flow
-                            // and then POST to apiUrl when ready
-                          },
-                          label: const Text('Camera'),
+                          onPressed: _isAnalyzing ? null : _pickImage,
+                          label: const Text('Select Image'),
                         ),
-                        OutlinedButton.icon(
-                          icon: const Icon(Icons.photo_library_outlined),
-                          style: OutlinedButton.styleFrom(
-                            padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
-                            side: BorderSide(color: Colors.green.shade600, width: 1.5),
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-                            foregroundColor: Colors.green.shade700,
+                        if (_selectedImage != null)
+                          ElevatedButton.icon(
+                            icon: _isAnalyzing 
+                              ? const SizedBox(
+                                  width: 16,
+                                  height: 16,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                                  ),
+                                )
+                              : const Icon(Icons.analytics_outlined),
+                            style: ElevatedButton.styleFrom(
+                              padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
+                              backgroundColor: Colors.orange.shade600,
+                              foregroundColor: Colors.white,
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                            ),
+                            onPressed: _isAnalyzing ? null : _analyzeImage,
+                            label: Text(_isAnalyzing ? 'Analyzing...' : 'Analyze'),
                           ),
-                          onPressed: () {
-                            // TODO: call your existing gallery picker
-                            // and then POST to apiUrl when ready
-                          },
-                          label: const Text('Gallery'),
-                        ),
                       ],
                     ),
 
@@ -90,7 +170,6 @@ class ScanScreen extends StatelessWidget {
                     Divider(color: Colors.grey.shade300, height: 32),
                     const SizedBox(height: 8),
 
-                    // Little footer hint
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
