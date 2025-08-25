@@ -7,6 +7,12 @@ import 'widgets/grower_screen.dart';
 import 'widgets/results_screen.dart';
 import 'widgets/leaderboard_screen.dart';
 
+// Compile-time API URL (injected by Nixpacks: --dart-define=API_URL=${POTBOT_API_URL})
+const String kApiUrl = String.fromEnvironment(
+  'API_URL',
+  defaultValue: 'https://potbot-production.up.railway.app',
+);
+
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   runApp(const PotBotApp());
@@ -42,20 +48,40 @@ class PotBotApp extends StatelessWidget {
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
             padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 14),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
           ),
         ),
         chipTheme: const ChipThemeData(
           padding: EdgeInsets.symmetric(horizontal: 12, vertical: 10),
         ),
       ),
-      initialRoute: '/',
+
+      // Static routes (no required args)
       routes: {
         '/': (_) => const HomeScreen(),
-        '/scan': (_) => const ScanScreen(),
-        '/grower': (_) => const GrowerScreen(),
-        '/results': (_) => const ResultsScreen(),
+        '/scan': (_) => ScanScreen(apiUrl: kApiUrl),
+        '/grower': (_) => GrowerScreen(apiUrl: kApiUrl),
         '/leaderboard': (_) => const LeaderboardScreen(),
+      },
+
+      // Routes that require arguments (e.g., results)
+      onGenerateRoute: (settings) {
+        if (settings.name == '/results') {
+          final args = settings.arguments;
+          // Expecting a Map<String, dynamic> of analysis results
+          if (args is Map<String, dynamic>) {
+            return MaterialPageRoute<void>(
+              builder: (_) => ResultsScreen(results: args),
+            );
+          }
+          // Fallback if nothing was passed
+          return MaterialPageRoute<void>(
+            builder: (_) => const ResultsScreen(results: {}),
+          );
+        }
+        return null;
       },
     );
   }
