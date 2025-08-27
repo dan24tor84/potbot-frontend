@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import '../services/api_service.dart';
 
 class GrowerScreen extends StatefulWidget {
-  const GrowerScreen({super.key});
+  final String apiUrl;
+  
+  const GrowerScreen({super.key, required this.apiUrl});
 
   @override
   State<GrowerScreen> createState() => _GrowerScreenState();
@@ -30,7 +32,8 @@ class _GrowerScreenState extends State<GrowerScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Row(children: [
-        Image.asset('assets/images/logo.png', height: 28),
+        Image.asset('assets/images/potbot_logo-512x512.png', height: 28, 
+          errorBuilder: (_, __, ___) => const Icon(Icons.eco)),
         const SizedBox(width: 8),
         const Text('Grow Coach'),
       ])),
